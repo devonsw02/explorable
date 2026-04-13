@@ -486,8 +486,115 @@
             border-color:rgba(229,9,20,.65);
         }
 
-        /* ===== NEW: SOCIAL PROOF BADGE ===== */
-        .buzz{
+        /* ===== SOCIAL: RIGHT SIDE BUZZ RAIL ===== */
+        .buzz-rail{
+            position:fixed;
+            right:14px;
+            bottom:14px;
+            width:320px;
+            max-height:42vh;
+            z-index:2650;
+            background:rgba(12,12,12,.74);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:14px;
+            padding:12px;
+            backdrop-filter:blur(12px);
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        .buzz-rail h4{
+            margin:0;
+            font-size:11px;
+            letter-spacing:.18em;
+            text-transform:uppercase;
+            opacity:.9;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+        }
+        .buzz-sub{
+            font-size:11px;
+            opacity:.68;
+            line-height:1.45;
+        }
+        .buzz-feed{
+            overflow:auto;
+            padding-right:6px;
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        .buzz-feed::-webkit-scrollbar{ width:8px; }
+        .buzz-feed::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.08); border-radius:999px; }
+
+        .buzz-post{
+            background:rgba(20,20,20,.72);
+            border:1px solid rgba(255,255,255,.06);
+            border-radius:14px;
+            padding:10px;
+        }
+        .buzz-top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            margin-bottom:6px;
+            font-size:11px;
+            opacity:.9;
+        }
+        .buzz-handle{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-weight:600;
+        }
+        .ava{
+            width:18px;
+            height:18px;
+            border-radius:50%;
+            background:linear-gradient(135deg, rgba(229,9,20,.65), rgba(255,120,0,.35));
+            border:1px solid rgba(255,255,255,.10);
+        }
+        .buzz-time{
+            font-size:10px;
+            opacity:.65;
+            white-space:nowrap;
+        }
+        .buzz-body{
+            font-size:12px;
+            line-height:1.45;
+            opacity:.88;
+        }
+        .buzz-actions{
+            margin-top:8px;
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+        .pillbtn{
+            font-size:11px;
+            border:1px solid rgba(255,255,255,.10);
+            background:rgba(0,0,0,.25);
+            padding:6px 10px;
+            border-radius:999px;
+            cursor:pointer;
+            user-select:none;
+            transition:.2s;
+        }
+        .pillbtn:hover{
+            border-color:rgba(229,9,20,.45);
+            background:rgba(229,9,20,.10);
+        }
+        .pillbtn.hot{
+            border-color:rgba(229,9,20,.65);
+            background:rgba(229,9,20,.14);
+        }
+
+        /* ===== SOCIAL: ON-CARD BADGE ===== */
+        .social-badge{
             position:absolute;
             left:10px;
             top:10px;
@@ -504,16 +611,16 @@
             pointer-events:none;
             backdrop-filter: blur(8px);
         }
-        .buzz .dot{
+        .social-badge .dot{
             width:7px; height:7px;
             border-radius:50%;
             background:rgba(255,255,255,.22);
         }
-        .buzz.hot{
+        .social-badge.hot{
             border-color:rgba(229,9,20,.55);
             background:rgba(229,9,20,.14);
         }
-        .buzz.hot .dot{ background:rgba(229,9,20,.9); }
+        .social-badge.hot .dot{ background:rgba(229,9,20,.9); }
 
         /* Toast */
         .toast{
@@ -624,7 +731,6 @@
             background:rgba(0,0,0,.88);
             z-index:3000;
             padding:18px;
-
             opacity:0;
             pointer-events:none;
             transition: opacity .28s ease;
@@ -756,97 +862,6 @@
             font-size:12px;
             z-index:1;
             line-height:1.25;
-        }
-
-        /* ===== NEW: SOCIAL PANEL ===== */
-        .social{
-            position:fixed;
-            left:14px;
-            top:70px;
-            width:280px;
-            z-index:2600;
-            background:rgba(12,12,12,.72);
-            border:1px solid rgba(255,255,255,.08);
-            border-radius:14px;
-            padding:12px;
-            backdrop-filter:blur(12px);
-        }
-        .social h4{
-            margin:0 0 10px 0;
-            font-size:11px;
-            letter-spacing:.18em;
-            text-transform:uppercase;
-            opacity:.9;
-        }
-        .social-feed{
-            display:flex;
-            flex-direction:column;
-            gap:10px;
-            max-height:260px;
-            overflow:auto;
-            padding-right:6px;
-        }
-        .social-feed::-webkit-scrollbar{ width:8px; }
-        .social-feed::-webkit-scrollbar-thumb{
-            background:rgba(255,255,255,.08);
-            border-radius:999px;
-        }
-        .post{
-            background:rgba(20,20,20,.72);
-            border:1px solid rgba(255,255,255,.06);
-            border-radius:14px;
-            padding:10px;
-        }
-        .post-top{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:10px;
-            margin-bottom:6px;
-            font-size:11px;
-            opacity:.9;
-        }
-        .handle{
-            display:flex;
-            align-items:center;
-            gap:8px;
-            font-weight:600;
-        }
-        .avatar{
-            width:18px;
-            height:18px;
-            border-radius:50%;
-            background:linear-gradient(135deg, rgba(229,9,20,.65), rgba(255,120,0,.35));
-            border:1px solid rgba(255,255,255,.10);
-        }
-        .timeago{
-            font-size:10px;
-            opacity:.65;
-            white-space:nowrap;
-        }
-        .post-body{
-            font-size:12px;
-            line-height:1.45;
-            opacity:.88;
-        }
-        .tag{
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            margin-top:8px;
-            font-size:11px;
-            opacity:.9;
-            border:1px solid rgba(255,255,255,.08);
-            background:rgba(0,0,0,.25);
-            padding:6px 10px;
-            border-radius:999px;
-            cursor:pointer;
-            user-select:none;
-            transition:.2s;
-        }
-        .tag:hover{
-            border-color:rgba(229,9,20,.45);
-            background:rgba(229,9,20,.10);
         }
 
         /* PLAYER */
@@ -1041,7 +1056,7 @@
         }
 
         @media (max-width: 1180px){
-            .social{ display:none; } /* hide social panel if cramped */
+            .buzz-rail{ display:none; }
         }
 
         @media (max-width: 980px){
@@ -1078,8 +1093,7 @@
         <div class="btn" id="clearStatsBtn">Reset</div>
         <div class="btn" id="openListBtn">My List <span id="listCount" style="opacity:.8">(0)</span></div>
 
-        <!-- NEW: open social panel modal on small screens -->
-        <div class="btn" id="openSocialBtn">Social</div>
+        <div class="btn" id="openBuzzBtn">Buzz</div>
     </div>
 </div>
 
@@ -1096,17 +1110,35 @@
 
             <h1>How UI/UX Design in Streaming Platforms Shapes Viewer Engagement and Behavior</h1>
 
-            <p>Within the past decade alone, streaming services have dominated...</p>
-            <p>Autoplay is an incredibly common feature...</p>
-            <p>The layout and visual design of a streaming platform...</p>
-            <p>UX/UI design is an up and coming factor...</p>
+            <p>Within the past decade alone, streaming services have dominated the film and tv show hemisphere and seem to keep ramping up as they continue to vie for audience attention with theatrical released films. This shift in media consumption where the user has instant access to vast libraries of content, has caused an intense competition where different streaming services, dubbed the “streaming wars”, attempt to conflict for the main audience. Platforms like Netflix and Amazon Prime Video not only compete through available content, but also their user interface and the overall user experience design. The UX design of any platform is incredibly important to the overall experience and retention of users, and can either damage or strengthen audience retention. Features such as autoplay, personalized recommendations, and navigation layouts are intentionally designed to keep users engaged as much as possible. The goal of this essay is to navigate and pinpoint the specific elements that create a strong user experience on a streaming service. As well as how UI/UX design plays a critical role in shaping viewer behavior by increasing engagement, guiding content, and encouraging prolonged viewing.
+                Autoplay is an incredibly common feature that most streaming platforms utilize to heighten user engagement and retention. By automatically starting the next episode while your current episode ends, the lack of user input and continuous flow make the viewing experience effortless. With the autoplay feature, decision making is highly reduced and the transition is kept as smooth as possible, maximizing viewership and keeping audiences watching longer than expected. According to Nir Eyal (2014), habit forming products are designed to minimize friction and reinforce repeated behavior. Additionally, studies on binge watching suggest that platform design contributes to prolonged viewing sessions and shifts in media consumption habits (Flayelle et al. 2020).
+                The layout and visual design of a streaming platform is a critical factor in creating user engagement. Most streaming platforms aim for clean and simplistic interfaces for use across multiple different audiences. Platforms like Disney+ emphasize a simple and strong hierarchy, utilizing large thumbnails and organizing their content into distinct and characterized categories. Even basing them off brand and studio, such as Marvel, Pixar, and Star Wars, including the branded characters as title images to make navigation extremely easy for children and for many other age groups and demographics. According to usability principles by Steve Krug (2014), users prefer interfaces that minimize cognitive effort and are easy to navigate. Research from the Nielsen Norman group agrees with the concept that efficient navigation and reduced cognitive challenge improve user satisfaction and engagement.
+                UX/UI design is an up and coming factor that is being realized as an important factor in shaping how audiences interact with and consume from streaming platforms. Features such as personalized recommendations, autoplay, and intentional hierarchical design are just some simplistic design details that display the strategic design companies put into retaining audience attention. Their mission is to increase user engagement as much as possible, encourage binge-watching, and have their algorithms guide the viewer across their content selection. As streaming platforms grow and change, we will continue to examine the intentional choices they take for optimizing their platforms UI/UX design.
+
+
+                Gomez-Uribe, C. A., & Hunt, N. (2016). The Netflix Recommender System: Algorithms, Business Value, and Innovation. ACM Trans. Manage. Inf. Syst., 6(4), 13:1-13:19. https://doi.org/10.1145/2843948
+                Algorithms
+                The streaming service UX/UI Design
+
+                Billieux, Joël, et al. “Are We Overpathologizing Everyday Life? A Tenable Blueprint for Behavioral Addiction Research.” Journal of Behavioral Addictions, vol. 4, no. 3, Sept. 2015, pp. 119–123, www.ncbi.nlm.nih.gov/pmc/articles/PMC4627665/, https://doi.org/10.1556/2006.4.2015.009. Accessed 19 Nov. 2019
+                User behavior
+                Addictive platforms and reactions.
+                ‌Krug, S. (2014). Don’t Make Me Think, Revisited: A Common Sense Approach to Web Usability, Third Edition (Third edition.). New Riders.
+                Complacent thinking/ relationship with content
+                How digital platforms affect addictive behavior
+                Eyal, N. (2014). Hooked: How to Build Habit-Forming Products. Penguin.
+                The UX/UI Design of habit forming products
+                How habits are formed via media and content
+            </p>
+
 
             <h2>References</h2>
             <div class="refs">
-                <p>Gomez-Uribe &amp; Hunt (2016)</p>
-                <p>Billieux et al. (2015)</p>
-                <p>Krug (2014)</p>
-                <p>Eyal (2014)</p>
+                <p>Gomez-Uribe, C. A., & Hunt, N. (2016). The Netflix Recommender System: Algorithms, Business Value, and Innovation. ACM Trans. Manage. Inf. Syst., 6(4),</p>
+                <p>Billieux, Joël, et al. “Are We Overpathologizing Everyday Life? A Tenable Blueprint for Behavioral Addiction Research.” Journal of Behavioral Addictions, vol. 4, no. 3, Sept. 2015, pp. 119–123, www.ncbi.nlm.nih.gov/pmc/articles/PMC4627665/, https://doi.org/10.1556/2006.4.2015.009. Accessed 19 Nov. 2019
+                </p>
+                <p>‌Krug, S. (2014). Don’t Make Me Think, Revisited: A Common Sense Approach to Web Usability, Third Edition (Third edition.). New Riders.</p>
+                <p>Eyal, N. (2014). Hooked: How to Build Habit-Forming Products. Penguin.</p>
             </div>
         </div>
     </aside>
@@ -1118,17 +1150,17 @@
                     <div>
                         <h2 id="featuredTitle">Featured</h2>
                         <p id="featuredDesc">
-                            Social media “buzz” is now simulated: trending posts boost certain films and can influence your choices.
+                            Social proof is now simulated: “Buzz” boosts certain films and changes the ranking.
                         </p>
                         <div class="featured-actions">
                             <div class="bigbtn primary" id="featuredInfo">More Info</div>
                             <div class="bigbtn" id="featuredShuffle">Shuffle</div>
-                            <div class="bigbtn" id="boostTrendingBtn">Refresh Buzz</div>
+                            <div class="bigbtn" id="refreshBuzzBtn">Refresh Buzz</div>
                         </div>
                     </div>
                     <div style="opacity:.8;font-size:12px;line-height:1.6">
-                        <b style="color:#fff">Social layer:</b><br>
-                        “Trending Now” posts, share counts, and friends’ watches increase visibility + ranking.
+                        <b style="color:#fff">What’s different:</b><br>
+                        A “Buzz rail” generates posts about specific titles. Buzz increases visibility, and sharing amplifies it.
                     </div>
                 </div>
             </div>
@@ -1144,14 +1176,18 @@
     </section>
 </div>
 
-<!-- SOCIAL PANEL (fixed, influences ranking) -->
-<div class="social" id="socialPanel">
-    <h4>Social Buzz</h4>
-    <div class="social-feed" id="socialFeed"></div>
-    <div style="margin-top:10px; font-size:11px; opacity:.7; line-height:1.45">
-        Tap a tag to boost that title. This simulates social proof / virality.
+<!-- Social Buzz Rail -->
+<aside class="buzz-rail" id="buzzRail" aria-label="Buzz rail">
+    <h4>
+        Buzz Rail
+        <span style="opacity:.7; font-weight:400; letter-spacing:0; text-transform:none;">tap = boost</span>
+    </h4>
+    <div class="buzz-sub">
+        Simulates how social media trends + shares influence what people choose to watch.
+        Tapping boosts a title (social proof), which reshapes the feed.
     </div>
-</div>
+    <div class="buzz-feed" id="buzzFeed"></div>
+</aside>
 
 <!-- PLAYER (manual play only) -->
 <div class="player" id="player">
@@ -1190,7 +1226,7 @@
     <div class="modal-content" id="modalContent"></div>
 </div>
 
-<div class="toast" id="toast">Added to My List</div>
+<div class="toast" id="toast">Boosted</div>
 
 <div class="heat-overlay" aria-hidden="true">
     <canvas id="heatCanvas"></canvas>
@@ -1247,10 +1283,12 @@
     const vibeOptions = ["Cozy", "Dark", "Fast", "Mind-bend", "Twisty"];
     let preference = { genre: null, vibe: null };
 
-    // ===== NEW: SOCIAL STATE =====
-    // socialBoost[posterId] grows when "posts" mention a title or when user "shares"
-    let socialBoost = {};       // per poster id
-    let socialClicks = 0;       // how often user interacts with social elements
+    // ===== SOCIAL MODEL (simpler + more “behavioral”) =====
+    // - each title has: buzzScore (social proof)
+    // - user has: socialSusceptibility (increases when they interact with buzz)
+    let buzzScore = {};
+    let socialSusceptibility = 1.0;  // multiplies buzz effect
+    let socialInteractions = 0;
 
     const fakeTitles = [
         "Neon Widow", "The Velvet Exit", "Gutter Halo", "Kiss of the Algorithm", "Midnight Carousel",
@@ -1263,6 +1301,7 @@
 
     function pickGenre(i){ return genres[(i % (genres.length - 1)) + 1]; }
     function seededRand(seed){ let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+    function randInt(a,b){ return a + Math.floor(Math.random() * (b - a + 1)); }
 
     function makeMovieStats(id, genre, title){
         const r1 = seededRand(id * 17.31);
@@ -1325,23 +1364,29 @@
         const genre = pickGenre(i);
         posters.push({ id:i, title, genre, img:`./images/poster${i}.png`, stats: makeMovieStats(i, genre, title) });
     }
+    posters.forEach(p => buzzScore[p.id] = 0);
 
-    // init socialBoost
-    posters.forEach(p => socialBoost[p.id] = 0);
-
-    // ===== SCORE: includes social proof boost =====
+    // ===== RANKING: includes social proof =====
     function score(p){
         const hoverBoost = (hoverTimeMs[p.id] || 0) * 0.0008;
         const viewBoost  = (viewCounts[p.id] || 0) * 0.7;
-        const social = (socialBoost[p.id] || 0) * 1.4; // social impact
-        const socialUserFactor = Math.min(1.25, 1 + (socialClicks * 0.03)); // if user engages with social, it matters more
 
         const prefGenreBoost = (preference.genre && p.genre === preference.genre) ? 3.8 : 0;
         const prefVibeBoost = (preference.vibe && p.stats.vibe === preference.vibe) ? 1.1 : 0;
 
-        return (genreAffinity[p.genre] || 0) + hoverBoost + viewBoost + (social * socialUserFactor) + prefGenreBoost + prefVibeBoost;
+        // Social proof: if user interacts with buzz, the system weights it more (filter bubble / peer pressure)
+        const buzz = (buzzScore[p.id] || 0);
+        const socialBoost = buzz * 1.6 * socialSusceptibility;
+
+        return (genreAffinity[p.genre] || 0) + hoverBoost + viewBoost + prefGenreBoost + prefVibeBoost + socialBoost;
     }
     function recommend(list){ return [...list].sort((a,b)=>score(b)-score(a)); }
+
+    function isPreferred(p){ return !!preference.genre && p.genre === preference.genre; }
+    function isPreferredHuge(p, indexInRow){
+        if(!isPreferred(p)) return false;
+        return ((p.id + indexInRow) % 5) !== 0; // 80% huge
+    }
 
     function rowLabelFor(r){ return ["Recommended For You","Because You Clicked","Trending Now"][r] || "For You"; }
     function makeRowArrow(dir, rowEl){
@@ -1354,12 +1399,6 @@
             rowEl.scrollBy({ left: dx, behavior: "smooth" });
         };
         return a;
-    }
-
-    function isPreferred(p){ return !!preference.genre && p.genre === preference.genre; }
-    function isPreferredHuge(p, indexInRow){
-        if(!isPreferred(p)) return false;
-        return ((p.id + indexInRow) % 5) !== 0;
     }
 
     function buildFilters(){
@@ -1397,8 +1436,9 @@
         const sorted = recommend(list);
         featuredMovie = sorted[0] || posters[0];
         document.getElementById("featuredTitle").textContent = featuredMovie?.title || "Featured";
+        const b = buzzScore[featuredMovie.id] || 0;
         document.getElementById("featuredDesc").textContent =
-            `Social Buzz + your preference shape the feed. Look for “buzz” badges on posters.`;
+            `Featured is weighted by: preference + behavior + social proof. Current buzz: ${b}.`;
     }
 
     function similarityScore(target, candidate){
@@ -1406,8 +1446,8 @@
         let s = 0;
         if(candidate.genre === target.genre) s += 7;
         if(candidate.stats.vibe === target.stats.vibe) s += 3;
-        // social spillover: trending titles feel "similar" due to visibility
-        s += Math.min(2.0, (socialBoost[candidate.id] || 0) * 0.25);
+        // “social” similarity: trending things get recommended together
+        s += Math.min(3.5, (buzzScore[candidate.id] || 0) * 0.25);
         s += seededRand(candidate.id * 12.13 + target.id * 2.1);
         return s;
     }
@@ -1420,26 +1460,25 @@
             .map(x => x.p);
     }
 
-    // ===== NEW: Social feed generation =====
+    // ===== SOCIAL: buzz rail content =====
     const handles = ["@cinepulse", "@nightfeed", "@streamtalk", "@posterjunkie", "@bingeclub", "@vhsghost", "@midnightqueue"];
     const postTemplates = [
-        (t)=>`Everyone’s talking about <b>${t}</b>—this ending is unreal.`,
-        (t)=>`Hot take: <b>${t}</b> is the most bingeable thing this week.`,
-        (t)=>`Just watched <b>${t}</b> and I can’t stop thinking about it.`,
-        (t)=>`If you like ${["neon","dark","twisty","retro","weird"][Math.floor(Math.random()*5)]} vibes, <b>${t}</b> is it.`,
-        (t)=>`Group watch tonight: <b>${t}</b>. Bring snacks.`
+        (t)=>`Everyone’s talking about <b>${t}</b> — it’s all over my feed.`,
+        (t)=>`I watched <b>${t}</b> “ironically” and now I’m recommending it to everyone.`,
+        (t)=>`If you don’t watch <b>${t}</b>, you’ll miss the conversation tomorrow.`,
+        (t)=>`<b>${t}</b> is trending. Not sure why. Still clicked.`,
+        (t)=>`Group chat says <b>${t}</b> is mandatory viewing.`
     ];
 
-    function socialWeightForPoster(p){
-        // boost same genre as preference to simulate algorithmic bubbles
-        const pref = (preference.genre && p.genre === preference.genre) ? 1.35 : 1.0;
-        // if already buzzing, more likely to appear (rich-get-richer)
-        const rich = 1 + Math.min(1.2, (socialBoost[p.id] || 0) * 0.12);
-        return pref * rich;
-    }
-
-    function pickPosterWeighted(){
-        const weights = posters.map(p => socialWeightForPoster(p));
+    function pickPosterForBuzz(){
+        // Make the buzz rail feel like social media: slightly biased to preference + random spikes
+        const weights = posters.map(p=>{
+            const base = 1.0;
+            const pref = (preference.genre && p.genre === preference.genre) ? 1.3 : 1.0;
+            const already = 1 + Math.min(1.5, (buzzScore[p.id] || 0) * 0.10); // rich-get-richer
+            const spike = 1 + (seededRand(p.id * 3.14 + Date.now()*0.00001) * 0.6);
+            return base * pref * already * spike;
+        });
         const total = weights.reduce((a,b)=>a+b,0);
         let r = Math.random() * total;
         for(let i=0;i<posters.length;i++){
@@ -1449,55 +1488,73 @@
         return posters[0];
     }
 
-    function randInt(a,b){ return a + Math.floor(Math.random() * (b - a + 1)); }
+    function addBuzz(id, amount, reason){
+        buzzScore[id] = (buzzScore[id] || 0) + amount;
 
-    function buildSocialFeed(n=7){
-        const feed = document.getElementById("socialFeed");
-        feed.innerHTML = "";
+        // interacting with social increases susceptibility (like doomscrolling feedback loop)
+        if(reason === "tap" || reason === "share"){
+            socialInteractions++;
+            socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
+        }
 
-        const used = new Set();
-        for(let i=0;i<n;i++){
-            const p = pickPosterWeighted();
-            const key = p.id + ":" + i;
-            if(used.has(key)) continue;
-            used.add(key);
+        showToast(`Buzz +${amount}`);
+        pickFeatured();
+        render();
+        renderBuzzRail(); // keep rail numbers “alive”
+    }
 
-            // each post boosts that title (social proof)
-            const boost = randInt(1,3) + (p.genre === preference.genre ? 1 : 0);
-            socialBoost[p.id] = (socialBoost[p.id] || 0) + boost;
+    function renderBuzzRail(){
+        const rail = document.getElementById("buzzFeed");
+        rail.innerHTML = "";
 
-            const handle = handles[Math.floor(Math.random()*handles.length)];
+        for(let i=0;i<7;i++){
+            const p = pickPosterForBuzz();
+            // passive exposure increases buzz slightly (algorithmic amplification)
+            const passive = randInt(0,1);
+            buzzScore[p.id] = (buzzScore[p.id] || 0) + passive;
+
+            const h = handles[Math.floor(Math.random()*handles.length)];
             const body = postTemplates[Math.floor(Math.random()*postTemplates.length)](p.title);
             const mins = randInt(2, 55);
 
             const post = document.createElement("div");
-            post.className = "post";
+            post.className = "buzz-post";
             post.innerHTML = `
-          <div class="post-top">
-            <div class="handle"><span class="avatar"></span> ${handle}</div>
-            <div class="timeago">${mins}m</div>
+          <div class="buzz-top">
+            <div class="buzz-handle"><span class="ava"></span> ${h}</div>
+            <div class="buzz-time">${mins}m</div>
           </div>
-          <div class="post-body">${body}</div>
-          <div class="tag" data-id="${p.id}">🔥 Boost <b>${p.title}</b> <span style="opacity:.7">(+2)</span></div>
+          <div class="buzz-body">${body}</div>
+          <div class="buzz-actions">
+            <div class="pillbtn hot" data-act="boost" data-id="${p.id}">Boost ${p.title}</div>
+            <div class="pillbtn" data-act="open" data-id="${p.id}">Open</div>
+            <div class="pillbtn" data-act="share" data-id="${p.id}">Share</div>
+            <div class="pillbtn" style="opacity:.75; cursor:default;">Buzz: ${buzzScore[p.id] || 0}</div>
+          </div>
         `;
 
-            // clicking tag boosts that title (simulating "share" / "trend" tap)
-            post.querySelector(".tag").addEventListener("click", ()=>{
-                socialClicks++;
-                socialBoost[p.id] = (socialBoost[p.id] || 0) + 2;
-                showToast(`Buzz boosted: ${p.title}`);
-                pickFeatured();
-                render();
+            post.querySelectorAll("[data-act]").forEach(btn=>{
+                btn.addEventListener("click", ()=>{
+                    const act = btn.getAttribute("data-act");
+                    const id = Number(btn.getAttribute("data-id"));
+                    const movie = posters.find(x=>x.id===id);
+                    if(!movie) return;
+
+                    if(act === "boost") addBuzz(id, 3, "tap");
+                    if(act === "share") addBuzz(id, 4, "share");
+                    if(act === "open"){
+                        // opening from social counts as a social interaction too
+                        socialInteractions++;
+                        socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
+                        openPrePlayModal(movie);
+                    }
+                });
             });
 
-            feed.appendChild(post);
+            rail.appendChild(post);
         }
-
-        pickFeatured();
-        render();
     }
 
-    /* Render */
     function render(){
         const feed=document.getElementById("feed");
         feed.innerHTML="";
@@ -1523,8 +1580,8 @@
           <div>${(activeFilter === "all") ? rowLabelFor(r) : `${activeFilter.toUpperCase()} • Picks`}</div>
           <div class="sub">${
                 preference.genre
-                    ? `Preference: ${preference.genre.toUpperCase()} • Social influence: ${(1 + socialClicks*0.03).toFixed(2)}x`
-                    : "Social Buzz can override your intent (simulated)"
+                    ? `Preference: ${preference.genre.toUpperCase()} • Social susceptibility: ${socialSusceptibility.toFixed(2)}x`
+                    : `Social susceptibility: ${socialSusceptibility.toFixed(2)}x`
             }</div>
         `;
             feed.appendChild(title);
@@ -1549,13 +1606,13 @@
                 if(isPreferred(p)) card.classList.add("pref");
                 if(isPreferredHuge(p, i)) card.classList.add("pref-large");
 
-                // social buzz badge on thumbnails
-                const sb = socialBoost[p.id] || 0;
-                if(sb >= 3){
+                // SOCIAL badge on thumbnail if buzz is significant
+                const b = buzzScore[p.id] || 0;
+                if(b >= 5){
                     const badge = document.createElement("div");
-                    const hot = sb >= 7;
-                    badge.className = "buzz" + (hot ? " hot" : "");
-                    badge.innerHTML = `<span class="dot"></span> ${hot ? "TRENDING" : "Buzz"} • ${sb}`;
+                    const hot = b >= 10;
+                    badge.className = "social-badge" + (hot ? " hot" : "");
+                    badge.innerHTML = `<span class="dot"></span> ${hot ? "TRENDING" : "Buzz"} • ${b}`;
                     card.appendChild(badge);
                 }
 
@@ -1571,18 +1628,13 @@
                     openPrePlayModal(p);
                 };
 
-                // NEW: Share button increases buzz
                 const bShare=document.createElement("div");
                 bShare.className="qbtn";
-                bShare.title="Share (social boost)";
+                bShare.title="Share (social proof)";
                 bShare.textContent="↗";
                 bShare.onclick=(e)=>{
                     e.stopPropagation();
-                    socialClicks++;
-                    socialBoost[p.id] = (socialBoost[p.id] || 0) + 3;
-                    showToast(`Shared: ${p.title} (+buzz)`);
-                    pickFeatured();
-                    render();
+                    addBuzz(p.id, 3, "share");
                 };
 
                 quick.appendChild(bShare);
@@ -1629,7 +1681,6 @@
         }
     }
 
-    /* Pre-play modal (now includes a social “what people are saying” block) */
     function openPrePlayModal(p){
         const m=document.getElementById("modal");
         const c=document.getElementById("modalContent");
@@ -1643,10 +1694,9 @@
 
         const more = getMoreLikeThis(p, 8);
 
-        // Generate a small social snippet for this title
-        const buzz = socialBoost[p.id] || 0;
-        const friendCount = Math.min(98, 3 + Math.floor(buzz * 2.4) + Math.floor(seededRand(p.id*99.9) * 14));
-        const shareCount = 140 + buzz*38 + Math.floor(seededRand(p.id*12.2) * 520);
+        const b = buzzScore[p.id] || 0;
+        const friendsWatched = Math.min(120, 5 + Math.floor(b * 3.2) + Math.floor(seededRand(p.id*17.7) * 18));
+        const shares = 80 + b*22 + Math.floor(seededRand(p.id*3.3) * 240);
 
         c.innerHTML=`
         <div class="modal-grid">
@@ -1659,13 +1709,14 @@
               <span class="pill">${s.year}</span>
               <span class="pill">${s.runtime} min</span>
               <span class="pill">${s.vibe}</span>
-              ${buzz >= 7 ? `<span class="pill">TRENDING</span>` : (buzz >= 3 ? `<span class="pill">BUZZ</span>` : "")}
+              ${b >= 10 ? `<span class="pill">TRENDING</span>` : (b >= 5 ? `<span class="pill">BUZZ</span>` : "")}
             </div>
             ${warnings}
 
             <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
               <div class="playbtn" id="modalPlayBtn" style="padding:10px 12px;">▶ Play</div>
-              <div class="btn" id="modalShareBtn" style="padding:10px 12px;">Share (+buzz)</div>
+              <div class="btn" id="modalBoostBtn" style="padding:10px 12px;">Boost (+3)</div>
+              <div class="btn" id="modalShareBtn" style="padding:10px 12px;">Share (+4)</div>
               <div class="btn" id="modalCloseBtn" style="padding:10px 12px;">Close</div>
             </div>
           </div>
@@ -1673,20 +1724,26 @@
           <div>
             <h2 style="margin:0 0 6px 0">${p.title}</h2>
             <div style="opacity:.8;font-size:12px;margin-bottom:10px">
-              ★ ${s.rating} (${s.votes} ratings) • Social proof: <b>${friendCount}</b> friends watched • <b>${shareCount}</b> shares
+              ★ ${s.rating} (${s.votes} ratings) • Social: <b>${friendsWatched}</b> friends watched • <b>${shares}</b> shares • Buzz: <b>${b}</b>
             </div>
 
-            <div class="review"><b>People are saying:</b> “${[
-            "This is everywhere on my feed.",
-            "It’s the kind of movie you watch just so you can talk about it.",
-            "I didn’t plan to watch it… but the buzz got me."
-        ][Math.floor(Math.random()*3)]}”</div>
+            <div class="review">
+              <b>Social pressure preview:</b>
+              “${
+            [
+                "My feed basically decided this for me.",
+                "I didn’t pick it — the trend did.",
+                "I watched it just to stay in the loop.",
+                "Everyone kept posting about it, so I clicked."
+            ][Math.floor(Math.random()*4)]
+        }”
+            </div>
 
             <div class="preplay">
               <div class="preplay-top">
                 <div>
                   <div class="preplay-title">More Like This (bigger, kept inside container)</div>
-                  <div class="preplay-sub">Similarity includes genre/vibe + a small “virality spillover”</div>
+                  <div class="preplay-sub">Similarity includes genre/vibe + a “what’s trending together” effect</div>
                 </div>
               </div>
 
@@ -1715,16 +1772,16 @@
             e.stopPropagation();
             openPlayer(p);
         });
-
-        document.getElementById("modalShareBtn")?.addEventListener("click", (e)=>{
+        document.getElementById("modalBoostBtn")?.addEventListener("click", (e)=>{
             e.stopPropagation();
-            socialClicks++;
-            socialBoost[p.id] = (socialBoost[p.id] || 0) + 4;
-            showToast(`Shared: ${p.title} (+buzz)`);
-            buildSocialFeed(7);
+            addBuzz(p.id, 3, "tap");
             openPrePlayModal(p);
         });
-
+        document.getElementById("modalShareBtn")?.addEventListener("click", (e)=>{
+            e.stopPropagation();
+            addBuzz(p.id, 4, "share");
+            openPrePlayModal(p);
+        });
         document.getElementById("modalCloseBtn")?.addEventListener("click", (e)=>{
             e.stopPropagation();
             closeModal();
@@ -1853,10 +1910,11 @@
         const avgHover = avgHoverSeconds();
         const heat = heatPoints;
 
-        const score = (clicks * 1.2) + (views * 0.25) + (affinityTotal * 0.9) + (avgHover * 0.8) + (heat * 0.002) + (socialClicks * 0.8);
-        if(score > 70) return "VERY HIGH";
-        if(score > 38) return "HIGH";
-        if(score > 20) return "MEDIUM";
+        // Social interactions add to engagement; susceptibility is a “meta” effect
+        const score = (clicks * 1.2) + (views * 0.25) + (affinityTotal * 0.9) + (avgHover * 0.8) + (heat * 0.002) + (socialInteractions * 0.9);
+        if(score > 72) return "VERY HIGH";
+        if(score > 40) return "HIGH";
+        if(score > 22) return "MEDIUM";
         return "LOW";
     }
 
@@ -1871,7 +1929,7 @@
 
     /* Header buttons */
     document.getElementById("openListBtn").addEventListener("click", ()=>{
-        showToast("My List placeholder (social layer added)");
+        showToast("My List placeholder");
     });
 
     document.getElementById("featuredInfo").addEventListener("click", ()=>{
@@ -1883,39 +1941,43 @@
         showToast("Featured shuffled");
     });
 
-    document.getElementById("boostTrendingBtn").addEventListener("click", ()=>{
-        buildSocialFeed(7);
+    document.getElementById("refreshBuzzBtn").addEventListener("click", ()=>{
+        renderBuzzRail();
         showToast("Buzz refreshed");
     });
 
-    // Social button opens modal showing the feed on small screens
-    document.getElementById("openSocialBtn").addEventListener("click", ()=>{
+    document.getElementById("openBuzzBtn").addEventListener("click", ()=>{
+        // open buzz rail inside modal (useful when rail is hidden by media query)
         const m=document.getElementById("modal");
         const c=document.getElementById("modalContent");
-
-        const items = [...document.getElementById("socialFeed").children].map(el => el.outerHTML).join("");
+        const items = [...document.getElementById("buzzFeed").children].map(el => el.outerHTML).join("");
 
         c.innerHTML = `
         <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <h2 style="margin:0">Social Buzz</h2>
+          <h2 style="margin:0">Buzz Rail</h2>
           <div class="btn" id="modalCloseBtn">Close</div>
         </div>
-        <div style="margin-top:12px">${items || "<div style='opacity:.7'>No posts yet. Hit “Refresh Buzz”.</div>"}</div>
+        <div style="margin-top:12px">${items || "<div style='opacity:.7'>No buzz yet. Hit “Refresh Buzz”.</div>"}</div>
+        <div style="margin-top:10px; font-size:11px; opacity:.7; line-height:1.5">
+          Tip: Boosting or Sharing increases <b>social susceptibility</b>, making buzz influence recommendations more.
+        </div>
       `;
         m.classList.add("open");
         document.getElementById("modalCloseBtn")?.addEventListener("click", (e)=>{ e.stopPropagation(); closeModal(); });
 
-        // Re-bind tag click handlers inside modal clone
-        c.querySelectorAll(".tag").forEach(tag=>{
-            tag.addEventListener("click", ()=>{
-                const id = Number(tag.getAttribute("data-id"));
-                const movie = posters.find(x => x.id === id);
-                if(movie){
-                    socialClicks++;
-                    socialBoost[id] = (socialBoost[id] || 0) + 2;
-                    showToast(`Buzz boosted: ${movie.title}`);
-                    pickFeatured();
-                    render();
+        // rebind interactions inside modal copy
+        c.querySelectorAll("[data-act]").forEach(btn=>{
+            btn.addEventListener("click", ()=>{
+                const act = btn.getAttribute("data-act");
+                const id = Number(btn.getAttribute("data-id"));
+                const movie = posters.find(x=>x.id===id);
+                if(!movie) return;
+                if(act === "boost") addBuzz(id, 3, "tap");
+                if(act === "share") addBuzz(id, 4, "share");
+                if(act === "open"){
+                    socialInteractions++;
+                    socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
+                    openPrePlayModal(movie);
                 }
             });
         });
@@ -1958,13 +2020,13 @@
         preference = { genre: null, vibe: null };
         localStorage.removeItem("obspref");
 
-        // reset social
-        socialBoost = {};
-        posters.forEach(p => socialBoost[p.id] = 0);
-        socialClicks = 0;
+        buzzScore = {};
+        posters.forEach(p => buzzScore[p.id] = 0);
+        socialSusceptibility = 1.0;
+        socialInteractions = 0;
 
         updateHUD();
-        buildSocialFeed(7);
+        renderBuzzRail();
         pickFeatured();
         render();
         clearHeat();
@@ -2027,7 +2089,6 @@
     const surveyVibesEl = document.getElementById("surveyVibes");
 
     function savePreference(){ localStorage.setItem("obspref", JSON.stringify(preference)); }
-
     function loadPreference(){
         try{
             const raw = localStorage.getItem("obspref");
@@ -2041,7 +2102,6 @@
         }catch{}
         return false;
     }
-
     function openSurvey(){
         if(loadPreference()) return;
         surveyEl.classList.add("open");
@@ -2080,7 +2140,7 @@
     document.getElementById("surveySkipBtn").addEventListener("click", ()=>{
         closeSurvey();
         showToast("Survey skipped");
-        buildSocialFeed(7);
+        renderBuzzRail();
         pickFeatured();
         render();
     });
@@ -2101,9 +2161,7 @@
         genreAffinity[preference.genre] = (genreAffinity[preference.genre] || 0) + 6;
         closeSurvey();
         showToast("Personalization applied");
-
-        // refresh buzz after personalization to simulate algorithmic "bubble"
-        buildSocialFeed(7);
+        renderBuzzRail();   // creates a “bubble” immediately
         pickFeatured();
         render();
     });
@@ -2114,7 +2172,7 @@
         updateHUD();
         buildSurveyUI();
         openSurvey();
-        buildSocialFeed(7); // start with buzz, it influences ranking
+        renderBuzzRail();
         pickFeatured();
         render();
     }
