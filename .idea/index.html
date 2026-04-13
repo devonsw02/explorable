@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OBSESSO+ — Dual UX Behavioral System</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --bg:#050505;
+            --panel:#0b0b0b;
+            --accent:#e50914;
+            --text:#f5f5f5;
+            --muted:#bdbdbd;
+            --stroke:#222;
+        }
+
+        *{ box-sizing:border-box; }
+
+        body{
+            margin:0;
+            font-family:Inter,sans-serif;
+            background:var(--bg);
+            color:var(--text);
+            overflow:hidden;
+        }
+
+        /* HEADER */
+        .header{
+            position:fixed;
+            top:0;
+            width:100%;
+            padding:14px 20px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            z-index:2500;
+            background:linear-gradient(to bottom,rgba(0,0,0,.92),rgba(0,0,0,.65),rgba(0,0,0,0));
+            backdrop-filter:blur(10px);
+        }
+
+        .logo{
+            font-family:'Playfair Display';
+            color:var(--accent);
+            font-size:20px;
+            cursor:pointer;
+            letter-spacing:.5px;
+            text-transform:uppercase;
+        }
+
+        .top-actions{
+            display:flex;
+            gap:10px;
+            align-items:center;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+        }
+
+        .btn{
+            background:rgba(20,20,20,.85);
+            border:1px solid rgba(255,255,255,.10);
+            color:var(--text);
+            font-size:12px;
+            padding:8px 10px;
+            border-radius:10px;
+            cursor:pointer;
+            transition:.2s;
+            user-select:none;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+        }
+        .btn:hover{ border-color:rgba(255,255,255,.20); }
+        .btn.primary{
+            background:rgba(229, 9, 20, .14);
+            border-color:rgba(229, 9, 20, .55);
+        }
+
+        /* LAYOUT */
+        .layout{
+            display:flex;
+            height:100vh;
+            width:100%;
+            padding-top:56px;
+        }
+
+        /* ESSAY DRAWER (OVERLAY) */
+        .essay-drawer{
+            width:420px;
+            max-width:85vw;
+            background:rgba(12,12,12,.98);
+            border-right:1px solid rgba(255,255,255,.08);
+            position:fixed;
+            top:56px;
+            left:0;
+            height:calc(100vh - 56px);
+            transform:translateX(-100%);
+            transition:transform .32s cubic-bezier(.2,.9,.2,1);
+            z-index:2400;
+            display:flex;
+            flex-direction:column;
+            box-shadow: 20px 0 55px rgba(0,0,0,.55);
+        }
+        .essay-drawer.open{ transform:translateX(0%); }
+
+        .essay-handle{
+            position:absolute;
+            top:18px;
+            right:-56px;
+            width:56px;
+            height:150px;
+            background:rgba(14,14,14,.95);
+            border:1px solid rgba(255,255,255,.10);
+            border-left:none;
+            border-top-right-radius:14px;
+            border-bottom-right-radius:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            user-select:none;
+            box-shadow:0 10px 30px rgba(0,0,0,.45);
+        }
+        .essay-handle span{
+            writing-mode:vertical-rl;
+            transform:rotate(180deg);
+            letter-spacing:.18em;
+            font-size:11px;
+            color:var(--muted);
+        }
+        .essay-drawer.open .essay-handle span{ color:var(--text); }
+
+        .essay-scroll{
+            padding:26px 26px 40px 26px;
+            overflow-y:auto;
+            line-height:1.7;
+        }
+        .essay-scroll h1{
+            color:var(--accent);
+            font-size:22px;
+            margin:10px 0 10px 0;
+            line-height:1.2;
+        }
+        .essay-scroll h3{
+            opacity:.75;
+            font-weight:400;
+            margin:0 0 6px 0;
+            font-size:13px;
+        }
+        .essay-scroll p{
+            color:#ddd;
+            margin:0 0 14px 0;
+            font-size:13px;
+        }
+        .essay-scroll h2{
+            margin:18px 0 10px 0;
+            font-size:14px;
+            opacity:.9;
+        }
+        .essay-scroll .refs p{
+            margin:0 0 6px 0;
+            color:#cfcfcf;
+            font-size:12px;
+            opacity:.9;
+        }
+
+        /* ENGINE */
+        .engine-wrap{
+            position:relative;
+            flex:1;
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            width:100%;
+        }
+
+        .engine-panel{
+            flex:1;
+            overflow-y:auto;
+            position:relative;
+            padding-bottom:24px;
+        }
+
+        /* Featured banner */
+        .featured{
+            padding:16px;
+            border-bottom:1px solid rgba(255,255,255,.06);
+            background:
+                    radial-gradient(circle at 20% 30%, rgba(229,9,20,.16), transparent 45%),
+                    radial-gradient(circle at 70% 70%, rgba(255,140,0,.10), transparent 45%),
+                    linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,.10));
+        }
+        .featured-grid{
+            display:grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap:14px;
+            align-items:center;
+        }
+        .featured h2{
+            margin:0 0 8px 0;
+            font-size:20px;
+            letter-spacing:.2px;
+        }
+        .featured p{
+            margin:0 0 12px 0;
+            opacity:.78;
+            font-size:12px;
+            line-height:1.6;
+            max-width:68ch;
+        }
+        .featured-actions{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        .featured .bigbtn{
+            padding:10px 14px;
+            border-radius:12px;
+            font-size:12px;
+            border:1px solid rgba(255,255,255,.10);
+            background:rgba(20,20,20,.85);
+            cursor:pointer;
+            user-select:none;
+            transition:.2s;
+            color:#fff;
+            display:inline-flex;
+            align-items:center;
+            gap:10px;
+        }
+        .featured .bigbtn:hover{ border-color:rgba(255,255,255,.22); }
+        .featured .bigbtn.primary{
+            background:rgba(229,9,20,.18);
+            border-color:rgba(229,9,20,.55);
+        }
+
+        /* FILTERS */
+        .filters{
+            display:flex;
+            gap:10px;
+            padding:14px 16px;
+            position:sticky;
+            top:0;
+            background:rgba(0,0,0,.72);
+            backdrop-filter:blur(10px);
+            z-index:50;
+            border-bottom:1px solid rgba(255,255,255,.04);
+            align-items:center;
+            flex-wrap:wrap;
+        }
+
+        .chip{
+            padding:7px 12px;
+            border-radius:999px;
+            background:rgba(20,20,20,.9);
+            border:1px solid rgba(255,255,255,.10);
+            cursor:pointer;
+            font-size:12px;
+            transition:.2s;
+            user-select:none;
+            color:#eaeaea;
+        }
+        .chip:hover{ background:rgba(229,9,20,.16); border-color:rgba(229,9,20,.35); }
+        .chip.active{
+            background:rgba(229,9,20,.22);
+            border-color:rgba(229,9,20,.65);
+            color:#fff;
+        }
+
+        .search{
+            margin-left:auto;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            flex:1;
+            justify-content:flex-end;
+            min-width:220px;
+        }
+        .search input{
+            width:min(340px, 100%);
+            background:rgba(20,20,20,.8);
+            border:1px solid rgba(255,255,255,.10);
+            color:#fff;
+            padding:9px 12px;
+            border-radius:999px;
+            font-size:12px;
+            outline:none;
+            transition:.2s;
+        }
+        .search input:focus{
+            border-color:rgba(229,9,20,.55);
+            box-shadow:0 0 0 3px rgba(229,9,20,.15);
+        }
+
+        /* ROWS */
+        .row-title{
+            padding:10px 16px 2px 16px;
+            font-weight:600;
+            letter-spacing:.2px;
+            opacity:.95;
+            font-size:14px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+        }
+        .row-title .sub{
+            font-size:11px;
+            opacity:.65;
+            font-weight:400;
+        }
+
+        .row{
+            display:flex;
+            gap:12px;
+            overflow-x:auto;
+            padding:10px 16px 18px 16px;
+            position:relative;
+            z-index:10;
+            scroll-behavior:smooth;
+            align-items:flex-start;
+        }
+        .row::-webkit-scrollbar{ display:none; }
+
+        .row-wrap{ position:relative; }
+        .row-arrow{
+            position:absolute;
+            top:50%;
+            transform:translateY(-50%);
+            width:36px;
+            height:80px;
+            border-radius:12px;
+            background:rgba(0,0,0,.55);
+            border:1px solid rgba(255,255,255,.10);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            user-select:none;
+            opacity:.0;
+            transition:.2s;
+            z-index:30;
+            backdrop-filter:blur(8px);
+        }
+        .row-wrap:hover .row-arrow{ opacity:1; }
+        .row-arrow.left{ left:10px; }
+        .row-arrow.right{ right:10px; }
+
+        /* ===== CARDS ===== */
+        .card{
+            min-width:220px;
+            width:220px;
+            height:320px;
+            border-radius:10px;
+            background-size:cover;
+            background-position:center;
+            position:relative;
+            cursor:pointer;
+            flex-shrink:0;
+            transition:
+                    transform .38s cubic-bezier(.2,.9,.2,1),
+                    box-shadow .35s cubic-bezier(.2,.9,.2,1),
+                    filter .35s ease,
+                    outline-color .25s ease;
+            background-color:#111;
+            border:1px solid rgba(255,255,255,.06);
+            overflow:hidden;
+            will-change:transform;
+        }
+
+        /* darken background more (always) */
+        .card::after{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(to top,rgba(0,0,0,.96),rgba(0,0,0,.55),rgba(0,0,0,.22));
+        }
+
+        .card:hover{
+            transform:translateY(-8px) scale(1.10);
+            box-shadow:0 20px 80px rgba(0,0,0,.72);
+            filter:saturate(1.15) contrast(1.05) brightness(.92);
+            z-index:20;
+        }
+
+        /* preference: MUCH bigger */
+        .card.pref{
+            outline:3px solid rgba(229,9,20,.50);
+            box-shadow:0 0 0 1px rgba(0,0,0,.85) inset;
+        }
+        .card.pref-large{
+            width:320px;
+            min-width:320px;
+            height:460px;
+            border-radius:14px;
+        }
+        .row .card.pref-large:first-child{
+            width:340px;
+            min-width:340px;
+            height:490px;
+        }
+
+        /* ===== TITLE: centered + larger on hover ===== */
+        .info{
+            position:absolute;
+            inset:0;
+            z-index:2;
+            display:flex;
+            align-items:flex-end;
+            justify-content:flex-start;
+            padding:12px;
+            transition:.28s ease;
+            pointer-events:none;
+        }
+
+        .info-inner{ width:100%; }
+
+        .info .title{
+            font-weight:700;
+            letter-spacing:.25px;
+            font-size:14px;
+            line-height:1.2;
+            text-shadow:0 10px 35px rgba(0,0,0,.85);
+            transition:.28s cubic-bezier(.2,.9,.2,1);
+        }
+        .info .meta{
+            opacity:.78;
+            margin-top:4px;
+            font-size:11px;
+            transition:.28s cubic-bezier(.2,.9,.2,1);
+        }
+
+        .card:hover .info{
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            padding:18px;
+        }
+        .card:hover .info .title{
+            font-size:22px;
+            transform:translateY(-2px);
+        }
+        .card:hover .info .meta{
+            font-size:12px;
+            opacity:.85;
+            transform:translateY(2px);
+        }
+
+        /* Quick actions */
+        .quick{
+            position:absolute;
+            top:10px;
+            left:10px;
+            right:10px;
+            display:flex;
+            gap:8px;
+            justify-content:flex-end;
+            z-index:3;
+            opacity:0;
+            transform:translateY(-6px);
+            transition:.22s ease;
+            pointer-events:none;
+        }
+        .card:hover .quick{
+            opacity:1;
+            transform:translateY(0);
+            pointer-events:auto;
+        }
+        .qbtn{
+            width:30px; height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgba(0,0,0,.62);
+            border:1px solid rgba(255,255,255,.18);
+            cursor:pointer;
+            user-select:none;
+            font-size:12px;
+            transition:.18s ease;
+        }
+        .qbtn:hover{ border-color:rgba(229,9,20,.55); }
+        .qbtn.on{
+            background:rgba(229,9,20,.18);
+            border-color:rgba(229,9,20,.65);
+        }
+
+        /* ===== NEW: SOCIAL PROOF BADGE ===== */
+        .buzz{
+            position:absolute;
+            left:10px;
+            top:10px;
+            z-index:2;
+            background:rgba(0,0,0,.70);
+            border:1px solid rgba(255,255,255,.12);
+            padding:6px 8px;
+            border-radius:999px;
+            font-size:11px;
+            letter-spacing:.2px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            pointer-events:none;
+            backdrop-filter: blur(8px);
+        }
+        .buzz .dot{
+            width:7px; height:7px;
+            border-radius:50%;
+            background:rgba(255,255,255,.22);
+        }
+        .buzz.hot{
+            border-color:rgba(229,9,20,.55);
+            background:rgba(229,9,20,.14);
+        }
+        .buzz.hot .dot{ background:rgba(229,9,20,.9); }
+
+        /* Toast */
+        .toast{
+            position:fixed;
+            left:50%;
+            bottom:18px;
+            transform:translateX(-50%);
+            background:rgba(12,12,12,.82);
+            border:1px solid rgba(255,255,255,.10);
+            color:#fff;
+            padding:10px 12px;
+            border-radius:999px;
+            font-size:12px;
+            z-index:4000;
+            opacity:0;
+            pointer-events:none;
+            transition:.25s ease;
+            backdrop-filter:blur(10px);
+        }
+        .toast.show{ opacity:1; }
+
+        /* HUD */
+        .hud{
+            position:fixed;
+            right:14px;
+            top:70px;
+            width:260px;
+            z-index:2600;
+            background:rgba(12,12,12,.72);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:14px;
+            padding:12px;
+            backdrop-filter:blur(12px);
+        }
+
+        .hud h4{
+            margin:0 0 8px 0;
+            font-size:11px;
+            letter-spacing:.18em;
+            text-transform:uppercase;
+            color:#f0f0f0;
+            opacity:.9;
+        }
+
+        .stat-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:8px;
+        }
+
+        .stat{
+            background:rgba(20,20,20,.72);
+            border:1px solid rgba(255,255,255,.06);
+            border-radius:12px;
+            padding:10px;
+            min-height:54px;
+        }
+
+        .stat .label{
+            font-size:10px;
+            opacity:.7;
+            letter-spacing:.12em;
+            text-transform:uppercase;
+        }
+        .stat .value{
+            margin-top:6px;
+            font-size:14px;
+            font-weight:600;
+            color:#fff;
+        }
+        .stat .value.small{
+            font-size:12px;
+            font-weight:500;
+            opacity:.95;
+        }
+
+        .ai-box{
+            position:fixed;
+            left:14px;
+            bottom:14px;
+            width:220px;
+            background:rgba(12,12,12,.72);
+            padding:10px;
+            border-radius:12px;
+            font-size:11px;
+            border:1px solid rgba(255,255,255,.08);
+            z-index:2600;
+            backdrop-filter:blur(12px);
+        }
+
+        .progress{
+            position:fixed;
+            bottom:0;
+            left:0;
+            height:4px;
+            width:0%;
+            background:var(--accent);
+            z-index:2700;
+        }
+
+        /* MODAL */
+        .modal{
+            position:fixed;
+            inset:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgba(0,0,0,.88);
+            z-index:3000;
+            padding:18px;
+
+            opacity:0;
+            pointer-events:none;
+            transition: opacity .28s ease;
+        }
+        .modal.open{ opacity:1; pointer-events:auto; }
+
+        .modal-content{
+            width:min(980px, 100%);
+            background:#0f0f0f;
+            border:1px solid rgba(255,255,255,.10);
+            padding:16px;
+            border-radius:14px;
+
+            transform: translateY(18px) scale(.985);
+            opacity:0;
+            transition: transform .38s cubic-bezier(.2,.9,.2,1), opacity .25s ease;
+        }
+        .modal.open .modal-content{
+            transform: translateY(0px) scale(1);
+            opacity:1;
+        }
+
+        .modal-grid{
+            display:grid;
+            grid-template-columns: 240px 1fr;
+            gap:14px;
+        }
+
+        .modal-poster{
+            width:100%;
+            aspect-ratio: 2 / 3;
+            border-radius:12px;
+            background:#111;
+            border:1px solid rgba(255,255,255,.08);
+            overflow:hidden;
+            position:relative;
+        }
+        .modal-poster img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+
+        .pill{
+            display:inline-block;
+            font-size:11px;
+            border:1px solid rgba(229,9,20,.50);
+            color:#fff;
+            background:rgba(229,9,20,.16);
+            padding:6px 10px;
+            border-radius:999px;
+            margin-right:8px;
+            margin-top:8px;
+        }
+
+        .review{
+            margin-top:10px;
+            padding:10px;
+            border-radius:12px;
+            background:rgba(20,20,20,.78);
+            border:1px solid rgba(255,255,255,.06);
+            color:#ddd;
+            font-size:12px;
+            line-height:1.55;
+        }
+
+        /* PRE-PLAY RECOMMENDATIONS PANEL */
+        .preplay{
+            margin-top:12px;
+            padding:12px;
+            border-radius:14px;
+            background:rgba(20,20,20,.62);
+            border:1px solid rgba(255,255,255,.08);
+            overflow:hidden;
+        }
+        .preplay-top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            margin-bottom:10px;
+        }
+        .preplay-title{
+            font-size:12px;
+            font-weight:600;
+            letter-spacing:.2px;
+            opacity:.95;
+        }
+        .preplay-sub{
+            font-size:11px;
+            opacity:.7;
+        }
+        .preplay-grid{
+            display:grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap:10px;
+        }
+        .mini{
+            width:100%;
+            aspect-ratio: 2 / 3;
+            border-radius:12px;
+            background-size:cover;
+            background-position:center;
+            border:1px solid rgba(255,255,255,.10);
+            position:relative;
+            overflow:hidden;
+            cursor:pointer;
+            transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease, filter .25s ease;
+            filter:brightness(.92);
+        }
+        .mini:hover{
+            transform:translateY(-4px) scale(1.03);
+            border-color:rgba(229,9,20,.65);
+            box-shadow:0 18px 60px rgba(0,0,0,.55);
+            filter:brightness(.85);
+        }
+        .mini::after{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(to top, rgba(0,0,0,.92), rgba(0,0,0,.35));
+        }
+        .mini span{
+            position:absolute;
+            left:10px;
+            right:10px;
+            bottom:10px;
+            font-size:12px;
+            z-index:1;
+            line-height:1.25;
+        }
+
+        /* ===== NEW: SOCIAL PANEL ===== */
+        .social{
+            position:fixed;
+            left:14px;
+            top:70px;
+            width:280px;
+            z-index:2600;
+            background:rgba(12,12,12,.72);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:14px;
+            padding:12px;
+            backdrop-filter:blur(12px);
+        }
+        .social h4{
+            margin:0 0 10px 0;
+            font-size:11px;
+            letter-spacing:.18em;
+            text-transform:uppercase;
+            opacity:.9;
+        }
+        .social-feed{
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            max-height:260px;
+            overflow:auto;
+            padding-right:6px;
+        }
+        .social-feed::-webkit-scrollbar{ width:8px; }
+        .social-feed::-webkit-scrollbar-thumb{
+            background:rgba(255,255,255,.08);
+            border-radius:999px;
+        }
+        .post{
+            background:rgba(20,20,20,.72);
+            border:1px solid rgba(255,255,255,.06);
+            border-radius:14px;
+            padding:10px;
+        }
+        .post-top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            margin-bottom:6px;
+            font-size:11px;
+            opacity:.9;
+        }
+        .handle{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-weight:600;
+        }
+        .avatar{
+            width:18px;
+            height:18px;
+            border-radius:50%;
+            background:linear-gradient(135deg, rgba(229,9,20,.65), rgba(255,120,0,.35));
+            border:1px solid rgba(255,255,255,.10);
+        }
+        .timeago{
+            font-size:10px;
+            opacity:.65;
+            white-space:nowrap;
+        }
+        .post-body{
+            font-size:12px;
+            line-height:1.45;
+            opacity:.88;
+        }
+        .tag{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            margin-top:8px;
+            font-size:11px;
+            opacity:.9;
+            border:1px solid rgba(255,255,255,.08);
+            background:rgba(0,0,0,.25);
+            padding:6px 10px;
+            border-radius:999px;
+            cursor:pointer;
+            user-select:none;
+            transition:.2s;
+        }
+        .tag:hover{
+            border-color:rgba(229,9,20,.45);
+            background:rgba(229,9,20,.10);
+        }
+
+        /* PLAYER */
+        .player{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.72);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            opacity:0;
+            pointer-events:none;
+            transition:opacity .25s ease;
+            z-index:3200;
+        }
+        .player.show{ opacity:1; pointer-events:auto; }
+        .player-card{
+            width:min(760px, 92%);
+            background:rgba(16,16,16,.92);
+            border:1px solid rgba(255,255,255,.10);
+            border-radius:16px;
+            padding:14px;
+            backdrop-filter: blur(10px);
+            box-shadow:0 30px 90px rgba(0,0,0,.6);
+        }
+        .player-top{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            margin-bottom:10px;
+        }
+        .player-title{ font-weight:600; font-size:13px; opacity:.95; }
+        .player-close{
+            cursor:pointer;
+            border:1px solid rgba(255,255,255,.10);
+            background:#111;
+            color:#fff;
+            border-radius:10px;
+            font-size:12px;
+            padding:8px 10px;
+        }
+        .player-screen{
+            border-radius:14px;
+            height:340px;
+            background:
+                    radial-gradient(circle at 30% 20%, rgba(229,9,20,.22), transparent 46%),
+                    radial-gradient(circle at 70% 80%, rgba(255,140,0,.10), transparent 46%),
+                    linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+            border:1px solid rgba(255,255,255,.08);
+            position:relative;
+            overflow:hidden;
+        }
+        .player-screen::after{
+            content:"";
+            position:absolute;
+            inset:0;
+            background: repeating-linear-gradient(
+                    to bottom,
+                    rgba(255,255,255,.02),
+                    rgba(255,255,255,.02) 2px,
+                    rgba(0,0,0,0) 5px,
+                    rgba(0,0,0,0) 9px
+            );
+            opacity:.45;
+            mix-blend-mode:overlay;
+            pointer-events:none;
+        }
+        .player-controls{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-top:10px;
+        }
+        .playbtn{
+            background:rgba(229,9,20,.18);
+            border:1px solid rgba(229,9,20,.50);
+            color:#fff;
+            padding:9px 12px;
+            border-radius:12px;
+            cursor:pointer;
+            font-size:12px;
+            user-select:none;
+        }
+        .timeline{
+            flex:1;
+            height:10px;
+            border-radius:999px;
+            background:rgba(255,255,255,.08);
+            overflow:hidden;
+            border:1px solid rgba(255,255,255,.06);
+        }
+        .timeline > div{
+            height:100%;
+            width:0%;
+            background:linear-gradient(90deg, rgba(229,9,20,.95), rgba(255,120,0,.65));
+            transition:width .35s ease;
+        }
+        .time{ font-size:11px; opacity:.75; min-width:70px; text-align:right; }
+
+        /* HEAT OVERLAY */
+        .heat-overlay{
+            position:fixed;
+            inset:0;
+            pointer-events:none;
+            z-index:999999;
+            mix-blend-mode:screen;
+            opacity:.95;
+        }
+        canvas#heatCanvas{ width:100%; height:100%; display:block; }
+
+        /* Survey (minimal) */
+        .survey{
+            position:fixed;
+            inset:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgba(0,0,0,.92);
+            z-index:3500;
+            padding:18px;
+            opacity:0;
+            pointer-events:none;
+            transition:opacity .25s ease;
+        }
+        .survey.open{ opacity:1; pointer-events:auto; }
+        .survey-card{
+            width:min(780px, 100%);
+            background:rgba(15,15,15,.98);
+            border:1px solid rgba(255,255,255,.10);
+            border-radius:16px;
+            padding:16px;
+            box-shadow:0 30px 90px rgba(0,0,0,.65);
+            transform: translateY(14px) scale(.99);
+            transition: transform .35s cubic-bezier(.2,.9,.2,1);
+        }
+        .survey.open .survey-card{ transform: translateY(0) scale(1); }
+        .survey-top{
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:12px;
+            margin-bottom:10px;
+        }
+        .survey-title{ margin:0; font-size:16px; letter-spacing:.2px; }
+        .survey-sub{
+            margin:6px 0 0 0;
+            font-size:12px;
+            opacity:.78;
+            line-height:1.55;
+            max-width:72ch;
+        }
+        .survey-grid{
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap:12px;
+            margin-top:12px;
+        }
+        .field{
+            background:rgba(20,20,20,.75);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:14px;
+            padding:12px;
+        }
+        .field label{
+            display:block;
+            font-size:11px;
+            letter-spacing:.14em;
+            text-transform:uppercase;
+            opacity:.75;
+            margin-bottom:10px;
+        }
+        .opt-row{ display:flex; flex-wrap:wrap; gap:8px; }
+        .opt{
+            padding:8px 10px;
+            border-radius:999px;
+            border:1px solid rgba(255,255,255,.10);
+            background:rgba(0,0,0,.20);
+            cursor:pointer;
+            user-select:none;
+            font-size:12px;
+            transition:.2s;
+        }
+        .opt:hover{ border-color:rgba(229,9,20,.35); background:rgba(229,9,20,.10); }
+        .opt.on{ border-color:rgba(229,9,20,.70); background:rgba(229,9,20,.18); }
+        .survey-actions{
+            margin-top:12px;
+            display:flex;
+            justify-content:flex-end;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        @media (max-width: 1180px){
+            .social{ display:none; } /* hide social panel if cramped */
+        }
+
+        @media (max-width: 980px){
+            .featured-grid{ grid-template-columns: 1fr; }
+            .hud{ width:220px; }
+            .survey-grid{ grid-template-columns: 1fr; }
+            .modal-grid{ grid-template-columns: 1fr; }
+            .preplay-grid{ grid-template-columns: repeat(3, 1fr); }
+            .modal-poster{ max-width:240px; }
+        }
+
+        @media (max-width: 860px){
+            .essay-drawer{ width: 360px; }
+            .player-screen{ height:260px; }
+            .card{ width:200px; min-width:200px; height:300px; }
+            .card.pref-large{ width:300px; min-width:300px; height:440px; }
+            .row-arrow{ display:none; }
+            .preplay-grid{ grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (prefers-reduced-motion: reduce){
+            .essay-drawer, .card, .modal, .modal-content, .timeline > div, .survey, .survey-card, .mini, .info, .title, .meta{
+                transition:none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="header">
+    <div class="logo" onclick="location.reload()">OBSESSO+</div>
+    <div class="top-actions">
+        <div class="btn primary" id="toggleEssayBtn">Essay</div>
+        <div class="btn" id="clearStatsBtn">Reset</div>
+        <div class="btn" id="openListBtn">My List <span id="listCount" style="opacity:.8">(0)</span></div>
+
+        <!-- NEW: open social panel modal on small screens -->
+        <div class="btn" id="openSocialBtn">Social</div>
+    </div>
+</div>
+
+<div class="layout">
+    <aside class="essay-drawer" id="essayDrawer" aria-label="Essay drawer">
+        <div class="essay-handle" id="essayHandle" title="Open / Close Essay">
+            <span>ESSAY</span>
+        </div>
+
+        <div class="essay-scroll">
+            <h3>Devon Ba Dour</h3>
+            <h3>GDES 5341</h3>
+            <h3>April 6th, 2026</h3>
+
+            <h1>How UI/UX Design in Streaming Platforms Shapes Viewer Engagement and Behavior</h1>
+
+            <p>Within the past decade alone, streaming services have dominated...</p>
+            <p>Autoplay is an incredibly common feature...</p>
+            <p>The layout and visual design of a streaming platform...</p>
+            <p>UX/UI design is an up and coming factor...</p>
+
+            <h2>References</h2>
+            <div class="refs">
+                <p>Gomez-Uribe &amp; Hunt (2016)</p>
+                <p>Billieux et al. (2015)</p>
+                <p>Krug (2014)</p>
+                <p>Eyal (2014)</p>
+            </div>
+        </div>
+    </aside>
+
+    <section class="engine-wrap">
+        <div class="engine-panel" id="enginePanel">
+            <div class="featured" id="featured">
+                <div class="featured-grid">
+                    <div>
+                        <h2 id="featuredTitle">Featured</h2>
+                        <p id="featuredDesc">
+                            Social media “buzz” is now simulated: trending posts boost certain films and can influence your choices.
+                        </p>
+                        <div class="featured-actions">
+                            <div class="bigbtn primary" id="featuredInfo">More Info</div>
+                            <div class="bigbtn" id="featuredShuffle">Shuffle</div>
+                            <div class="bigbtn" id="boostTrendingBtn">Refresh Buzz</div>
+                        </div>
+                    </div>
+                    <div style="opacity:.8;font-size:12px;line-height:1.6">
+                        <b style="color:#fff">Social layer:</b><br>
+                        “Trending Now” posts, share counts, and friends’ watches increase visibility + ranking.
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters" id="filters">
+                <div class="search">
+                    <input id="searchInput" placeholder="Search titles…" />
+                </div>
+            </div>
+
+            <div id="feed"></div>
+        </div>
+    </section>
+</div>
+
+<!-- SOCIAL PANEL (fixed, influences ranking) -->
+<div class="social" id="socialPanel">
+    <h4>Social Buzz</h4>
+    <div class="social-feed" id="socialFeed"></div>
+    <div style="margin-top:10px; font-size:11px; opacity:.7; line-height:1.45">
+        Tap a tag to boost that title. This simulates social proof / virality.
+    </div>
+</div>
+
+<!-- PLAYER (manual play only) -->
+<div class="player" id="player">
+    <div class="player-card" role="dialog" aria-modal="true" aria-label="Player">
+        <div class="player-top">
+            <div class="player-title" id="playerTitle">Now Playing</div>
+            <button class="player-close" id="playerClose">Close</button>
+        </div>
+        <div class="player-screen" id="playerScreen"></div>
+        <div class="player-controls">
+            <div class="playbtn" id="playerPlayPause">Play</div>
+            <div class="timeline" aria-label="Timeline"><div id="playerBar"></div></div>
+            <div class="time" id="playerTime">0:00</div>
+        </div>
+    </div>
+</div>
+
+<!-- HUD -->
+<div class="hud" id="hud">
+    <h4>Viewer Telemetry</h4>
+    <div class="stat-grid">
+        <div class="stat"><div class="label">Clicks</div><div class="value" id="sClicks">0</div></div>
+        <div class="stat"><div class="label">Cards Viewed</div><div class="value" id="sViews">0</div></div>
+        <div class="stat"><div class="label">Top Genre</div><div class="value small" id="sTopGenre">—</div></div>
+        <div class="stat"><div class="label">Avg Hover</div><div class="value small" id="sAvgHover">0.0s</div></div>
+        <div class="stat"><div class="label">Cursor Heat</div><div class="value small" id="sHeat">0 pts</div></div>
+        <div class="stat"><div class="label">Engagement</div><div class="value small" id="sEngage">LOW</div></div>
+    </div>
+</div>
+
+<div class="ai-box" id="aiBox">Initializing system...</div>
+<div class="progress" id="progress"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast">Added to My List</div>
+
+<div class="heat-overlay" aria-hidden="true">
+    <canvas id="heatCanvas"></canvas>
+</div>
+
+<!-- SURVEY -->
+<div class="survey" id="survey" aria-label="Preference survey">
+    <div class="survey-card">
+        <div class="survey-top">
+            <div>
+                <h3 class="survey-title">Quick taste check</h3>
+                <p class="survey-sub">
+                    Pick your <b>favorite genre</b> and a <b>vibe</b>. Preferred titles become MUCH bigger and highlighted.
+                </p>
+            </div>
+            <div class="btn" id="surveySkipBtn">Skip</div>
+        </div>
+
+        <div class="survey-grid">
+            <div class="field">
+                <label>Preferred genre</label>
+                <div class="opt-row" id="surveyGenres"></div>
+            </div>
+
+            <div class="field">
+                <label>Category / vibe</label>
+                <div class="opt-row" id="surveyVibes"></div>
+            </div>
+        </div>
+
+        <div class="survey-actions">
+            <div class="btn" id="surveyResetBtn">Clear</div>
+            <div class="btn primary" id="surveyContinueBtn">Continue</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const genres = ["all","romance","horror","action","sciFi","thriller"];
+
+    let clicks = 0;
+    let views = 0;
+
+    let genreAffinity = { romance:0, horror:0, action:0, sciFi:0, thriller:0 };
+    let hoverTimeMs = {};
+    let viewCounts = {};
+    let heatPoints = 0;
+
+    let activeFilter = "all";
+    let searchQuery = "";
+
+    let featuredMovie = null;
+
+    const vibeOptions = ["Cozy", "Dark", "Fast", "Mind-bend", "Twisty"];
+    let preference = { genre: null, vibe: null };
+
+    // ===== NEW: SOCIAL STATE =====
+    // socialBoost[posterId] grows when "posts" mention a title or when user "shares"
+    let socialBoost = {};       // per poster id
+    let socialClicks = 0;       // how often user interacts with social elements
+
+    const fakeTitles = [
+        "Neon Widow", "The Velvet Exit", "Gutter Halo", "Kiss of the Algorithm", "Midnight Carousel",
+        "Static Orchard", "Redline Reverie", "Satin Thunder", "Ghosts in the Buffer", "Axiom & Ash",
+        "Paper Moon Riot", "Last Train to Nowhere", "Sugarglass City", "The Quiet Siren", "Nightwatch Protocol",
+        "Carnival of Teeth", "Blue Furnace", "Orbit Motel", "The Saint of Small Fires", "Crimson Subroutine",
+        "Hollow Promises", "Sunset Detour", "Blackwater Kisses", "Sleepwalk Embassy", "The Minor Apocalypse",
+        "Razorblush", "Signal to the Heart", "The Grinning Cut", "Afterimage Avenue"
+    ];
+
+    function pickGenre(i){ return genres[(i % (genres.length - 1)) + 1]; }
+    function seededRand(seed){ let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+
+    function makeMovieStats(id, genre, title){
+        const r1 = seededRand(id * 17.31);
+        const r2 = seededRand(id * 91.07);
+        const r3 = seededRand(id * 3.77);
+        const r4 = seededRand(id * 44.19);
+
+        const year = 2004 + Math.floor(r1 * 22);
+        const runtime = 82 + Math.floor(r2 * 58);
+        const rating = (2.7 + r3 * 2.2);
+        const votes = 1200 + Math.floor(r4 * 98000);
+
+        const tagsByGenre = {
+            romance: ["slow-burn","second chances","messy feelings","rain-soaked montage"],
+            horror: ["found footage","body horror","uncanny silence","one location nightmare"],
+            action: ["practical stunts","neon chase","one-take fight","impossible escape"],
+            sciFi: ["retro-future","AI paranoia","time slip","cold orbit"],
+            thriller: ["unreliable narrator","cat-and-mouse","late twist","sealed room"]
+        };
+
+        const tagPool = tagsByGenre[genre] || ["strange","stylized","intense","moody"];
+        const tagA = tagPool[Math.floor(seededRand(id*7.1) * tagPool.length)];
+        const tagB = tagPool[Math.floor(seededRand(id*11.2) * tagPool.length)];
+
+        const reviewPool = [
+            "A slick interface for your emotions—designed to keep you watching even when you swear you’re done.",
+            "So polished it feels personalized; somehow it still surprises you with a cruel little twist.",
+            "Beautifully manipulative pacing: every scene ends like an autoplay countdown.",
+            "A high-gloss binge trap with a heartbeat—equal parts comfort and control.",
+            "The algorithm would love this. Unfortunately, so did I."
+        ];
+
+        const review1 = reviewPool[Math.floor(seededRand(id*13.3) * reviewPool.length)];
+        const review2 = reviewPool[Math.floor(seededRand(id*19.9) * reviewPool.length)];
+
+        const vibeByGenre = {
+            romance: ["Cozy","Twisty"],
+            horror: ["Dark","Twisty"],
+            action: ["Fast"],
+            sciFi: ["Mind-bend","Dark"],
+            thriller: ["Twisty","Dark"]
+        };
+        const possibleVibes = vibeByGenre[genre] || vibeOptions;
+        const vibe = possibleVibes[Math.floor(seededRand(id*5.55) * possibleVibes.length)];
+
+        return {
+            title, genre, year, runtime,
+            rating: rating.toFixed(1),
+            votes: votes.toLocaleString(),
+            tags:[tagA, tagB],
+            vibe,
+            reviews:[review1, review2],
+            contentWarnings: genre === "horror" ? ["disturbing imagery","sudden audio spikes"] : (genre === "thriller" ? ["paranoia themes"] : [])
+        };
+    }
+
+    const posters = [];
+    for(let i=1;i<=29;i++){
+        const title = fakeTitles[i-1] || `Untitled ${i}`;
+        const genre = pickGenre(i);
+        posters.push({ id:i, title, genre, img:`./images/poster${i}.png`, stats: makeMovieStats(i, genre, title) });
+    }
+
+    // init socialBoost
+    posters.forEach(p => socialBoost[p.id] = 0);
+
+    // ===== SCORE: includes social proof boost =====
+    function score(p){
+        const hoverBoost = (hoverTimeMs[p.id] || 0) * 0.0008;
+        const viewBoost  = (viewCounts[p.id] || 0) * 0.7;
+        const social = (socialBoost[p.id] || 0) * 1.4; // social impact
+        const socialUserFactor = Math.min(1.25, 1 + (socialClicks * 0.03)); // if user engages with social, it matters more
+
+        const prefGenreBoost = (preference.genre && p.genre === preference.genre) ? 3.8 : 0;
+        const prefVibeBoost = (preference.vibe && p.stats.vibe === preference.vibe) ? 1.1 : 0;
+
+        return (genreAffinity[p.genre] || 0) + hoverBoost + viewBoost + (social * socialUserFactor) + prefGenreBoost + prefVibeBoost;
+    }
+    function recommend(list){ return [...list].sort((a,b)=>score(b)-score(a)); }
+
+    function rowLabelFor(r){ return ["Recommended For You","Because You Clicked","Trending Now"][r] || "For You"; }
+    function makeRowArrow(dir, rowEl){
+        const a = document.createElement("div");
+        a.className = `row-arrow ${dir}`;
+        a.textContent = dir === "left" ? "‹" : "›";
+        a.onclick = (e)=>{
+            e.stopPropagation();
+            const dx = Math.floor(rowEl.clientWidth * 0.9) * (dir === "left" ? -1 : 1);
+            rowEl.scrollBy({ left: dx, behavior: "smooth" });
+        };
+        return a;
+    }
+
+    function isPreferred(p){ return !!preference.genre && p.genre === preference.genre; }
+    function isPreferredHuge(p, indexInRow){
+        if(!isPreferred(p)) return false;
+        return ((p.id + indexInRow) % 5) !== 0;
+    }
+
+    function buildFilters(){
+        const f=document.getElementById("filters");
+        [...f.querySelectorAll(".chip")].forEach(n=>n.remove());
+        const search = f.querySelector(".search");
+        genres.forEach(g=>{
+            const chip=document.createElement("div");
+            chip.className="chip" + (g===activeFilter ? " active" : "");
+            chip.innerText=g;
+            chip.onclick=()=>{
+                activeFilter=g;
+                buildFilters();
+                pickFeatured();
+                render();
+            };
+            f.insertBefore(chip, search);
+        });
+    }
+
+    let toastTimer = null;
+    function showToast(msg){
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(()=>t.classList.remove("show"), 1100);
+    }
+
+    function pickFeatured(){
+        const list = posters
+            .filter(p => (activeFilter==="all" || p.genre===activeFilter))
+            .filter(p => (searchQuery ? p.title.toLowerCase().includes(searchQuery.toLowerCase()) : true));
+
+        const sorted = recommend(list);
+        featuredMovie = sorted[0] || posters[0];
+        document.getElementById("featuredTitle").textContent = featuredMovie?.title || "Featured";
+        document.getElementById("featuredDesc").textContent =
+            `Social Buzz + your preference shape the feed. Look for “buzz” badges on posters.`;
+    }
+
+    function similarityScore(target, candidate){
+        if(target.id === candidate.id) return -Infinity;
+        let s = 0;
+        if(candidate.genre === target.genre) s += 7;
+        if(candidate.stats.vibe === target.stats.vibe) s += 3;
+        // social spillover: trending titles feel "similar" due to visibility
+        s += Math.min(2.0, (socialBoost[candidate.id] || 0) * 0.25);
+        s += seededRand(candidate.id * 12.13 + target.id * 2.1);
+        return s;
+    }
+    function getMoreLikeThis(target, k = 8){
+        return posters
+            .filter(p => p.id !== target.id)
+            .map(p => ({ p, s: similarityScore(target, p) }))
+            .sort((a,b)=>b.s-a.s)
+            .slice(0, k)
+            .map(x => x.p);
+    }
+
+    // ===== NEW: Social feed generation =====
+    const handles = ["@cinepulse", "@nightfeed", "@streamtalk", "@posterjunkie", "@bingeclub", "@vhsghost", "@midnightqueue"];
+    const postTemplates = [
+        (t)=>`Everyone’s talking about <b>${t}</b>—this ending is unreal.`,
+        (t)=>`Hot take: <b>${t}</b> is the most bingeable thing this week.`,
+        (t)=>`Just watched <b>${t}</b> and I can’t stop thinking about it.`,
+        (t)=>`If you like ${["neon","dark","twisty","retro","weird"][Math.floor(Math.random()*5)]} vibes, <b>${t}</b> is it.`,
+        (t)=>`Group watch tonight: <b>${t}</b>. Bring snacks.`
+    ];
+
+    function socialWeightForPoster(p){
+        // boost same genre as preference to simulate algorithmic bubbles
+        const pref = (preference.genre && p.genre === preference.genre) ? 1.35 : 1.0;
+        // if already buzzing, more likely to appear (rich-get-richer)
+        const rich = 1 + Math.min(1.2, (socialBoost[p.id] || 0) * 0.12);
+        return pref * rich;
+    }
+
+    function pickPosterWeighted(){
+        const weights = posters.map(p => socialWeightForPoster(p));
+        const total = weights.reduce((a,b)=>a+b,0);
+        let r = Math.random() * total;
+        for(let i=0;i<posters.length;i++){
+            r -= weights[i];
+            if(r <= 0) return posters[i];
+        }
+        return posters[0];
+    }
+
+    function randInt(a,b){ return a + Math.floor(Math.random() * (b - a + 1)); }
+
+    function buildSocialFeed(n=7){
+        const feed = document.getElementById("socialFeed");
+        feed.innerHTML = "";
+
+        const used = new Set();
+        for(let i=0;i<n;i++){
+            const p = pickPosterWeighted();
+            const key = p.id + ":" + i;
+            if(used.has(key)) continue;
+            used.add(key);
+
+            // each post boosts that title (social proof)
+            const boost = randInt(1,3) + (p.genre === preference.genre ? 1 : 0);
+            socialBoost[p.id] = (socialBoost[p.id] || 0) + boost;
+
+            const handle = handles[Math.floor(Math.random()*handles.length)];
+            const body = postTemplates[Math.floor(Math.random()*postTemplates.length)](p.title);
+            const mins = randInt(2, 55);
+
+            const post = document.createElement("div");
+            post.className = "post";
+            post.innerHTML = `
+          <div class="post-top">
+            <div class="handle"><span class="avatar"></span> ${handle}</div>
+            <div class="timeago">${mins}m</div>
+          </div>
+          <div class="post-body">${body}</div>
+          <div class="tag" data-id="${p.id}">🔥 Boost <b>${p.title}</b> <span style="opacity:.7">(+2)</span></div>
+        `;
+
+            // clicking tag boosts that title (simulating "share" / "trend" tap)
+            post.querySelector(".tag").addEventListener("click", ()=>{
+                socialClicks++;
+                socialBoost[p.id] = (socialBoost[p.id] || 0) + 2;
+                showToast(`Buzz boosted: ${p.title}`);
+                pickFeatured();
+                render();
+            });
+
+            feed.appendChild(post);
+        }
+
+        pickFeatured();
+        render();
+    }
+
+    /* Render */
+    function render(){
+        const feed=document.getElementById("feed");
+        feed.innerHTML="";
+
+        const filteredBase = posters
+            .filter(p => activeFilter==="all" || p.genre===activeFilter)
+            .filter(p => searchQuery ? p.title.toLowerCase().includes(searchQuery.toLowerCase()) : true);
+
+        const sorted=recommend(filteredBase);
+
+        if(sorted.length===0){
+            feed.innerHTML='<div style="padding:16px;opacity:.7">No titles available.</div>';
+            return;
+        }
+
+        const rows=3;
+        const perRow=Math.ceil(sorted.length/rows);
+
+        for(let r=0;r<rows;r++){
+            const title=document.createElement("div");
+            title.className="row-title";
+            title.innerHTML = `
+          <div>${(activeFilter === "all") ? rowLabelFor(r) : `${activeFilter.toUpperCase()} • Picks`}</div>
+          <div class="sub">${
+                preference.genre
+                    ? `Preference: ${preference.genre.toUpperCase()} • Social influence: ${(1 + socialClicks*0.03).toFixed(2)}x`
+                    : "Social Buzz can override your intent (simulated)"
+            }</div>
+        `;
+            feed.appendChild(title);
+
+            const wrap = document.createElement("div");
+            wrap.className = "row-wrap";
+
+            const row=document.createElement("div");
+            row.className="row";
+
+            wrap.appendChild(makeRowArrow("left", row));
+            wrap.appendChild(makeRowArrow("right", row));
+            wrap.appendChild(row);
+
+            for(let i=0;i<perRow;i++){
+                const p=sorted[(r*perRow+i)%sorted.length];
+
+                const card=document.createElement("div");
+                card.className="card";
+                card.style.backgroundImage=`url(${p.img})`;
+
+                if(isPreferred(p)) card.classList.add("pref");
+                if(isPreferredHuge(p, i)) card.classList.add("pref-large");
+
+                // social buzz badge on thumbnails
+                const sb = socialBoost[p.id] || 0;
+                if(sb >= 3){
+                    const badge = document.createElement("div");
+                    const hot = sb >= 7;
+                    badge.className = "buzz" + (hot ? " hot" : "");
+                    badge.innerHTML = `<span class="dot"></span> ${hot ? "TRENDING" : "Buzz"} • ${sb}`;
+                    card.appendChild(badge);
+                }
+
+                const quick=document.createElement("div");
+                quick.className="quick";
+
+                const bInfo=document.createElement("div");
+                bInfo.className="qbtn";
+                bInfo.title="More Info";
+                bInfo.textContent="i";
+                bInfo.onclick=(e)=>{
+                    e.stopPropagation();
+                    openPrePlayModal(p);
+                };
+
+                // NEW: Share button increases buzz
+                const bShare=document.createElement("div");
+                bShare.className="qbtn";
+                bShare.title="Share (social boost)";
+                bShare.textContent="↗";
+                bShare.onclick=(e)=>{
+                    e.stopPropagation();
+                    socialClicks++;
+                    socialBoost[p.id] = (socialBoost[p.id] || 0) + 3;
+                    showToast(`Shared: ${p.title} (+buzz)`);
+                    pickFeatured();
+                    render();
+                };
+
+                quick.appendChild(bShare);
+                quick.appendChild(bInfo);
+
+                const info=document.createElement("div");
+                info.className="info";
+                info.innerHTML=`
+            <div class="info-inner">
+              <div class="title">${p.title}</div>
+              <div class="meta">${p.genre} • ${p.stats.year} • ★ ${p.stats.rating} • ${p.stats.vibe}</div>
+            </div>
+          `;
+
+                card.appendChild(quick);
+                card.appendChild(info);
+
+                let start=0;
+                card.onmouseenter=()=>{
+                    start=Date.now();
+                    views++;
+                    viewCounts[p.id]=(viewCounts[p.id]||0)+1;
+                    updateHUD();
+                };
+                card.onmouseleave=()=>{
+                    if(start){
+                        hoverTimeMs[p.id]=(hoverTimeMs[p.id]||0)+(Date.now()-start);
+                        updateHUD();
+                    }
+                };
+
+                card.onclick=()=>{
+                    clicks++;
+                    genreAffinity[p.genre]=(genreAffinity[p.genre]||0)+1;
+                    updateHUD();
+                    openPrePlayModal(p);
+                    render();
+                };
+
+                row.appendChild(card);
+            }
+
+            feed.appendChild(wrap);
+        }
+    }
+
+    /* Pre-play modal (now includes a social “what people are saying” block) */
+    function openPrePlayModal(p){
+        const m=document.getElementById("modal");
+        const c=document.getElementById("modalContent");
+        const s=p.stats;
+
+        const warnings = (s.contentWarnings && s.contentWarnings.length)
+            ? `<div style="margin-top:10px;font-size:12px;opacity:.85">
+             <b style="color:#fff">Content notes:</b> ${s.contentWarnings.join(", ")}
+           </div>`
+            : "";
+
+        const more = getMoreLikeThis(p, 8);
+
+        // Generate a small social snippet for this title
+        const buzz = socialBoost[p.id] || 0;
+        const friendCount = Math.min(98, 3 + Math.floor(buzz * 2.4) + Math.floor(seededRand(p.id*99.9) * 14));
+        const shareCount = 140 + buzz*38 + Math.floor(seededRand(p.id*12.2) * 520);
+
+        c.innerHTML=`
+        <div class="modal-grid">
+          <div>
+            <div class="modal-poster">
+              <img src="${p.img}" alt="${p.title}">
+            </div>
+            <div style="margin-top:10px">
+              <span class="pill">${s.genre.toUpperCase()}</span>
+              <span class="pill">${s.year}</span>
+              <span class="pill">${s.runtime} min</span>
+              <span class="pill">${s.vibe}</span>
+              ${buzz >= 7 ? `<span class="pill">TRENDING</span>` : (buzz >= 3 ? `<span class="pill">BUZZ</span>` : "")}
+            </div>
+            ${warnings}
+
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
+              <div class="playbtn" id="modalPlayBtn" style="padding:10px 12px;">▶ Play</div>
+              <div class="btn" id="modalShareBtn" style="padding:10px 12px;">Share (+buzz)</div>
+              <div class="btn" id="modalCloseBtn" style="padding:10px 12px;">Close</div>
+            </div>
+          </div>
+
+          <div>
+            <h2 style="margin:0 0 6px 0">${p.title}</h2>
+            <div style="opacity:.8;font-size:12px;margin-bottom:10px">
+              ★ ${s.rating} (${s.votes} ratings) • Social proof: <b>${friendCount}</b> friends watched • <b>${shareCount}</b> shares
+            </div>
+
+            <div class="review"><b>People are saying:</b> “${[
+            "This is everywhere on my feed.",
+            "It’s the kind of movie you watch just so you can talk about it.",
+            "I didn’t plan to watch it… but the buzz got me."
+        ][Math.floor(Math.random()*3)]}”</div>
+
+            <div class="preplay">
+              <div class="preplay-top">
+                <div>
+                  <div class="preplay-title">More Like This (bigger, kept inside container)</div>
+                  <div class="preplay-sub">Similarity includes genre/vibe + a small “virality spillover”</div>
+                </div>
+              </div>
+
+              <div class="preplay-grid" id="moreGrid">
+                ${more.map(x => `
+                  <div class="mini" data-open-id="${x.id}" style="background-image:url(${x.img})">
+                    <span><b>${x.title}</b><br><span style="opacity:.75">${x.genre} • ${x.stats.vibe}</span></span>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="review"><b>Review:</b> ${s.reviews[0]}</div>
+            <div class="review"><b>Review:</b> ${s.reviews[1]}</div>
+
+            <div style="margin-top:10px; opacity:.7; font-size:11px">
+              Engagement prediction: <b style="color:#fff">${predictEngagement()}</b>
+            </div>
+          </div>
+        </div>
+      `;
+
+        m.classList.add("open");
+
+        document.getElementById("modalPlayBtn")?.addEventListener("click", (e)=>{
+            e.stopPropagation();
+            openPlayer(p);
+        });
+
+        document.getElementById("modalShareBtn")?.addEventListener("click", (e)=>{
+            e.stopPropagation();
+            socialClicks++;
+            socialBoost[p.id] = (socialBoost[p.id] || 0) + 4;
+            showToast(`Shared: ${p.title} (+buzz)`);
+            buildSocialFeed(7);
+            openPrePlayModal(p);
+        });
+
+        document.getElementById("modalCloseBtn")?.addEventListener("click", (e)=>{
+            e.stopPropagation();
+            closeModal();
+        });
+
+        c.querySelectorAll("[data-open-id]").forEach(el=>{
+            el.addEventListener("click", ()=>{
+                const id = Number(el.getAttribute("data-open-id"));
+                const movie = posters.find(x => x.id === id);
+                if(movie){
+                    clicks++;
+                    genreAffinity[movie.genre]=(genreAffinity[movie.genre]||0)+1;
+                    updateHUD();
+                    openPrePlayModal(movie);
+                    render();
+                }
+            });
+        });
+    }
+
+    function closeModal(){ document.getElementById("modal").classList.remove("open"); }
+    document.getElementById("modal").addEventListener("click", (e)=>{ if(e.target.id === "modal") closeModal(); });
+
+    window.addEventListener("keydown", (e)=>{
+        if(e.key === "Escape"){ closeModal(); closePlayer(); closeSurvey(); }
+    });
+
+    /* Player (manual) */
+    const player = document.getElementById("player");
+    const playerTitle = document.getElementById("playerTitle");
+    const playerClose = document.getElementById("playerClose");
+    const playerPlayPause = document.getElementById("playerPlayPause");
+    const playerBar = document.getElementById("playerBar");
+    const playerTime = document.getElementById("playerTime");
+
+    let playing = false;
+    let t = 0;
+    let duration = 120;
+    let playerTimer = null;
+
+    function fmtTime(sec){
+        const m = Math.floor(sec/60);
+        const s = Math.floor(sec%60);
+        return `${m}:${String(s).padStart(2,"0")}`;
+    }
+
+    function openPlayer(p){
+        playerTitle.textContent = `Now Playing • ${p.title}`;
+        duration = 90 + Math.floor((seededRand(p.id*101.1) * 160));
+        t = 0;
+        setPlayerProgress(0);
+        playerTime.textContent = fmtTime(0);
+
+        player.classList.add("show");
+        playing = false;
+        playerPlayPause.textContent = "Play";
+    }
+
+    function closePlayer(){
+        player.classList.remove("show");
+        stopTimer();
+        playing = false;
+        playerPlayPause.textContent = "Play";
+    }
+
+    function setPlayerProgress(frac){
+        const pct = Math.max(0, Math.min(1, frac)) * 100;
+        playerBar.style.width = pct + "%";
+    }
+
+    function stopTimer(){
+        if(playerTimer){ clearInterval(playerTimer); playerTimer = null; }
+    }
+
+    function startTimer(){
+        stopTimer();
+        playerTimer = setInterval(()=>{
+            t = Math.min(duration, t + 1);
+            setPlayerProgress(t / duration);
+            playerTime.textContent = fmtTime(t);
+            if(t >= duration){
+                playing = false;
+                playerPlayPause.textContent = "Replay";
+                stopTimer();
+            }
+        }, 550);
+    }
+
+    playerClose.addEventListener("click", (e)=>{ e.stopPropagation(); closePlayer(); });
+    player.addEventListener("click", (e)=>{ if(e.target === player) closePlayer(); });
+
+    playerPlayPause.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        if(!player.classList.contains("show")) return;
+        if(!playing){
+            if(t >= duration) t = 0;
+            playing = true;
+            playerPlayPause.textContent = "Pause";
+            startTimer();
+        }else{
+            playing = false;
+            playerPlayPause.textContent = "Play";
+            stopTimer();
+        }
+    });
+
+    /* HUD */
+    function topGenre(){
+        let best = {g:"—", v: -Infinity};
+        for(const g of Object.keys(genreAffinity)){
+            if(genreAffinity[g] > best.v) best = {g, v: genreAffinity[g]};
+        }
+        return best.v > 0 ? best.g : "—";
+    }
+
+    function avgHoverSeconds(){
+        const ids = Object.keys(hoverTimeMs);
+        if(ids.length===0) return 0;
+        let sum = 0;
+        for(const id of ids) sum += hoverTimeMs[id];
+        return (sum / ids.length) / 1000;
+    }
+
+    function predictEngagement(){
+        const affinityTotal = Object.values(genreAffinity).reduce((a,b)=>a+b,0);
+        const avgHover = avgHoverSeconds();
+        const heat = heatPoints;
+
+        const score = (clicks * 1.2) + (views * 0.25) + (affinityTotal * 0.9) + (avgHover * 0.8) + (heat * 0.002) + (socialClicks * 0.8);
+        if(score > 70) return "VERY HIGH";
+        if(score > 38) return "HIGH";
+        if(score > 20) return "MEDIUM";
+        return "LOW";
+    }
+
+    function updateHUD(){
+        document.getElementById("sClicks").innerText = clicks;
+        document.getElementById("sViews").innerText = views;
+        document.getElementById("sTopGenre").innerText = topGenre();
+        document.getElementById("sAvgHover").innerText = avgHoverSeconds().toFixed(1) + "s";
+        document.getElementById("sHeat").innerText = heatPoints + " pts";
+        document.getElementById("sEngage").innerText = predictEngagement();
+    }
+
+    /* Header buttons */
+    document.getElementById("openListBtn").addEventListener("click", ()=>{
+        showToast("My List placeholder (social layer added)");
+    });
+
+    document.getElementById("featuredInfo").addEventListener("click", ()=>{
+        if(featuredMovie) openPrePlayModal(featuredMovie);
+    });
+    document.getElementById("featuredShuffle").addEventListener("click", ()=>{
+        featuredMovie = posters[Math.floor(Math.random()*posters.length)];
+        pickFeatured();
+        showToast("Featured shuffled");
+    });
+
+    document.getElementById("boostTrendingBtn").addEventListener("click", ()=>{
+        buildSocialFeed(7);
+        showToast("Buzz refreshed");
+    });
+
+    // Social button opens modal showing the feed on small screens
+    document.getElementById("openSocialBtn").addEventListener("click", ()=>{
+        const m=document.getElementById("modal");
+        const c=document.getElementById("modalContent");
+
+        const items = [...document.getElementById("socialFeed").children].map(el => el.outerHTML).join("");
+
+        c.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <h2 style="margin:0">Social Buzz</h2>
+          <div class="btn" id="modalCloseBtn">Close</div>
+        </div>
+        <div style="margin-top:12px">${items || "<div style='opacity:.7'>No posts yet. Hit “Refresh Buzz”.</div>"}</div>
+      `;
+        m.classList.add("open");
+        document.getElementById("modalCloseBtn")?.addEventListener("click", (e)=>{ e.stopPropagation(); closeModal(); });
+
+        // Re-bind tag click handlers inside modal clone
+        c.querySelectorAll(".tag").forEach(tag=>{
+            tag.addEventListener("click", ()=>{
+                const id = Number(tag.getAttribute("data-id"));
+                const movie = posters.find(x => x.id === id);
+                if(movie){
+                    socialClicks++;
+                    socialBoost[id] = (socialBoost[id] || 0) + 2;
+                    showToast(`Buzz boosted: ${movie.title}`);
+                    pickFeatured();
+                    render();
+                }
+            });
+        });
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("input", ()=>{
+        searchQuery = searchInput.value.trim();
+        pickFeatured();
+        render();
+    });
+
+    setInterval(()=>{
+        document.getElementById("aiBox").innerText =
+            ["Tracking behavior","Updating model","Predicting engagement","Optimizing feed","Measuring virality"]
+                [Math.floor(Math.random()*5)];
+    }, 1800);
+
+    const enginePanel = document.getElementById("enginePanel");
+    enginePanel.addEventListener("scroll", ()=>{
+        const max = enginePanel.scrollHeight - enginePanel.clientHeight;
+        const s = max > 0 ? (enginePanel.scrollTop / max) : 0;
+        document.getElementById("progress").style.width = (s*100) + "%";
+    });
+
+    const essayDrawer = document.getElementById("essayDrawer");
+    const essayHandle = document.getElementById("essayHandle");
+    const toggleEssayBtn = document.getElementById("toggleEssayBtn");
+    function toggleEssay(){ essayDrawer.classList.toggle("open"); }
+    essayHandle.addEventListener("click", toggleEssay);
+    toggleEssayBtn.addEventListener("click", toggleEssay);
+
+    document.getElementById("clearStatsBtn").addEventListener("click", ()=>{
+        clicks = 0; views = 0;
+        genreAffinity = { romance:0, horror:0, action:0, sciFi:0, thriller:0 };
+        hoverTimeMs = {};
+        viewCounts = {};
+        heatPoints = 0;
+
+        preference = { genre: null, vibe: null };
+        localStorage.removeItem("obspref");
+
+        // reset social
+        socialBoost = {};
+        posters.forEach(p => socialBoost[p.id] = 0);
+        socialClicks = 0;
+
+        updateHUD();
+        buildSocialFeed(7);
+        pickFeatured();
+        render();
+        clearHeat();
+        closePlayer();
+        closeModal();
+        showToast("Reset complete");
+        openSurvey();
+    });
+
+    /* Heat overlay */
+    const heatCanvas = document.getElementById("heatCanvas");
+    const heatCtx = heatCanvas.getContext("2d", { alpha: true });
+
+    function resizeHeat(){
+        const dpr = window.devicePixelRatio || 1;
+        heatCanvas.width = Math.floor(window.innerWidth * dpr);
+        heatCanvas.height = Math.floor(window.innerHeight * dpr);
+        heatCtx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    function clearHeat(){
+        heatCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
+    }
+    window.addEventListener("resize", resizeHeat);
+    resizeHeat();
+
+    let lastDraw = 0;
+    window.addEventListener("mousemove", (e)=>{
+        const now = performance.now();
+        if(now - lastDraw < 12) return;
+        lastDraw = now;
+
+        const x = e.clientX;
+        const y = e.clientY;
+
+        const radius = 40;
+        const g = heatCtx.createRadialGradient(x, y, 0, x, y, radius);
+        g.addColorStop(0, "rgba(229, 9, 20, .30)");
+        g.addColorStop(0.35, "rgba(255, 90, 0, .14)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+
+        heatCtx.fillStyle = g;
+        heatCtx.beginPath();
+        heatCtx.arc(x, y, radius, 0, Math.PI*2);
+        heatCtx.fill();
+
+        heatPoints++;
+        if(heatPoints % 4 === 0) updateHUD();
+    }, { passive:true });
+
+    setInterval(()=>{
+        heatCtx.fillStyle = "rgba(0,0,0,0.055)";
+        heatCtx.globalCompositeOperation = "destination-out";
+        heatCtx.fillRect(0,0,window.innerWidth,window.innerHeight);
+        heatCtx.globalCompositeOperation = "source-over";
+    }, 60);
+
+    /* Survey */
+    const surveyEl = document.getElementById("survey");
+    const surveyGenresEl = document.getElementById("surveyGenres");
+    const surveyVibesEl = document.getElementById("surveyVibes");
+
+    function savePreference(){ localStorage.setItem("obspref", JSON.stringify(preference)); }
+
+    function loadPreference(){
+        try{
+            const raw = localStorage.getItem("obspref");
+            if(!raw) return false;
+            const obj = JSON.parse(raw);
+            if(obj && typeof obj === "object"){
+                preference.genre = obj.genre || null;
+                preference.vibe = obj.vibe || null;
+                return !!(preference.genre || preference.vibe);
+            }
+        }catch{}
+        return false;
+    }
+
+    function openSurvey(){
+        if(loadPreference()) return;
+        surveyEl.classList.add("open");
+    }
+    function closeSurvey(){ surveyEl.classList.remove("open"); }
+
+    function toggleOpt(containerEl, value, type){
+        const opts = [...containerEl.querySelectorAll(".opt")];
+        opts.forEach(o => o.classList.toggle("on", o.dataset.value === value));
+        if(type === "genre") preference.genre = value;
+        if(type === "vibe") preference.vibe = value;
+    }
+
+    function buildSurveyUI(){
+        surveyGenresEl.innerHTML = "";
+        genres.filter(g => g !== "all").forEach(g=>{
+            const o = document.createElement("div");
+            o.className = "opt" + (preference.genre === g ? " on" : "");
+            o.textContent = g.toUpperCase();
+            o.dataset.value = g;
+            o.onclick = ()=> toggleOpt(surveyGenresEl, g, "genre");
+            surveyGenresEl.appendChild(o);
+        });
+
+        surveyVibesEl.innerHTML = "";
+        vibeOptions.forEach(v=>{
+            const o = document.createElement("div");
+            o.className = "opt" + (preference.vibe === v ? " on" : "");
+            o.textContent = v;
+            o.dataset.value = v;
+            o.onclick = ()=> toggleOpt(surveyVibesEl, v, "vibe");
+            surveyVibesEl.appendChild(o);
+        });
+    }
+
+    document.getElementById("surveySkipBtn").addEventListener("click", ()=>{
+        closeSurvey();
+        showToast("Survey skipped");
+        buildSocialFeed(7);
+        pickFeatured();
+        render();
+    });
+
+    document.getElementById("surveyResetBtn").addEventListener("click", ()=>{
+        preference.genre = null;
+        preference.vibe = null;
+        buildSurveyUI();
+        showToast("Cleared");
+    });
+
+    document.getElementById("surveyContinueBtn").addEventListener("click", ()=>{
+        if(!preference.genre){
+            showToast("Pick a genre to continue");
+            return;
+        }
+        savePreference();
+        genreAffinity[preference.genre] = (genreAffinity[preference.genre] || 0) + 6;
+        closeSurvey();
+        showToast("Personalization applied");
+
+        // refresh buzz after personalization to simulate algorithmic "bubble"
+        buildSocialFeed(7);
+        pickFeatured();
+        render();
+    });
+
+    /* Init */
+    function init(){
+        buildFilters();
+        updateHUD();
+        buildSurveyUI();
+        openSurvey();
+        buildSocialFeed(7); // start with buzz, it influences ranking
+        pickFeatured();
+        render();
+    }
+    init();
+</script>
+</body>
+</html>
