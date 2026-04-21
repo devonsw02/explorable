@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OBSESSO+ — Dual UX Behavioral System</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root{
@@ -24,7 +24,90 @@
             font-family:Inter,sans-serif;
             background:var(--bg);
             color:var(--text);
-            overflow:hidden;
+            overflow-x: hidden;
+        }
+
+        /* CONFETTI */
+        @keyframes confetti-fall {
+            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            animation: confetti-fall 2s ease-in forwards;
+            z-index: 9999;
+        }
+
+        /* FLOATING TEXT */
+        @keyframes float-up {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) scale(0.8); }
+        }
+
+        .float-text {
+            position: fixed;
+            pointer-events: none;
+            animation: float-up 1.5s ease-out forwards;
+            font-weight: 700;
+            font-size: 18px;
+            z-index: 9998;
+        }
+
+        /* PULSE ANIMATION */
+        @keyframes pulse-pop {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .pulse-ring {
+            position: fixed;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: pulse-pop 0.8s ease-out forwards;
+            z-index: 9997;
+        }
+
+        /* SPARKLES */
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            animation: sparkle 0.6s ease-out forwards;
+            z-index: 9996;
+        }
+
+        /* REACTION EMOJI */
+        @keyframes reaction-bounce {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1) translateY(-100px) rotate(20deg); opacity: 0; }
+        }
+
+        .reaction {
+            position: fixed;
+            pointer-events: none;
+            animation: reaction-bounce 1s ease-out forwards;
+            font-size: 32px;
+            z-index: 9995;
+        }
+
+        /* MINI STAT POPUP */
+        .stat-popup {
+            position: fixed;
+            background: rgba(229, 9, 20, 0.2);
+            border: 1px solid rgba(229, 9, 20, 0.6);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 9994;
+            animation: float-up 1s ease-out forwards;
         }
 
         /* HEADER */
@@ -32,22 +115,49 @@
             position:fixed;
             top:0;
             width:100%;
-            padding:14px 20px;
+            padding:12px 18px;
             display:flex;
             justify-content:space-between;
             align-items:center;
             z-index:2500;
             background:linear-gradient(to bottom,rgba(0,0,0,.92),rgba(0,0,0,.65),rgba(0,0,0,0));
             backdrop-filter:blur(10px);
+            gap:12px;
         }
 
         .logo{
-            font-family:'Playfair Display';
+            font-family:'Space Grotesk', Inter, system-ui, sans-serif;
             color:var(--accent);
-            font-size:20px;
+            font-size:18px;
             cursor:pointer;
-            letter-spacing:.5px;
+            letter-spacing:.14em;
             text-transform:uppercase;
+            font-weight:700;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            white-space:nowrap;
+            transition: transform 0.3s;
+        }
+        .logo:hover { transform: scale(1.05); }
+
+        .logo .dot{
+            width:8px;height:8px;border-radius:50%;
+            background:var(--accent);
+            box-shadow:0 0 16px rgba(229,9,20,.7);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .top-left{
+            display:flex;
+            align-items:center;
+            gap:14px;
+            min-width:0;
         }
 
         .top-actions{
@@ -56,6 +166,7 @@
             align-items:center;
             flex-wrap:wrap;
             justify-content:flex-end;
+            white-space:nowrap;
         }
 
         .btn{
@@ -71,11 +182,37 @@
             display:inline-flex;
             align-items:center;
             gap:8px;
+            position: relative;
         }
-        .btn:hover{ border-color:rgba(255,255,255,.20); }
+        .btn:hover{
+            border-color:rgba(255,255,255,.20);
+            transform: translateY(-2px);
+        }
         .btn.primary{
             background:rgba(229, 9, 20, .14);
             border-color:rgba(229, 9, 20, .55);
+        }
+
+        .btn-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--accent);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            animation: bounce 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
         }
 
         /* LAYOUT */
@@ -86,7 +223,7 @@
             padding-top:56px;
         }
 
-        /* ESSAY DRAWER (OVERLAY) */
+        /* ESSAY DRAWER (LEFT) */
         .essay-drawer{
             width:420px;
             max-width:85vw;
@@ -102,6 +239,7 @@
             display:flex;
             flex-direction:column;
             box-shadow: 20px 0 55px rgba(0,0,0,.55);
+            overflow-y: auto;
         }
         .essay-drawer.open{ transform:translateX(0%); }
 
@@ -122,7 +260,14 @@
             cursor:pointer;
             user-select:none;
             box-shadow:0 10px 30px rgba(0,0,0,.45);
+            z-index: 2450;
+            transition: all 0.3s;
         }
+        .essay-handle:hover {
+            background: rgba(14, 14, 14, 1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
         .essay-handle span{
             writing-mode:vertical-rl;
             transform:rotate(180deg);
@@ -136,6 +281,7 @@
             padding:26px 26px 40px 26px;
             overflow-y:auto;
             line-height:1.7;
+            flex: 1;
         }
         .essay-scroll h1{
             color:var(--accent);
@@ -166,6 +312,207 @@
             opacity:.9;
         }
 
+        /* BUZZ DRAWER (RIGHT) */
+        .buzz-drawer{
+            width:360px;
+            max-width:90vw;
+            background:rgba(12,12,12,.98);
+            border-left:1px solid rgba(255,255,255,.08);
+            position:fixed;
+            top:56px;
+            right:0;
+            height:calc(100vh - 56px);
+            transform:translateX(100%);
+            transition:transform .32s cubic-bezier(.2,.9,.2,1);
+            z-index:2400;
+            display:flex;
+            flex-direction:column;
+            box-shadow: -20px 0 55px rgba(0,0,0,.55);
+            overflow-y: auto;
+        }
+        .buzz-drawer.open{ transform:translateX(0%); }
+
+        .buzz-handle{
+            position:absolute;
+            top:18px;
+            left:-56px;
+            width:56px;
+            height:150px;
+            background:rgba(14,14,14,.95);
+            border:1px solid rgba(255,255,255,.10);
+            border-right:none;
+            border-top-left-radius:14px;
+            border-bottom-left-radius:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            user-select:none;
+            box-shadow:0 10px 30px rgba(0,0,0,.45);
+            z-index: 2450;
+            transition: all 0.3s;
+        }
+        .buzz-handle:hover {
+            background: rgba(14, 14, 14, 1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .buzz-handle span{
+            writing-mode:vertical-rl;
+            transform:rotate(180deg);
+            letter-spacing:.18em;
+            font-size:11px;
+            color:var(--muted);
+        }
+        .buzz-drawer.open .buzz-handle span{ color:var(--text); }
+
+        .buzz-topbar{
+            padding:14px 14px 10px 14px;
+            border-bottom:1px solid rgba(255,255,255,.06);
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:10px;
+            flex-shrink: 0;
+        }
+        .buzz-title{
+            font-family:Space Grotesk, Inter, system-ui, sans-serif;
+            text-transform:uppercase;
+            letter-spacing:.16em;
+            font-size:11px;
+            opacity:.9;
+            margin:0;
+        }
+        .buzz-sub{
+            font-size:11px;
+            opacity:.65;
+            line-height:1.4;
+            margin-top:8px;
+        }
+
+        .buzz-scroll{
+            padding:12px 14px 18px 14px;
+            overflow-y:auto;
+            position:relative;
+            flex:1;
+        }
+        .buzz-scroll::-webkit-scrollbar{ width:8px; }
+        .buzz-scroll::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.08); border-radius:999px; }
+
+        .buzz-auto{
+            position:relative;
+        }
+
+        .buzz-post{
+            background:rgba(20,20,20,.72);
+            border:1px solid rgba(255,255,255,.06);
+            border-radius:14px;
+            padding:10px;
+            margin-bottom:10px;
+            position:relative;
+            overflow:hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .buzz-post:hover {
+            background: rgba(20, 20, 20, 0.9);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+
+        .buzz-post.boost-flash{
+            animation: boostFlash .85s ease;
+        }
+        @keyframes boostFlash{
+            0%   { box-shadow:0 0 0 rgba(229,9,20,0); border-color:rgba(255,255,255,.06); }
+            20%  { box-shadow:0 0 0 6px rgba(229,9,20,.18); border-color:rgba(229,9,20,.55); }
+            55%  { box-shadow:0 0 0 14px rgba(229,9,20,.08); border-color:rgba(229,9,20,.35); }
+            100% { box-shadow:0 0 0 0 rgba(229,9,20,0); border-color:rgba(255,255,255,.06); }
+        }
+
+        .buzz-top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            margin-bottom:6px;
+            font-size:11px;
+            opacity:.9;
+        }
+        .buzz-handleline{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-weight:600;
+        }
+        .ava{
+            width:18px;
+            height:18px;
+            border-radius:50%;
+            background:linear-gradient(135deg, rgba(229,9,20,.65), rgba(255,120,0,.35));
+            border:1px solid rgba(255,255,255,.10);
+        }
+        .buzz-time{ font-size:10px; opacity:.65; white-space:nowrap; }
+        .buzz-body{ font-size:12px; line-height:1.45; opacity:.88; }
+
+        .buzz-actions{
+            margin-top:8px;
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
+        .boostbtn{
+            font-family:Space Grotesk, Inter, system-ui, sans-serif;
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:.14em;
+            padding:8px 10px;
+            border-radius:999px;
+            cursor:pointer;
+            user-select:none;
+            border:1px solid rgba(229,9,20,.55);
+            background:rgba(229,9,20,.16);
+            color:#fff;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            position:relative;
+            overflow:hidden;
+            transition: all 0.2s;
+        }
+        .boostbtn:hover {
+            background: rgba(229,9,20,.25);
+            border-color: rgba(229,9,20,.8);
+            transform: scale(1.05);
+        }
+        .boostbtn::after{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+            transform:translateX(-120%);
+            transition:transform .35s ease;
+            pointer-events:none;
+        }
+        .boostbtn:hover::after{ transform:translateX(120%); }
+
+        .pillbtn{
+            font-size:11px;
+            border:1px solid rgba(255,255,255,.10);
+            background:rgba(0,0,0,.25);
+            padding:6px 10px;
+            border-radius:999px;
+            cursor:pointer;
+            user-select:none;
+            transition:.2s;
+        }
+        .pillbtn:hover{
+            border-color:rgba(229,9,20,.45);
+            background:rgba(229,9,20,.10);
+        }
+
         /* ENGINE */
         .engine-wrap{
             position:relative;
@@ -191,6 +538,14 @@
                     radial-gradient(circle at 20% 30%, rgba(229,9,20,.16), transparent 45%),
                     radial-gradient(circle at 70% 70%, rgba(255,140,0,.10), transparent 45%),
                     linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,.10));
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .featured:hover {
+            background:
+                    radial-gradient(circle at 20% 30%, rgba(229,9,20,.25), transparent 45%),
+                    radial-gradient(circle at 70% 70%, rgba(255,140,0,.15), transparent 45%),
+                    linear-gradient(to bottom, rgba(0,0,0,.6), rgba(0,0,0,.15));
         }
         .featured-grid{
             display:grid;
@@ -229,7 +584,10 @@
             align-items:center;
             gap:10px;
         }
-        .featured .bigbtn:hover{ border-color:rgba(255,255,255,.22); }
+        .featured .bigbtn:hover{
+            border-color:rgba(255,255,255,.22);
+            transform: translateY(-2px);
+        }
         .featured .bigbtn.primary{
             background:rgba(229,9,20,.18);
             border-color:rgba(229,9,20,.55);
@@ -261,11 +619,22 @@
             user-select:none;
             color:#eaeaea;
         }
-        .chip:hover{ background:rgba(229,9,20,.16); border-color:rgba(229,9,20,.35); }
+        .chip:hover{
+            background:rgba(229,9,20,.16);
+            border-color:rgba(229,9,20,.35);
+            transform: translateY(-2px);
+        }
         .chip.active{
             background:rgba(229,9,20,.22);
             border-color:rgba(229,9,20,.65);
             color:#fff;
+            animation: pulse-select 0.3s;
+        }
+
+        @keyframes pulse-select {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .search{
@@ -347,7 +716,7 @@
         .row-arrow.left{ left:10px; }
         .row-arrow.right{ right:10px; }
 
-        /* ===== CARDS ===== */
+        /* CARDS */
         .card{
             min-width:220px;
             width:220px;
@@ -368,15 +737,12 @@
             overflow:hidden;
             will-change:transform;
         }
-
-        /* darken background more (always) */
         .card::after{
             content:"";
             position:absolute;
             inset:0;
             background:linear-gradient(to top,rgba(0,0,0,.96),rgba(0,0,0,.55),rgba(0,0,0,.22));
         }
-
         .card:hover{
             transform:translateY(-8px) scale(1.10);
             box-shadow:0 20px 80px rgba(0,0,0,.72);
@@ -384,24 +750,17 @@
             z-index:20;
         }
 
-        /* preference: MUCH bigger */
         .card.pref{
             outline:3px solid rgba(229,9,20,.50);
             box-shadow:0 0 0 1px rgba(0,0,0,.85) inset;
         }
         .card.pref-large{
-            width:320px;
-            min-width:320px;
-            height:460px;
-            border-radius:14px;
-        }
-        .row .card.pref-large:first-child{
             width:340px;
             min-width:340px;
-            height:490px;
+            height:500px;
+            border-radius:14px;
         }
 
-        /* ===== TITLE: centered + larger on hover ===== */
         .info{
             position:absolute;
             inset:0;
@@ -413,7 +772,6 @@
             transition:.28s ease;
             pointer-events:none;
         }
-
         .info-inner{ width:100%; }
 
         .info .title{
@@ -447,7 +805,6 @@
             transform:translateY(2px);
         }
 
-        /* Quick actions */
         .quick{
             position:absolute;
             top:10px;
@@ -479,246 +836,15 @@
             user-select:none;
             font-size:12px;
             transition:.18s ease;
+            position: relative;
         }
-        .qbtn:hover{ border-color:rgba(229,9,20,.55); }
+        .qbtn:hover{
+            border-color:rgba(229,9,20,.55);
+            transform: scale(1.2);
+        }
         .qbtn.on{
             background:rgba(229,9,20,.18);
             border-color:rgba(229,9,20,.65);
-        }
-
-        /* ===== SOCIAL: RIGHT SIDE BUZZ RAIL ===== */
-        .buzz-rail{
-            position:fixed;
-            right:14px;
-            bottom:14px;
-            width:320px;
-            max-height:42vh;
-            z-index:2650;
-            background:rgba(12,12,12,.74);
-            border:1px solid rgba(255,255,255,.08);
-            border-radius:14px;
-            padding:12px;
-            backdrop-filter:blur(12px);
-            display:flex;
-            flex-direction:column;
-            gap:10px;
-        }
-        .buzz-rail h4{
-            margin:0;
-            font-size:11px;
-            letter-spacing:.18em;
-            text-transform:uppercase;
-            opacity:.9;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
-        }
-        .buzz-sub{
-            font-size:11px;
-            opacity:.68;
-            line-height:1.45;
-        }
-        .buzz-feed{
-            overflow:auto;
-            padding-right:6px;
-            display:flex;
-            flex-direction:column;
-            gap:10px;
-        }
-        .buzz-feed::-webkit-scrollbar{ width:8px; }
-        .buzz-feed::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.08); border-radius:999px; }
-
-        .buzz-post{
-            background:rgba(20,20,20,.72);
-            border:1px solid rgba(255,255,255,.06);
-            border-radius:14px;
-            padding:10px;
-        }
-        .buzz-top{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:10px;
-            margin-bottom:6px;
-            font-size:11px;
-            opacity:.9;
-        }
-        .buzz-handle{
-            display:flex;
-            align-items:center;
-            gap:8px;
-            font-weight:600;
-        }
-        .ava{
-            width:18px;
-            height:18px;
-            border-radius:50%;
-            background:linear-gradient(135deg, rgba(229,9,20,.65), rgba(255,120,0,.35));
-            border:1px solid rgba(255,255,255,.10);
-        }
-        .buzz-time{
-            font-size:10px;
-            opacity:.65;
-            white-space:nowrap;
-        }
-        .buzz-body{
-            font-size:12px;
-            line-height:1.45;
-            opacity:.88;
-        }
-        .buzz-actions{
-            margin-top:8px;
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-            align-items:center;
-        }
-        .pillbtn{
-            font-size:11px;
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(0,0,0,.25);
-            padding:6px 10px;
-            border-radius:999px;
-            cursor:pointer;
-            user-select:none;
-            transition:.2s;
-        }
-        .pillbtn:hover{
-            border-color:rgba(229,9,20,.45);
-            background:rgba(229,9,20,.10);
-        }
-        .pillbtn.hot{
-            border-color:rgba(229,9,20,.65);
-            background:rgba(229,9,20,.14);
-        }
-
-        /* ===== SOCIAL: ON-CARD BADGE ===== */
-        .social-badge{
-            position:absolute;
-            left:10px;
-            top:10px;
-            z-index:2;
-            background:rgba(0,0,0,.70);
-            border:1px solid rgba(255,255,255,.12);
-            padding:6px 8px;
-            border-radius:999px;
-            font-size:11px;
-            letter-spacing:.2px;
-            display:flex;
-            align-items:center;
-            gap:8px;
-            pointer-events:none;
-            backdrop-filter: blur(8px);
-        }
-        .social-badge .dot{
-            width:7px; height:7px;
-            border-radius:50%;
-            background:rgba(255,255,255,.22);
-        }
-        .social-badge.hot{
-            border-color:rgba(229,9,20,.55);
-            background:rgba(229,9,20,.14);
-        }
-        .social-badge.hot .dot{ background:rgba(229,9,20,.9); }
-
-        /* Toast */
-        .toast{
-            position:fixed;
-            left:50%;
-            bottom:18px;
-            transform:translateX(-50%);
-            background:rgba(12,12,12,.82);
-            border:1px solid rgba(255,255,255,.10);
-            color:#fff;
-            padding:10px 12px;
-            border-radius:999px;
-            font-size:12px;
-            z-index:4000;
-            opacity:0;
-            pointer-events:none;
-            transition:.25s ease;
-            backdrop-filter:blur(10px);
-        }
-        .toast.show{ opacity:1; }
-
-        /* HUD */
-        .hud{
-            position:fixed;
-            right:14px;
-            top:70px;
-            width:260px;
-            z-index:2600;
-            background:rgba(12,12,12,.72);
-            border:1px solid rgba(255,255,255,.08);
-            border-radius:14px;
-            padding:12px;
-            backdrop-filter:blur(12px);
-        }
-
-        .hud h4{
-            margin:0 0 8px 0;
-            font-size:11px;
-            letter-spacing:.18em;
-            text-transform:uppercase;
-            color:#f0f0f0;
-            opacity:.9;
-        }
-
-        .stat-grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:8px;
-        }
-
-        .stat{
-            background:rgba(20,20,20,.72);
-            border:1px solid rgba(255,255,255,.06);
-            border-radius:12px;
-            padding:10px;
-            min-height:54px;
-        }
-
-        .stat .label{
-            font-size:10px;
-            opacity:.7;
-            letter-spacing:.12em;
-            text-transform:uppercase;
-        }
-        .stat .value{
-            margin-top:6px;
-            font-size:14px;
-            font-weight:600;
-            color:#fff;
-        }
-        .stat .value.small{
-            font-size:12px;
-            font-weight:500;
-            opacity:.95;
-        }
-
-        .ai-box{
-            position:fixed;
-            left:14px;
-            bottom:14px;
-            width:220px;
-            background:rgba(12,12,12,.72);
-            padding:10px;
-            border-radius:12px;
-            font-size:11px;
-            border:1px solid rgba(255,255,255,.08);
-            z-index:2600;
-            backdrop-filter:blur(12px);
-        }
-
-        .progress{
-            position:fixed;
-            bottom:0;
-            left:0;
-            height:4px;
-            width:0%;
-            background:var(--accent);
-            z-index:2700;
         }
 
         /* MODAL */
@@ -747,6 +873,8 @@
             transform: translateY(18px) scale(.985);
             opacity:0;
             transition: transform .38s cubic-bezier(.2,.9,.2,1), opacity .25s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .modal.open .modal-content{
             transform: translateY(0px) scale(1);
@@ -767,6 +895,11 @@
             border:1px solid rgba(255,255,255,.08);
             overflow:hidden;
             position:relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .modal-poster:hover {
+            transform: scale(1.02);
         }
         .modal-poster img{
             width:100%;
@@ -785,6 +918,12 @@
             border-radius:999px;
             margin-right:8px;
             margin-top:8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pill:hover {
+            background: rgba(229,9,20,.25);
+            border-color: rgba(229,9,20,.8);
         }
 
         .review{
@@ -796,9 +935,14 @@
             color:#ddd;
             font-size:12px;
             line-height:1.55;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .review:hover {
+            background: rgba(20,20,20,.95);
+            border-color: rgba(255,255,255,.12);
         }
 
-        /* PRE-PLAY RECOMMENDATIONS PANEL */
         .preplay{
             margin-top:12px;
             padding:12px;
@@ -886,7 +1030,14 @@
             padding:14px;
             backdrop-filter: blur(10px);
             box-shadow:0 30px 90px rgba(0,0,0,.6);
+            animation: player-pop 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
         }
+
+        @keyframes player-pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         .player-top{
             display:flex;
             justify-content:space-between;
@@ -903,7 +1054,13 @@
             border-radius:10px;
             font-size:12px;
             padding:8px 10px;
+            transition: all 0.2s;
         }
+        .player-close:hover {
+            background: rgba(229, 9, 20, 0.2);
+            border-color: rgba(229, 9, 20, 0.5);
+        }
+
         .player-screen{
             border-radius:14px;
             height:340px;
@@ -945,7 +1102,13 @@
             cursor:pointer;
             font-size:12px;
             user-select:none;
+            transition: all 0.2s;
         }
+        .playbtn:hover {
+            background: rgba(229,9,20,.28);
+            transform: scale(1.05);
+        }
+
         .timeline{
             flex:1;
             height:10px;
@@ -953,6 +1116,7 @@
             background:rgba(255,255,255,.08);
             overflow:hidden;
             border:1px solid rgba(255,255,255,.06);
+            cursor: pointer;
         }
         .timeline > div{
             height:100%;
@@ -961,6 +1125,32 @@
             transition:width .35s ease;
         }
         .time{ font-size:11px; opacity:.75; min-width:70px; text-align:right; }
+
+        /* TOAST */
+        .toast{
+            position:fixed;
+            left:50%;
+            bottom:18px;
+            transform:translateX(-50%);
+            background:rgba(12,12,12,.82);
+            border:1px solid rgba(255,255,255,.10);
+            color:#fff;
+            padding:10px 12px;
+            border-radius:999px;
+            font-size:12px;
+            z-index:4000;
+            opacity:0;
+            pointer-events:none;
+            transition:.25s ease;
+            backdrop-filter:blur(10px);
+            animation: toast-slide 0.3s ease-out;
+        }
+        .toast.show{ opacity:1; }
+
+        @keyframes toast-slide {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
 
         /* HEAT OVERLAY */
         .heat-overlay{
@@ -973,7 +1163,7 @@
         }
         canvas#heatCanvas{ width:100%; height:100%; display:block; }
 
-        /* Survey (minimal) */
+        /* SURVEY */
         .survey{
             position:fixed;
             inset:0;
@@ -997,7 +1187,14 @@
             box-shadow:0 30px 90px rgba(0,0,0,.65);
             transform: translateY(14px) scale(.99);
             transition: transform .35s cubic-bezier(.2,.9,.2,1);
+            animation: survey-enter 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
         }
+
+        @keyframes survey-enter {
+            from { transform: translateY(20px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
         .survey.open .survey-card{ transform: translateY(0) scale(1); }
         .survey-top{
             display:flex;
@@ -1045,8 +1242,22 @@
             font-size:12px;
             transition:.2s;
         }
-        .opt:hover{ border-color:rgba(229,9,20,.35); background:rgba(229,9,20,.10); }
-        .opt.on{ border-color:rgba(229,9,20,.70); background:rgba(229,9,20,.18); }
+        .opt:hover{
+            border-color:rgba(229,9,20,.35);
+            background:rgba(229,9,20,.10);
+            transform: translateY(-2px);
+        }
+        .opt.on{
+            border-color:rgba(229,9,20,.70);
+            background:rgba(229,9,20,.18);
+            animation: opt-select 0.2s;
+        }
+
+        @keyframes opt-select {
+            0% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
         .survey-actions{
             margin-top:12px;
             display:flex;
@@ -1055,14 +1266,8 @@
             flex-wrap:wrap;
         }
 
-        @media (max-width: 1180px){
-            .buzz-rail{ display:none; }
-        }
-
         @media (max-width: 980px){
             .featured-grid{ grid-template-columns: 1fr; }
-            .hud{ width:220px; }
-            .survey-grid{ grid-template-columns: 1fr; }
             .modal-grid{ grid-template-columns: 1fr; }
             .preplay-grid{ grid-template-columns: repeat(3, 1fr); }
             .modal-poster{ max-width:240px; }
@@ -1070,6 +1275,7 @@
 
         @media (max-width: 860px){
             .essay-drawer{ width: 360px; }
+            .buzz-drawer{ width: 320px; }
             .player-screen{ height:260px; }
             .card{ width:200px; min-width:200px; height:300px; }
             .card.pref-large{ width:300px; min-width:300px; height:440px; }
@@ -1078,28 +1284,34 @@
         }
 
         @media (prefers-reduced-motion: reduce){
-            .essay-drawer, .card, .modal, .modal-content, .timeline > div, .survey, .survey-card, .mini, .info, .title, .meta{
-                transition:none !important;
-            }
+            *{ transition:none !important; animation:none !important; }
         }
     </style>
 </head>
 
 <body>
 <div class="header">
-    <div class="logo" onclick="location.reload()">OBSESSO+</div>
+    <div class="top-left">
+        <div class="logo" onclick="goHome(); createConfetti(50);">
+            <span class="dot"></span> OBSESSO+
+        </div>
+    </div>
+
     <div class="top-actions">
         <div class="btn primary" id="toggleEssayBtn">Essay</div>
+        <div class="btn" id="openListBtn">
+            My List <span id="listCount" style="opacity:.8">(0)</span>
+            <span class="btn-badge" id="listBadge" style="display: none;">!</span>
+        </div>
         <div class="btn" id="clearStatsBtn">Reset</div>
-        <div class="btn" id="openListBtn">My List <span id="listCount" style="opacity:.8">(0)</span></div>
-
-        <div class="btn" id="openBuzzBtn">Buzz</div>
+        <div class="btn" id="toggleBuzzBtn">Buzz</div>
     </div>
 </div>
 
 <div class="layout">
+    <!-- ESSAY DRAWER -->
     <aside class="essay-drawer" id="essayDrawer" aria-label="Essay drawer">
-        <div class="essay-handle" id="essayHandle" title="Open / Close Essay">
+        <div class="essay-handle" id="essayHandle" title="Open / Close Essay" onmouseenter="showTooltip(event, 'Drag to read')">
             <span>ESSAY</span>
         </div>
 
@@ -1110,57 +1322,59 @@
 
             <h1>How UI/UX Design in Streaming Platforms Shapes Viewer Engagement and Behavior</h1>
 
-            <p>Within the past decade alone, streaming services have dominated the film and tv show hemisphere and seem to keep ramping up as they continue to vie for audience attention with theatrical released films. This shift in media consumption where the user has instant access to vast libraries of content, has caused an intense competition where different streaming services, dubbed the “streaming wars”, attempt to conflict for the main audience. Platforms like Netflix and Amazon Prime Video not only compete through available content, but also their user interface and the overall user experience design. The UX design of any platform is incredibly important to the overall experience and retention of users, and can either damage or strengthen audience retention. Features such as autoplay, personalized recommendations, and navigation layouts are intentionally designed to keep users engaged as much as possible. The goal of this essay is to navigate and pinpoint the specific elements that create a strong user experience on a streaming service. As well as how UI/UX design plays a critical role in shaping viewer behavior by increasing engagement, guiding content, and encouraging prolonged viewing.
-                Autoplay is an incredibly common feature that most streaming platforms utilize to heighten user engagement and retention. By automatically starting the next episode while your current episode ends, the lack of user input and continuous flow make the viewing experience effortless. With the autoplay feature, decision making is highly reduced and the transition is kept as smooth as possible, maximizing viewership and keeping audiences watching longer than expected. According to Nir Eyal (2014), habit forming products are designed to minimize friction and reinforce repeated behavior. Additionally, studies on binge watching suggest that platform design contributes to prolonged viewing sessions and shifts in media consumption habits (Flayelle et al. 2020).
-                The layout and visual design of a streaming platform is a critical factor in creating user engagement. Most streaming platforms aim for clean and simplistic interfaces for use across multiple different audiences. Platforms like Disney+ emphasize a simple and strong hierarchy, utilizing large thumbnails and organizing their content into distinct and characterized categories. Even basing them off brand and studio, such as Marvel, Pixar, and Star Wars, including the branded characters as title images to make navigation extremely easy for children and for many other age groups and demographics. According to usability principles by Steve Krug (2014), users prefer interfaces that minimize cognitive effort and are easy to navigate. Research from the Nielsen Norman group agrees with the concept that efficient navigation and reduced cognitive challenge improve user satisfaction and engagement.
-                UX/UI design is an up and coming factor that is being realized as an important factor in shaping how audiences interact with and consume from streaming platforms. Features such as personalized recommendations, autoplay, and intentional hierarchical design are just some simplistic design details that display the strategic design companies put into retaining audience attention. Their mission is to increase user engagement as much as possible, encourage binge-watching, and have their algorithms guide the viewer across their content selection. As streaming platforms grow and change, we will continue to examine the intentional choices they take for optimizing their platforms UI/UX design.
-
-
-                Gomez-Uribe, C. A., & Hunt, N. (2016). The Netflix Recommender System: Algorithms, Business Value, and Innovation. ACM Trans. Manage. Inf. Syst., 6(4), 13:1-13:19. https://doi.org/10.1145/2843948
-                Algorithms
-                The streaming service UX/UI Design
-
-                Billieux, Joël, et al. “Are We Overpathologizing Everyday Life? A Tenable Blueprint for Behavioral Addiction Research.” Journal of Behavioral Addictions, vol. 4, no. 3, Sept. 2015, pp. 119–123, www.ncbi.nlm.nih.gov/pmc/articles/PMC4627665/, https://doi.org/10.1556/2006.4.2015.009. Accessed 19 Nov. 2019
-                User behavior
-                Addictive platforms and reactions.
-                ‌Krug, S. (2014). Don’t Make Me Think, Revisited: A Common Sense Approach to Web Usability, Third Edition (Third edition.). New Riders.
-                Complacent thinking/ relationship with content
-                How digital platforms affect addictive behavior
-                Eyal, N. (2014). Hooked: How to Build Habit-Forming Products. Penguin.
-                The UX/UI Design of habit forming products
-                How habits are formed via media and content
-            </p>
-
+            <p>Within the past decade alone, streaming services have dominated...</p>
+            <p>Autoplay is an incredibly common feature...</p>
+            <p>The layout and visual design of a streaming platform...</p>
+            <p>UX/UI design is an up and coming factor...</p>
 
             <h2>References</h2>
             <div class="refs">
-                <p>Gomez-Uribe, C. A., & Hunt, N. (2016). The Netflix Recommender System: Algorithms, Business Value, and Innovation. ACM Trans. Manage. Inf. Syst., 6(4),</p>
-                <p>Billieux, Joël, et al. “Are We Overpathologizing Everyday Life? A Tenable Blueprint for Behavioral Addiction Research.” Journal of Behavioral Addictions, vol. 4, no. 3, Sept. 2015, pp. 119–123, www.ncbi.nlm.nih.gov/pmc/articles/PMC4627665/, https://doi.org/10.1556/2006.4.2015.009. Accessed 19 Nov. 2019
-                </p>
-                <p>‌Krug, S. (2014). Don’t Make Me Think, Revisited: A Common Sense Approach to Web Usability, Third Edition (Third edition.). New Riders.</p>
-                <p>Eyal, N. (2014). Hooked: How to Build Habit-Forming Products. Penguin.</p>
+                <p>Gomez-Uribe &amp; Hunt (2016)</p>
+                <p>Billieux et al. (2015)</p>
+                <p>Krug (2014)</p>
+                <p>Eyal (2014)</p>
             </div>
         </div>
     </aside>
 
+    <!-- BUZZ DRAWER -->
+    <aside class="buzz-drawer" id="buzzDrawer" aria-label="Buzz drawer">
+        <div class="buzz-handle" id="buzzHandle" title="Open / Close Buzz">
+            <span>BUZZ</span>
+        </div>
+
+        <div class="buzz-topbar">
+            <div>
+                <div class="buzz-title">Social Buzz</div>
+                <div class="buzz-sub">
+                    Watch how <b style="color:#e50914">BOOST</b> moves titles up the feed.
+                </div>
+            </div>
+            <div class="btn" id="refreshBuzzBtn">Refresh</div>
+        </div>
+
+        <div class="buzz-scroll" id="buzzScroll">
+            <div class="buzz-auto" id="buzzAuto"></div>
+        </div>
+    </aside>
+
+    <!-- ENGINE -->
     <section class="engine-wrap">
         <div class="engine-panel" id="enginePanel">
-            <div class="featured" id="featured">
+            <div class="featured" id="featured" onclick="createSparkles(event);">
                 <div class="featured-grid">
                     <div>
                         <h2 id="featuredTitle">Featured</h2>
                         <p id="featuredDesc">
-                            Social proof is now simulated: “Buzz” boosts certain films and changes the ranking.
+                            Click a title to open a pre-play window. Add to My List. Watch how boosted titles appear more frequently in the feed and trending sections.
                         </p>
                         <div class="featured-actions">
                             <div class="bigbtn primary" id="featuredInfo">More Info</div>
                             <div class="bigbtn" id="featuredShuffle">Shuffle</div>
-                            <div class="bigbtn" id="refreshBuzzBtn">Refresh Buzz</div>
                         </div>
                     </div>
                     <div style="opacity:.8;font-size:12px;line-height:1.6">
-                        <b style="color:#fff">What’s different:</b><br>
-                        A “Buzz rail” generates posts about specific titles. Buzz increases visibility, and sharing amplifies it.
+                        Boost from the Buzz panel → Featured content gets larger → Appears higher in recommendations.
                     </div>
                 </div>
             </div>
@@ -1176,20 +1390,7 @@
     </section>
 </div>
 
-<!-- Social Buzz Rail -->
-<aside class="buzz-rail" id="buzzRail" aria-label="Buzz rail">
-    <h4>
-        Buzz Rail
-        <span style="opacity:.7; font-weight:400; letter-spacing:0; text-transform:none;">tap = boost</span>
-    </h4>
-    <div class="buzz-sub">
-        Simulates how social media trends + shares influence what people choose to watch.
-        Tapping boosts a title (social proof), which reshapes the feed.
-    </div>
-    <div class="buzz-feed" id="buzzFeed"></div>
-</aside>
-
-<!-- PLAYER (manual play only) -->
+<!-- PLAYER -->
 <div class="player" id="player">
     <div class="player-card" role="dialog" aria-modal="true" aria-label="Player">
         <div class="player-top">
@@ -1204,22 +1405,6 @@
         </div>
     </div>
 </div>
-
-<!-- HUD -->
-<div class="hud" id="hud">
-    <h4>Viewer Telemetry</h4>
-    <div class="stat-grid">
-        <div class="stat"><div class="label">Clicks</div><div class="value" id="sClicks">0</div></div>
-        <div class="stat"><div class="label">Cards Viewed</div><div class="value" id="sViews">0</div></div>
-        <div class="stat"><div class="label">Top Genre</div><div class="value small" id="sTopGenre">—</div></div>
-        <div class="stat"><div class="label">Avg Hover</div><div class="value small" id="sAvgHover">0.0s</div></div>
-        <div class="stat"><div class="label">Cursor Heat</div><div class="value small" id="sHeat">0 pts</div></div>
-        <div class="stat"><div class="label">Engagement</div><div class="value small" id="sEngage">LOW</div></div>
-    </div>
-</div>
-
-<div class="ai-box" id="aiBox">Initializing system...</div>
-<div class="progress" id="progress"></div>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
@@ -1239,7 +1424,7 @@
             <div>
                 <h3 class="survey-title">Quick taste check</h3>
                 <p class="survey-sub">
-                    Pick your <b>favorite genre</b> and a <b>vibe</b>. Preferred titles become MUCH bigger and highlighted.
+                    Pick your <b>favorite genre</b> and a <b>vibe</b>. Preferred titles become MUCH bigger and highlighted. Then use BOOST to push them higher in the ranking.
                 </p>
             </div>
             <div class="btn" id="surveySkipBtn">Skip</div>
@@ -1265,6 +1450,85 @@
 </div>
 
 <script>
+    // ===== INTERACTIVE EFFECTS =====
+    function createConfetti(count) {
+        for (let i = 0; i < count; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.textContent = ['🎬', '⭐', '🎥', '✨', '🎭', '📺'][Math.floor(Math.random() * 6)];
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-10px';
+            confetti.style.fontSize = (10 + Math.random() * 20) + 'px';
+            confetti.style.animation = `confetti-fall ${1 + Math.random() * 2}s linear`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+
+    function createSparkles(e) {
+        for (let i = 0; i < 15; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.textContent = '✨';
+            sparkle.style.left = e.clientX + 'px';
+            sparkle.style.top = e.clientY + 'px';
+            sparkle.style.animation = `sparkle ${0.4 + Math.random() * 0.4}s ease-out forwards`;
+            sparkle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100}px)`;
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 800);
+        }
+    }
+
+    function createReaction(x, y, emoji) {
+        const reaction = document.createElement('div');
+        reaction.className = 'reaction';
+        reaction.textContent = emoji;
+        reaction.style.left = x + 'px';
+        reaction.style.top = y + 'px';
+        document.body.appendChild(reaction);
+        setTimeout(() => reaction.remove(), 1000);
+    }
+
+    function createFloatText(x, y, text, color = '#e50914') {
+        const floatText = document.createElement('div');
+        floatText.className = 'float-text';
+        floatText.textContent = text;
+        floatText.style.left = x + 'px';
+        floatText.style.top = y + 'px';
+        floatText.style.color = color;
+        document.body.appendChild(floatText);
+        setTimeout(() => floatText.remove(), 1500);
+    }
+
+    function createPulseRing(x, y) {
+        const ring = document.createElement('div');
+        ring.className = 'pulse-ring';
+        ring.style.left = (x - 20) + 'px';
+        ring.style.top = (y - 20) + 'px';
+        ring.style.width = '40px';
+        ring.style.height = '40px';
+        document.body.appendChild(ring);
+        setTimeout(() => ring.remove(), 800);
+    }
+
+    function showTooltip(e, text) {
+        const popup = document.createElement('div');
+        popup.style.position = 'fixed';
+        popup.style.top = e.clientY - 30 + 'px';
+        popup.style.left = e.clientX + 'px';
+        popup.style.background = 'rgba(229, 9, 20, 0.9)';
+        popup.style.color = 'white';
+        popup.style.padding = '6px 10px';
+        popup.style.borderRadius = '4px';
+        popup.style.fontSize = '11px';
+        popup.style.pointerEvents = 'none';
+        popup.style.zIndex = '9990';
+        popup.style.whiteSpace = 'nowrap';
+        popup.textContent = text;
+        document.body.appendChild(popup);
+        setTimeout(() => popup.remove(), 2000);
+    }
+
     const genres = ["all","romance","horror","action","sciFi","thriller"];
 
     let clicks = 0;
@@ -1283,12 +1547,11 @@
     const vibeOptions = ["Cozy", "Dark", "Fast", "Mind-bend", "Twisty"];
     let preference = { genre: null, vibe: null };
 
-    // ===== SOCIAL MODEL (simpler + more “behavioral”) =====
-    // - each title has: buzzScore (social proof)
-    // - user has: socialSusceptibility (increases when they interact with buzz)
     let buzzScore = {};
-    let socialSusceptibility = 1.0;  // multiplies buzz effect
+    let socialSusceptibility = 1.0;
     let socialInteractions = 0;
+
+    let myList = new Set();
 
     const fakeTitles = [
         "Neon Widow", "The Velvet Exit", "Gutter Halo", "Kiss of the Algorithm", "Midnight Carousel",
@@ -1314,29 +1577,6 @@
         const rating = (2.7 + r3 * 2.2);
         const votes = 1200 + Math.floor(r4 * 98000);
 
-        const tagsByGenre = {
-            romance: ["slow-burn","second chances","messy feelings","rain-soaked montage"],
-            horror: ["found footage","body horror","uncanny silence","one location nightmare"],
-            action: ["practical stunts","neon chase","one-take fight","impossible escape"],
-            sciFi: ["retro-future","AI paranoia","time slip","cold orbit"],
-            thriller: ["unreliable narrator","cat-and-mouse","late twist","sealed room"]
-        };
-
-        const tagPool = tagsByGenre[genre] || ["strange","stylized","intense","moody"];
-        const tagA = tagPool[Math.floor(seededRand(id*7.1) * tagPool.length)];
-        const tagB = tagPool[Math.floor(seededRand(id*11.2) * tagPool.length)];
-
-        const reviewPool = [
-            "A slick interface for your emotions—designed to keep you watching even when you swear you’re done.",
-            "So polished it feels personalized; somehow it still surprises you with a cruel little twist.",
-            "Beautifully manipulative pacing: every scene ends like an autoplay countdown.",
-            "A high-gloss binge trap with a heartbeat—equal parts comfort and control.",
-            "The algorithm would love this. Unfortunately, so did I."
-        ];
-
-        const review1 = reviewPool[Math.floor(seededRand(id*13.3) * reviewPool.length)];
-        const review2 = reviewPool[Math.floor(seededRand(id*19.9) * reviewPool.length)];
-
         const vibeByGenre = {
             romance: ["Cozy","Twisty"],
             horror: ["Dark","Twisty"],
@@ -1346,6 +1586,27 @@
         };
         const possibleVibes = vibeByGenre[genre] || vibeOptions;
         const vibe = possibleVibes[Math.floor(seededRand(id*5.55) * possibleVibes.length)];
+
+        const tagsByGenre = {
+            romance: ["slow-burn","second chances","messy feelings","rain-soaked montage"],
+            horror: ["found footage","body horror","uncanny silence","one location nightmare"],
+            action: ["practical stunts","neon chase","one-take fight","impossible escape"],
+            sciFi: ["retro-future","AI paranoia","time slip","cold orbit"],
+            thriller: ["unreliable narrator","cat-and-mouse","late twist","sealed room"]
+        };
+        const tagPool = tagsByGenre[genre] || ["strange","stylized","intense","moody"];
+        const tagA = tagPool[Math.floor(seededRand(id*7.1) * tagPool.length)];
+        const tagB = tagPool[Math.floor(seededRand(id*11.2) * tagPool.length)];
+
+        const reviewPool = [
+            "A slick interface for your emotions—designed to keep you watching even when you swear you're done.",
+            "So polished it feels personalized; somehow it still surprises you with a cruel little twist.",
+            "Beautifully manipulative pacing: every scene ends like an autoplay countdown.",
+            "A high-gloss binge trap with a heartbeat—equal parts comfort and control.",
+            "The algorithm would love this. Unfortunately, so did I."
+        ];
+        const review1 = reviewPool[Math.floor(seededRand(id*13.3) * reviewPool.length)];
+        const review2 = reviewPool[Math.floor(seededRand(id*19.9) * reviewPool.length)];
 
         return {
             title, genre, year, runtime,
@@ -1366,7 +1627,38 @@
     }
     posters.forEach(p => buzzScore[p.id] = 0);
 
-    // ===== RANKING: includes social proof =====
+    function goHome(){
+        location.hash = "#/";
+        renderRoute();
+    }
+    function goList(){
+        location.hash = "#/list";
+        renderRoute();
+    }
+
+    function saveList(){
+        localStorage.setItem("obs_mylist", JSON.stringify([...myList]));
+    }
+    function loadList(){
+        try{
+            const raw = localStorage.getItem("obs_mylist");
+            if(!raw) return;
+            const arr = JSON.parse(raw);
+            if(Array.isArray(arr)){
+                myList = new Set(arr.map(Number));
+            }
+        }catch{}
+    }
+    loadList();
+
+    function updateListCount(){
+        document.getElementById("listCount").textContent = `(${myList.size})`;
+        if (myList.size > 0) {
+            document.getElementById("listBadge").style.display = 'flex';
+        }
+    }
+    updateListCount();
+
     function score(p){
         const hoverBoost = (hoverTimeMs[p.id] || 0) * 0.0008;
         const viewBoost  = (viewCounts[p.id] || 0) * 0.7;
@@ -1374,31 +1666,20 @@
         const prefGenreBoost = (preference.genre && p.genre === preference.genre) ? 3.8 : 0;
         const prefVibeBoost = (preference.vibe && p.stats.vibe === preference.vibe) ? 1.1 : 0;
 
-        // Social proof: if user interacts with buzz, the system weights it more (filter bubble / peer pressure)
         const buzz = (buzzScore[p.id] || 0);
         const socialBoost = buzz * 1.6 * socialSusceptibility;
 
-        return (genreAffinity[p.genre] || 0) + hoverBoost + viewBoost + prefGenreBoost + prefVibeBoost + socialBoost;
+        const listBoost = myList.has(p.id) ? 1.8 : 0;
+
+        return (genreAffinity[p.genre] || 0) + hoverBoost + viewBoost + prefGenreBoost + prefVibeBoost + socialBoost + listBoost;
     }
     function recommend(list){ return [...list].sort((a,b)=>score(b)-score(a)); }
 
     function isPreferred(p){ return !!preference.genre && p.genre === preference.genre; }
+
     function isPreferredHuge(p, indexInRow){
         if(!isPreferred(p)) return false;
-        return ((p.id + indexInRow) % 5) !== 0; // 80% huge
-    }
-
-    function rowLabelFor(r){ return ["Recommended For You","Because You Clicked","Trending Now"][r] || "For You"; }
-    function makeRowArrow(dir, rowEl){
-        const a = document.createElement("div");
-        a.className = `row-arrow ${dir}`;
-        a.textContent = dir === "left" ? "‹" : "›";
-        a.onclick = (e)=>{
-            e.stopPropagation();
-            const dx = Math.floor(rowEl.clientWidth * 0.9) * (dir === "left" ? -1 : 1);
-            rowEl.scrollBy({ left: dx, behavior: "smooth" });
-        };
-        return a;
+        return ((p.id + indexInRow) % 5) !== 0;
     }
 
     function buildFilters(){
@@ -1413,7 +1694,8 @@
                 activeFilter=g;
                 buildFilters();
                 pickFeatured();
-                render();
+                renderRoute();
+                createSparkles({clientX: event.clientX, clientY: event.clientY});
             };
             f.insertBefore(chip, search);
         });
@@ -1438,7 +1720,7 @@
         document.getElementById("featuredTitle").textContent = featuredMovie?.title || "Featured";
         const b = buzzScore[featuredMovie.id] || 0;
         document.getElementById("featuredDesc").textContent =
-            `Featured is weighted by: preference + behavior + social proof. Current buzz: ${b}.`;
+            `Click a title to open a pre-play window. Add to My List. Watch how boosted titles appear more frequently in the feed and trending sections. Current boost level: ${b}`;
     }
 
     function similarityScore(target, candidate){
@@ -1446,7 +1728,6 @@
         let s = 0;
         if(candidate.genre === target.genre) s += 7;
         if(candidate.stats.vibe === target.stats.vibe) s += 3;
-        // “social” similarity: trending things get recommended together
         s += Math.min(3.5, (buzzScore[candidate.id] || 0) * 0.25);
         s += seededRand(candidate.id * 12.13 + target.id * 2.1);
         return s;
@@ -1460,24 +1741,21 @@
             .map(x => x.p);
     }
 
-    // ===== SOCIAL: buzz rail content =====
     const handles = ["@cinepulse", "@nightfeed", "@streamtalk", "@posterjunkie", "@bingeclub", "@vhsghost", "@midnightqueue"];
     const postTemplates = [
-        (t)=>`Everyone’s talking about <b>${t}</b> — it’s all over my feed.`,
-        (t)=>`I watched <b>${t}</b> “ironically” and now I’m recommending it to everyone.`,
-        (t)=>`If you don’t watch <b>${t}</b>, you’ll miss the conversation tomorrow.`,
-        (t)=>`<b>${t}</b> is trending. Not sure why. Still clicked.`,
-        (t)=>`Group chat says <b>${t}</b> is mandatory viewing.`
+        (t)=>`Everyone's talking about <b>${t}</b> — it's trending everywhere.`,
+        (t)=>`I watched <b>${t}</b> because everyone was watching it.`,
+        (t)=>`If you don't watch <b>${t}</b>, you'll miss all the discussions.`,
+        (t)=>`<b>${t}</b> is blowing up right now.`,
+        (t)=>`My whole friend group is watching <b>${t}</b>.`
     ];
 
     function pickPosterForBuzz(){
-        // Make the buzz rail feel like social media: slightly biased to preference + random spikes
         const weights = posters.map(p=>{
             const base = 1.0;
-            const pref = (preference.genre && p.genre === preference.genre) ? 1.3 : 1.0;
-            const already = 1 + Math.min(1.5, (buzzScore[p.id] || 0) * 0.10); // rich-get-richer
-            const spike = 1 + (seededRand(p.id * 3.14 + Date.now()*0.00001) * 0.6);
-            return base * pref * already * spike;
+            const pref = (preference.genre && p.genre === preference.genre) ? 1.25 : 1.0;
+            const already = 1 + Math.min(1.5, (buzzScore[p.id] || 0) * 0.10);
+            return base * pref * already;
         });
         const total = weights.reduce((a,b)=>a+b,0);
         let r = Math.random() * total;
@@ -1488,31 +1766,29 @@
         return posters[0];
     }
 
-    function addBuzz(id, amount, reason){
+    function addBuzz(id, amount, source){
         buzzScore[id] = (buzzScore[id] || 0) + amount;
 
-        // interacting with social increases susceptibility (like doomscrolling feedback loop)
-        if(reason === "tap" || reason === "share"){
+        if(source === "tap" || source === "share"){
             socialInteractions++;
             socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
         }
 
-        showToast(`Buzz +${amount}`);
+        const movie = posters.find(p => p.id === id);
+        showToast(`✓ BOOSTED +${amount}! "${movie.title}" now ranks higher.`);
+        createReaction(window.innerWidth/2, window.innerHeight/2, '🚀');
+        createFloatText(window.innerWidth/2, window.innerHeight/2 - 50, `+${amount} BOOST`, '#00d084');
+
         pickFeatured();
-        render();
-        renderBuzzRail(); // keep rail numbers “alive”
+        renderRoute();
     }
 
-    function renderBuzzRail(){
-        const rail = document.getElementById("buzzFeed");
-        rail.innerHTML = "";
+    function renderBuzzPosts(){
+        const auto = document.getElementById("buzzAuto");
+        auto.innerHTML = "";
 
-        for(let i=0;i<7;i++){
+        for(let i=0;i<18;i++){
             const p = pickPosterForBuzz();
-            // passive exposure increases buzz slightly (algorithmic amplification)
-            const passive = randInt(0,1);
-            buzzScore[p.id] = (buzzScore[p.id] || 0) + passive;
-
             const h = handles[Math.floor(Math.random()*handles.length)];
             const body = postTemplates[Math.floor(Math.random()*postTemplates.length)](p.title);
             const mins = randInt(2, 55);
@@ -1521,41 +1797,87 @@
             post.className = "buzz-post";
             post.innerHTML = `
           <div class="buzz-top">
-            <div class="buzz-handle"><span class="ava"></span> ${h}</div>
+            <div class="buzz-handleline"><span class="ava"></span> ${h}</div>
             <div class="buzz-time">${mins}m</div>
           </div>
           <div class="buzz-body">${body}</div>
           <div class="buzz-actions">
-            <div class="pillbtn hot" data-act="boost" data-id="${p.id}">Boost ${p.title}</div>
+            <div class="boostbtn" data-act="boost" data-id="${p.id}">BOOST <span style="opacity:.75">${buzzScore[p.id] || 0}</span></div>
             <div class="pillbtn" data-act="open" data-id="${p.id}">Open</div>
             <div class="pillbtn" data-act="share" data-id="${p.id}">Share</div>
-            <div class="pillbtn" style="opacity:.75; cursor:default;">Buzz: ${buzzScore[p.id] || 0}</div>
           </div>
         `;
 
             post.querySelectorAll("[data-act]").forEach(btn=>{
-                btn.addEventListener("click", ()=>{
+                btn.addEventListener("click", (e)=>{
                     const act = btn.getAttribute("data-act");
                     const id = Number(btn.getAttribute("data-id"));
                     const movie = posters.find(x=>x.id===id);
                     if(!movie) return;
 
-                    if(act === "boost") addBuzz(id, 3, "tap");
-                    if(act === "share") addBuzz(id, 4, "share");
+                    post.classList.remove("boost-flash");
+                    void post.offsetWidth;
+                    post.classList.add("boost-flash");
+
+                    if(act === "boost"){
+                        addBuzz(id, 3, "tap");
+                        createPulseRing(e.clientX, e.clientY);
+                    }
+                    if(act === "share"){
+                        addBuzz(id, 4, "share");
+                        createReaction(e.clientX, e.clientY, '📢');
+                    }
                     if(act === "open"){
-                        // opening from social counts as a social interaction too
                         socialInteractions++;
                         socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
                         openPrePlayModal(movie);
+                        createReaction(e.clientX, e.clientY, '🎬');
                     }
+
+                    pauseBuzzAutoScroll(3200);
                 });
             });
 
-            rail.appendChild(post);
+            auto.appendChild(post);
         }
     }
 
-    function render(){
+    const buzzScroll = document.getElementById("buzzScroll");
+    let buzzAutoTimer = null;
+    let autoEnabled = true;
+    let autoPauseUntil = 0;
+
+    function pauseBuzzAutoScroll(ms){
+        autoPauseUntil = Date.now() + ms;
+    }
+
+    function startBuzzAutoScroll(){
+        if(buzzAutoTimer) clearInterval(buzzAutoTimer);
+
+        buzzAutoTimer = setInterval(()=>{
+            if(!autoEnabled) return;
+            if(Date.now() < autoPauseUntil) return;
+
+            const drawer = document.getElementById("buzzDrawer");
+            if(!drawer.classList.contains("open")) return;
+
+            buzzScroll.scrollTop += 0.35;
+            const nearBottom = (buzzScroll.scrollTop + buzzScroll.clientHeight) >= (buzzScroll.scrollHeight - 20);
+            if(nearBottom){
+                renderBuzzPosts();
+                buzzScroll.scrollTop = 0;
+            }
+        }, 16);
+    }
+
+    let userScrollDebounce = null;
+    buzzScroll.addEventListener("scroll", ()=>{
+        pauseBuzzAutoScroll(2500);
+        if(userScrollDebounce) clearTimeout(userScrollDebounce);
+        userScrollDebounce = setTimeout(()=>{}, 250);
+    }, { passive:true });
+
+    function renderHome(){
         const feed=document.getElementById("feed");
         feed.innerHTML="";
 
@@ -1577,11 +1899,11 @@
             const title=document.createElement("div");
             title.className="row-title";
             title.innerHTML = `
-          <div>${(activeFilter === "all") ? rowLabelFor(r) : `${activeFilter.toUpperCase()} • Picks`}</div>
+          <div>${["Recommended For You","Because You Clicked","Trending Now"][r] || "For You"}</div>
           <div class="sub">${
                 preference.genre
-                    ? `Preference: ${preference.genre.toUpperCase()} • Social susceptibility: ${socialSusceptibility.toFixed(2)}x`
-                    : `Social susceptibility: ${socialSusceptibility.toFixed(2)}x`
+                    ? `Preference: ${preference.genre.toUpperCase()} • Boost Weight: ${socialSusceptibility.toFixed(2)}x`
+                    : `Boost Weight: ${socialSusceptibility.toFixed(2)}x`
             }</div>
         `;
             feed.appendChild(title);
@@ -1592,8 +1914,18 @@
             const row=document.createElement("div");
             row.className="row";
 
-            wrap.appendChild(makeRowArrow("left", row));
-            wrap.appendChild(makeRowArrow("right", row));
+            const left = document.createElement("div");
+            left.className = "row-arrow left";
+            left.textContent = "‹";
+            left.onclick = (e)=>{ e.stopPropagation(); row.scrollBy({ left: -Math.floor(row.clientWidth*0.9), behavior:"smooth" }); };
+
+            const right = document.createElement("div");
+            right.className = "row-arrow right";
+            right.textContent = "›";
+            right.onclick = (e)=>{ e.stopPropagation(); row.scrollBy({ left: Math.floor(row.clientWidth*0.9), behavior:"smooth" }); };
+
+            wrap.appendChild(left);
+            wrap.appendChild(right);
             wrap.appendChild(row);
 
             for(let i=0;i<perRow;i++){
@@ -1606,16 +1938,6 @@
                 if(isPreferred(p)) card.classList.add("pref");
                 if(isPreferredHuge(p, i)) card.classList.add("pref-large");
 
-                // SOCIAL badge on thumbnail if buzz is significant
-                const b = buzzScore[p.id] || 0;
-                if(b >= 5){
-                    const badge = document.createElement("div");
-                    const hot = b >= 10;
-                    badge.className = "social-badge" + (hot ? " hot" : "");
-                    badge.innerHTML = `<span class="dot"></span> ${hot ? "TRENDING" : "Buzz"} • ${b}`;
-                    card.appendChild(badge);
-                }
-
                 const quick=document.createElement("div");
                 quick.className="quick";
 
@@ -1626,18 +1948,30 @@
                 bInfo.onclick=(e)=>{
                     e.stopPropagation();
                     openPrePlayModal(p);
+                    createReaction(e.clientX, e.clientY, 'ℹ️');
                 };
 
-                const bShare=document.createElement("div");
-                bShare.className="qbtn";
-                bShare.title="Share (social proof)";
-                bShare.textContent="↗";
-                bShare.onclick=(e)=>{
+                const bList=document.createElement("div");
+                bList.className="qbtn" + (myList.has(p.id) ? " on" : "");
+                bList.title="Add to My List";
+                bList.textContent="+";
+                bList.onclick=(e)=>{
                     e.stopPropagation();
-                    addBuzz(p.id, 3, "share");
+                    if(myList.has(p.id)){
+                        myList.delete(p.id);
+                        showToast("Removed from My List");
+                        createReaction(e.clientX, e.clientY, '✕');
+                    }else{
+                        myList.add(p.id);
+                        showToast("Added to My List");
+                        createReaction(e.clientX, e.clientY, '✓');
+                    }
+                    saveList();
+                    updateListCount();
+                    renderRoute();
                 };
 
-                quick.appendChild(bShare);
+                quick.appendChild(bList);
                 quick.appendChild(bInfo);
 
                 const info=document.createElement("div");
@@ -1657,27 +1991,95 @@
                     start=Date.now();
                     views++;
                     viewCounts[p.id]=(viewCounts[p.id]||0)+1;
-                    updateHUD();
                 };
                 card.onmouseleave=()=>{
                     if(start){
                         hoverTimeMs[p.id]=(hoverTimeMs[p.id]||0)+(Date.now()-start);
-                        updateHUD();
                     }
                 };
 
                 card.onclick=()=>{
                     clicks++;
                     genreAffinity[p.genre]=(genreAffinity[p.genre]||0)+1;
-                    updateHUD();
                     openPrePlayModal(p);
-                    render();
+                    renderRoute();
+                    createSparkles({clientX: event.clientX, clientY: event.clientY});
                 };
 
                 row.appendChild(card);
             }
 
             feed.appendChild(wrap);
+        }
+    }
+
+    function renderListPage(){
+        const feed=document.getElementById("feed");
+        const items = posters.filter(p => myList.has(p.id));
+
+        feed.innerHTML = `
+        <div style="padding:12px 16px 0 16px;">
+          <div style="font-family:Space Grotesk, Inter, system-ui, sans-serif; text-transform:uppercase; letter-spacing:.16em; font-size:12px; opacity:.9;">
+            My List
+          </div>
+          <div style="margin-top:8px; font-size:12px; opacity:.75; line-height:1.55;">
+            A separate "page" (hash route) showing saved titles. Click a title to open pre-play, or remove it.
+          </div>
+        </div>
+
+        <div style="padding:16px; display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:12px;">
+          ${
+            items.length
+                ? items.map(p => `
+                  <div style="border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden; background:rgba(20,20,20,.6); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(229, 9, 20, 0.5)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255,255,255,.08)';">
+                    <div style="height:220px; background-image:url(${p.img}); background-size:cover; background-position:center; position:relative;">
+                      <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,.18));"></div>
+                      <div style="position:absolute; left:10px; right:10px; bottom:10px;">
+                        <div style="font-weight:700;">${p.title}</div>
+                        <div style="opacity:.75; font-size:12px;">${p.genre} • ★ ${p.stats.rating} • ${p.stats.vibe}</div>
+                      </div>
+                    </div>
+                    <div style="padding:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                      <div class="btn primary" data-open-id="${p.id}">Open</div>
+                      <div class="btn" data-remove-id="${p.id}">Remove</div>
+                    </div>
+                  </div>
+                `).join("")
+                : `<div style="opacity:.7;">Your list is empty. Add movies using the <b>+</b> button on posters.</div>`
+        }
+        </div>
+      `;
+
+        feed.querySelectorAll("[data-open-id]").forEach(el=>{
+            el.addEventListener("click", (e)=>{
+                const id = Number(el.getAttribute("data-open-id"));
+                const movie = posters.find(x=>x.id===id);
+                if(movie) {
+                    openPrePlayModal(movie);
+                    createReaction(e.clientX, e.clientY, '🎬');
+                }
+            });
+        });
+
+        feed.querySelectorAll("[data-remove-id]").forEach(el=>{
+            el.addEventListener("click", (e)=>{
+                const id = Number(el.getAttribute("data-remove-id"));
+                myList.delete(id);
+                saveList();
+                updateListCount();
+                renderRoute();
+                showToast("Removed from My List");
+                createReaction(e.clientX, e.clientY, '✕');
+            });
+        });
+    }
+
+    function renderRoute(){
+        const route = location.hash || "#/";
+        if(route.startsWith("#/list")){
+            renderListPage();
+        }else{
+            renderHome();
         }
     }
 
@@ -1693,30 +2095,29 @@
             : "";
 
         const more = getMoreLikeThis(p, 8);
-
         const b = buzzScore[p.id] || 0;
-        const friendsWatched = Math.min(120, 5 + Math.floor(b * 3.2) + Math.floor(seededRand(p.id*17.7) * 18));
-        const shares = 80 + b*22 + Math.floor(seededRand(p.id*3.3) * 240);
+        const inList = myList.has(p.id);
 
         c.innerHTML=`
         <div class="modal-grid">
           <div>
-            <div class="modal-poster">
+            <div class="modal-poster" onclick="createSparkles(event)">
               <img src="${p.img}" alt="${p.title}">
             </div>
             <div style="margin-top:10px">
-              <span class="pill">${s.genre.toUpperCase()}</span>
-              <span class="pill">${s.year}</span>
-              <span class="pill">${s.runtime} min</span>
-              <span class="pill">${s.vibe}</span>
-              ${b >= 10 ? `<span class="pill">TRENDING</span>` : (b >= 5 ? `<span class="pill">BUZZ</span>` : "")}
+              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '🏷️')">${s.genre.toUpperCase()}</span>
+              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '📅')">${s.year}</span>
+              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '⏱️')">${s.runtime} min</span>
+              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '🎭')">${s.vibe}</span>
+              ${b >= 10 ? `<span class="pill" onclick="createReaction(event.clientX, event.clientY, '🔥')">TRENDING</span>` : (b >= 5 ? `<span class="pill" onclick="createReaction(event.clientX, event.clientY, '⭐')">BOOSTED</span>` : "")}
             </div>
             ${warnings}
 
             <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
-              <div class="playbtn" id="modalPlayBtn" style="padding:10px 12px;">▶ Play</div>
-              <div class="btn" id="modalBoostBtn" style="padding:10px 12px;">Boost (+3)</div>
-              <div class="btn" id="modalShareBtn" style="padding:10px 12px;">Share (+4)</div>
+              <div class="playbtn" id="modalPlayBtn" style="padding:10px 12px;" onclick="createReaction(event.clientX, event.clientY, '▶️')">▶ Play</div>
+              <div class="btn ${inList ? "primary" : ""}" id="modalListBtn" style="padding:10px 12px;">
+                ${inList ? "In My List" : "Add to My List"}
+              </div>
               <div class="btn" id="modalCloseBtn" style="padding:10px 12px;">Close</div>
             </div>
           </div>
@@ -1724,44 +2125,32 @@
           <div>
             <h2 style="margin:0 0 6px 0">${p.title}</h2>
             <div style="opacity:.8;font-size:12px;margin-bottom:10px">
-              ★ ${s.rating} (${s.votes} ratings) • Social: <b>${friendsWatched}</b> friends watched • <b>${shares}</b> shares • Buzz: <b>${b}</b>
+              ★ ${s.rating} (${s.votes} ratings) • Boost: <b>${b}</b>
             </div>
 
-            <div class="review">
-              <b>Social pressure preview:</b>
-              “${
-            [
-                "My feed basically decided this for me.",
-                "I didn’t pick it — the trend did.",
-                "I watched it just to stay in the loop.",
-                "Everyone kept posting about it, so I clicked."
-            ][Math.floor(Math.random()*4)]
-        }”
+            <div class="review" onclick="createReaction(event.clientX, event.clientY, '💭')">
+              <b>About this title:</b> Watch how this title's position in recommendations changes based on how many times it gets boosted in the Buzz panel.
             </div>
 
             <div class="preplay">
               <div class="preplay-top">
                 <div>
-                  <div class="preplay-title">More Like This (bigger, kept inside container)</div>
-                  <div class="preplay-sub">Similarity includes genre/vibe + a “what’s trending together” effect</div>
+                  <div class="preplay-title">More Like This</div>
+                  <div class="preplay-sub">These are ranked by genre, vibe, and boost score</div>
                 </div>
               </div>
 
               <div class="preplay-grid" id="moreGrid">
                 ${more.map(x => `
                   <div class="mini" data-open-id="${x.id}" style="background-image:url(${x.img})">
-                    <span><b>${x.title}</b><br><span style="opacity:.75">${x.genre} • ${x.stats.vibe}</span></span>
+                    <span><b>${x.title}</b><br><span style="opacity:.75">${x.genre}</span></span>
                   </div>
                 `).join("")}
               </div>
             </div>
 
-            <div class="review"><b>Review:</b> ${s.reviews[0]}</div>
-            <div class="review"><b>Review:</b> ${s.reviews[1]}</div>
-
-            <div style="margin-top:10px; opacity:.7; font-size:11px">
-              Engagement prediction: <b style="color:#fff">${predictEngagement()}</b>
-            </div>
+            <div class="review" onclick="createReaction(event.clientX, event.clientY, '⭐')"><b>Review:</b> ${s.reviews[0]}</div>
+            <div class="review" onclick="createReaction(event.clientX, event.clientY, '⭐')"><b>Review:</b> ${s.reviews[1]}</div>
           </div>
         </div>
       `;
@@ -1772,16 +2161,24 @@
             e.stopPropagation();
             openPlayer(p);
         });
-        document.getElementById("modalBoostBtn")?.addEventListener("click", (e)=>{
+
+        document.getElementById("modalListBtn")?.addEventListener("click", (e)=>{
             e.stopPropagation();
-            addBuzz(p.id, 3, "tap");
+            if(myList.has(p.id)){
+                myList.delete(p.id);
+                showToast("Removed from My List");
+                createReaction(e.clientX, e.clientY, '✕');
+            }else{
+                myList.add(p.id);
+                showToast("Added to My List");
+                createReaction(e.clientX, e.clientY, '✓');
+            }
+            saveList();
+            updateListCount();
             openPrePlayModal(p);
+            renderRoute();
         });
-        document.getElementById("modalShareBtn")?.addEventListener("click", (e)=>{
-            e.stopPropagation();
-            addBuzz(p.id, 4, "share");
-            openPrePlayModal(p);
-        });
+
         document.getElementById("modalCloseBtn")?.addEventListener("click", (e)=>{
             e.stopPropagation();
             closeModal();
@@ -1794,9 +2191,9 @@
                 if(movie){
                     clicks++;
                     genreAffinity[movie.genre]=(genreAffinity[movie.genre]||0)+1;
-                    updateHUD();
                     openPrePlayModal(movie);
-                    render();
+                    renderRoute();
+                    createSparkles({clientX: event.clientX, clientY: event.clientY});
                 }
             });
         });
@@ -1806,10 +2203,13 @@
     document.getElementById("modal").addEventListener("click", (e)=>{ if(e.target.id === "modal") closeModal(); });
 
     window.addEventListener("keydown", (e)=>{
-        if(e.key === "Escape"){ closeModal(); closePlayer(); closeSurvey(); }
+        if(e.key === "Escape"){
+            closeModal();
+            closePlayer();
+            closeSurvey();
+        }
     });
 
-    /* Player (manual) */
     const player = document.getElementById("player");
     const playerTitle = document.getElementById("playerTitle");
     const playerClose = document.getElementById("playerClose");
@@ -1888,129 +2288,63 @@
         }
     });
 
-    /* HUD */
-    function topGenre(){
-        let best = {g:"—", v: -Infinity};
-        for(const g of Object.keys(genreAffinity)){
-            if(genreAffinity[g] > best.v) best = {g, v: genreAffinity[g]};
+    const essayDrawer = document.getElementById("essayDrawer");
+    const essayHandle = document.getElementById("essayHandle");
+    const toggleEssayBtn = document.getElementById("toggleEssayBtn");
+    function toggleEssay(){
+        essayDrawer.classList.toggle("open");
+        createSparkles({clientX: event.clientX, clientY: event.clientY});
+    }
+    essayHandle.addEventListener("click", toggleEssay);
+    toggleEssayBtn.addEventListener("click", toggleEssay);
+
+    const buzzDrawer = document.getElementById("buzzDrawer");
+    const buzzHandle = document.getElementById("buzzHandle");
+    const toggleBuzzBtn = document.getElementById("toggleBuzzBtn");
+    function toggleBuzz(){
+        buzzDrawer.classList.toggle("open");
+        if(buzzDrawer.classList.contains("open")){
+            pauseBuzzAutoScroll(400);
+            createSparkles({clientX: event.clientX, clientY: event.clientY});
         }
-        return best.v > 0 ? best.g : "—";
     }
+    buzzHandle.addEventListener("click", toggleBuzz);
+    toggleBuzzBtn.addEventListener("click", toggleBuzz);
 
-    function avgHoverSeconds(){
-        const ids = Object.keys(hoverTimeMs);
-        if(ids.length===0) return 0;
-        let sum = 0;
-        for(const id of ids) sum += hoverTimeMs[id];
-        return (sum / ids.length) / 1000;
-    }
+    document.getElementById("refreshBuzzBtn").addEventListener("click", (e)=>{
+        renderBuzzPosts();
+        buzzScroll.scrollTop = 0;
+        pauseBuzzAutoScroll(2000);
+        showToast("Buzz refreshed");
+        createReaction(e.clientX, e.clientY, '🔄');
+    });
 
-    function predictEngagement(){
-        const affinityTotal = Object.values(genreAffinity).reduce((a,b)=>a+b,0);
-        const avgHover = avgHoverSeconds();
-        const heat = heatPoints;
-
-        // Social interactions add to engagement; susceptibility is a “meta” effect
-        const score = (clicks * 1.2) + (views * 0.25) + (affinityTotal * 0.9) + (avgHover * 0.8) + (heat * 0.002) + (socialInteractions * 0.9);
-        if(score > 72) return "VERY HIGH";
-        if(score > 40) return "HIGH";
-        if(score > 22) return "MEDIUM";
-        return "LOW";
-    }
-
-    function updateHUD(){
-        document.getElementById("sClicks").innerText = clicks;
-        document.getElementById("sViews").innerText = views;
-        document.getElementById("sTopGenre").innerText = topGenre();
-        document.getElementById("sAvgHover").innerText = avgHoverSeconds().toFixed(1) + "s";
-        document.getElementById("sHeat").innerText = heatPoints + " pts";
-        document.getElementById("sEngage").innerText = predictEngagement();
-    }
-
-    /* Header buttons */
     document.getElementById("openListBtn").addEventListener("click", ()=>{
-        showToast("My List placeholder");
+        goList();
+        createReaction(event.clientX, event.clientY, '📋');
     });
 
-    document.getElementById("featuredInfo").addEventListener("click", ()=>{
-        if(featuredMovie) openPrePlayModal(featuredMovie);
+    document.getElementById("featuredInfo").addEventListener("click", (e)=>{
+        if(featuredMovie) {
+            openPrePlayModal(featuredMovie);
+            createReaction(e.clientX, e.clientY, 'ℹ️');
+        }
     });
-    document.getElementById("featuredShuffle").addEventListener("click", ()=>{
+    document.getElementById("featuredShuffle").addEventListener("click", (e)=>{
         featuredMovie = posters[Math.floor(Math.random()*posters.length)];
         pickFeatured();
         showToast("Featured shuffled");
-    });
-
-    document.getElementById("refreshBuzzBtn").addEventListener("click", ()=>{
-        renderBuzzRail();
-        showToast("Buzz refreshed");
-    });
-
-    document.getElementById("openBuzzBtn").addEventListener("click", ()=>{
-        // open buzz rail inside modal (useful when rail is hidden by media query)
-        const m=document.getElementById("modal");
-        const c=document.getElementById("modalContent");
-        const items = [...document.getElementById("buzzFeed").children].map(el => el.outerHTML).join("");
-
-        c.innerHTML = `
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-          <h2 style="margin:0">Buzz Rail</h2>
-          <div class="btn" id="modalCloseBtn">Close</div>
-        </div>
-        <div style="margin-top:12px">${items || "<div style='opacity:.7'>No buzz yet. Hit “Refresh Buzz”.</div>"}</div>
-        <div style="margin-top:10px; font-size:11px; opacity:.7; line-height:1.5">
-          Tip: Boosting or Sharing increases <b>social susceptibility</b>, making buzz influence recommendations more.
-        </div>
-      `;
-        m.classList.add("open");
-        document.getElementById("modalCloseBtn")?.addEventListener("click", (e)=>{ e.stopPropagation(); closeModal(); });
-
-        // rebind interactions inside modal copy
-        c.querySelectorAll("[data-act]").forEach(btn=>{
-            btn.addEventListener("click", ()=>{
-                const act = btn.getAttribute("data-act");
-                const id = Number(btn.getAttribute("data-id"));
-                const movie = posters.find(x=>x.id===id);
-                if(!movie) return;
-                if(act === "boost") addBuzz(id, 3, "tap");
-                if(act === "share") addBuzz(id, 4, "share");
-                if(act === "open"){
-                    socialInteractions++;
-                    socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
-                    openPrePlayModal(movie);
-                }
-            });
-        });
+        createConfetti(20);
     });
 
     const searchInput = document.getElementById("searchInput");
     searchInput.addEventListener("input", ()=>{
         searchQuery = searchInput.value.trim();
         pickFeatured();
-        render();
+        renderRoute();
     });
 
-    setInterval(()=>{
-        document.getElementById("aiBox").innerText =
-            ["Tracking behavior","Updating model","Predicting engagement","Optimizing feed","Measuring virality"]
-                [Math.floor(Math.random()*5)];
-    }, 1800);
-
-    const enginePanel = document.getElementById("enginePanel");
-    enginePanel.addEventListener("scroll", ()=>{
-        const max = enginePanel.scrollHeight - enginePanel.clientHeight;
-        const s = max > 0 ? (enginePanel.scrollTop / max) : 0;
-        document.getElementById("progress").style.width = (s*100) + "%";
-    });
-
-    const essayDrawer = document.getElementById("essayDrawer");
-    const essayHandle = document.getElementById("essayHandle");
-    const toggleEssayBtn = document.getElementById("toggleEssayBtn");
-    function toggleEssay(){ essayDrawer.classList.toggle("open"); }
-    essayHandle.addEventListener("click", toggleEssay);
-    toggleEssayBtn.addEventListener("click", toggleEssay);
-
-    document.getElementById("clearStatsBtn").addEventListener("click", ()=>{
+    document.getElementById("clearStatsBtn").addEventListener("click", (e)=>{
         clicks = 0; views = 0;
         genreAffinity = { romance:0, horror:0, action:0, sciFi:0, thriller:0 };
         hoverTimeMs = {};
@@ -2025,18 +2359,26 @@
         socialSusceptibility = 1.0;
         socialInteractions = 0;
 
-        updateHUD();
-        renderBuzzRail();
+        myList = new Set();
+        saveList();
+        updateListCount();
+
+        renderBuzzPosts();
         pickFeatured();
-        render();
+        renderRoute();
         clearHeat();
         closePlayer();
         closeModal();
         showToast("Reset complete");
         openSurvey();
+        createConfetti(40);
     });
 
-    /* Heat overlay */
+    const enginePanel = document.getElementById("enginePanel");
+    enginePanel.addEventListener("scroll", ()=>{
+        // can add scroll tracking here if needed
+    });
+
     const heatCanvas = document.getElementById("heatCanvas");
     const heatCtx = heatCanvas.getContext("2d", { alpha: true });
 
@@ -2073,7 +2415,6 @@
         heatCtx.fill();
 
         heatPoints++;
-        if(heatPoints % 4 === 0) updateHUD();
     }, { passive:true });
 
     setInterval(()=>{
@@ -2083,7 +2424,6 @@
         heatCtx.globalCompositeOperation = "source-over";
     }, 60);
 
-    /* Survey */
     const surveyEl = document.getElementById("survey");
     const surveyGenresEl = document.getElementById("surveyGenres");
     const surveyVibesEl = document.getElementById("surveyVibes");
@@ -2122,7 +2462,10 @@
             o.className = "opt" + (preference.genre === g ? " on" : "");
             o.textContent = g.toUpperCase();
             o.dataset.value = g;
-            o.onclick = ()=> toggleOpt(surveyGenresEl, g, "genre");
+            o.onclick = ()=> {
+                toggleOpt(surveyGenresEl, g, "genre");
+                createReaction(event.clientX, event.clientY, '✓');
+            };
             surveyGenresEl.appendChild(o);
         });
 
@@ -2132,27 +2475,32 @@
             o.className = "opt" + (preference.vibe === v ? " on" : "");
             o.textContent = v;
             o.dataset.value = v;
-            o.onclick = ()=> toggleOpt(surveyVibesEl, v, "vibe");
+            o.onclick = ()=> {
+                toggleOpt(surveyVibesEl, v, "vibe");
+                createReaction(event.clientX, event.clientY, '✓');
+            };
             surveyVibesEl.appendChild(o);
         });
     }
 
-    document.getElementById("surveySkipBtn").addEventListener("click", ()=>{
+    document.getElementById("surveySkipBtn").addEventListener("click", (e)=>{
         closeSurvey();
         showToast("Survey skipped");
-        renderBuzzRail();
+        createReaction(e.clientX, e.clientY, '⊘');
+        renderBuzzPosts();
         pickFeatured();
-        render();
+        renderRoute();
     });
 
-    document.getElementById("surveyResetBtn").addEventListener("click", ()=>{
+    document.getElementById("surveyResetBtn").addEventListener("click", (e)=>{
         preference.genre = null;
         preference.vibe = null;
         buildSurveyUI();
         showToast("Cleared");
+        createReaction(e.clientX, e.clientY, '✕');
     });
 
-    document.getElementById("surveyContinueBtn").addEventListener("click", ()=>{
+    document.getElementById("surveyContinueBtn").addEventListener("click", (e)=>{
         if(!preference.genre){
             showToast("Pick a genre to continue");
             return;
@@ -2161,20 +2509,24 @@
         genreAffinity[preference.genre] = (genreAffinity[preference.genre] || 0) + 6;
         closeSurvey();
         showToast("Personalization applied");
-        renderBuzzRail();   // creates a “bubble” immediately
+        createConfetti(30);
+        renderBuzzPosts();
         pickFeatured();
-        render();
+        renderRoute();
     });
 
-    /* Init */
+    window.addEventListener("hashchange", renderRoute);
+
     function init(){
         buildFilters();
-        updateHUD();
         buildSurveyUI();
         openSurvey();
-        renderBuzzRail();
+
+        renderBuzzPosts();
+        startBuzzAutoScroll();
+
         pickFeatured();
-        render();
+        renderRoute();
     }
     init();
 </script>
