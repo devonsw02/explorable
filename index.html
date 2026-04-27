@@ -3,2532 +3,2014 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBSESSO+ — Dual UX Behavioral System</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-
+    <title>Beyond Engagement — Dark UX Patterns in Streaming</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root{
-            --bg:#050505;
-            --panel:#0b0b0b;
-            --accent:#e50914;
-            --text:#f5f5f5;
-            --muted:#bdbdbd;
-            --stroke:#222;
+        :root {
+            --ink: #0c0c0c;
+            --paper: #f4f0e8;
+            --paper2: #ece8df;
+            --panel: #1a1410;
+            --screen: #080808;
+            --red: #c8392b;
+            --red-dim: rgba(200,57,43,0.12);
+            --amber: #d4821a;
+            --amber-dim: rgba(212,130,26,0.12);
+            --critique: #e8c547;
+            --critique-dim: rgba(232,197,71,0.15);
+            --muted: #7a7368;
+            --stroke: rgba(12,12,12,0.12);
+            --stroke-strong: rgba(12,12,12,0.25);
+            --serif: 'DM Serif Display', Georgia, serif;
+            --sans: 'DM Sans', system-ui, sans-serif;
+            --mono: 'DM Mono', monospace;
         }
 
-        *{ box-sizing:border-box; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body{
-            margin:0;
-            font-family:Inter,sans-serif;
-            background:var(--bg);
-            color:var(--text);
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--paper);
+            color: var(--ink);
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* CONFETTI */
-        @keyframes confetti-fall {
-            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        /* ── MASTHEAD ─────────────────────────────────────────── */
+        .masthead {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            border-bottom: 1px solid rgba(244,240,232,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 800;
         }
 
-        .confetti {
-            position: fixed;
-            pointer-events: none;
-            animation: confetti-fall 2s ease-in forwards;
-            z-index: 9999;
-        }
-
-        /* FLOATING TEXT */
-        @keyframes float-up {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-80px) scale(0.8); }
-        }
-
-        .float-text {
-            position: fixed;
-            pointer-events: none;
-            animation: float-up 1.5s ease-out forwards;
-            font-weight: 700;
+        .masthead-title {
+            font-family: var(--serif);
             font-size: 18px;
-            z-index: 9998;
+            letter-spacing: 0.01em;
+            color: var(--paper);
+            font-style: italic;
         }
 
-        /* PULSE ANIMATION */
-        @keyframes pulse-pop {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-
-        .pulse-ring {
-            position: fixed;
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: pulse-pop 0.8s ease-out forwards;
-            z-index: 9997;
-        }
-
-        /* SPARKLES */
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        .sparkle {
-            position: fixed;
-            pointer-events: none;
-            animation: sparkle 0.6s ease-out forwards;
-            z-index: 9996;
-        }
-
-        /* REACTION EMOJI */
-        @keyframes reaction-bounce {
-            0% { transform: scale(0) rotate(0deg); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1) translateY(-100px) rotate(20deg); opacity: 0; }
-        }
-
-        .reaction {
-            position: fixed;
-            pointer-events: none;
-            animation: reaction-bounce 1s ease-out forwards;
-            font-size: 32px;
-            z-index: 9995;
-        }
-
-        /* MINI STAT POPUP */
-        .stat-popup {
-            position: fixed;
-            background: rgba(229, 9, 20, 0.2);
-            border: 1px solid rgba(229, 9, 20, 0.6);
-            padding: 8px 12px;
-            border-radius: 8px;
+        .masthead-issue {
+            font-family: var(--mono);
             font-size: 11px;
+            color: rgba(244,240,232,0.45);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* ── HERO ─────────────────────────────────────────────── */
+        .hero {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 80px 48px 72px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 47px,
+                    rgba(244,240,232,0.04) 47px,
+                    rgba(244,240,232,0.04) 48px
+            );
             pointer-events: none;
-            z-index: 9994;
-            animation: float-up 1s ease-out forwards;
         }
 
-        /* HEADER */
-        .header{
-            position:fixed;
-            top:0;
-            width:100%;
-            padding:12px 18px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            z-index:2500;
-            background:linear-gradient(to bottom,rgba(0,0,0,.92),rgba(0,0,0,.65),rgba(0,0,0,0));
-            backdrop-filter:blur(10px);
-            gap:12px;
+        .hero-kicker {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--critique);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .logo{
-            font-family:'Space Grotesk', Inter, system-ui, sans-serif;
-            color:var(--accent);
-            font-size:18px;
-            cursor:pointer;
-            letter-spacing:.14em;
-            text-transform:uppercase;
-            font-weight:700;
-            display:flex;
-            align-items:center;
-            gap:10px;
-            white-space:nowrap;
-            transition: transform 0.3s;
-        }
-        .logo:hover { transform: scale(1.05); }
-
-        .logo .dot{
-            width:8px;height:8px;border-radius:50%;
-            background:var(--accent);
-            box-shadow:0 0 16px rgba(229,9,20,.7);
-            animation: pulse 1.5s ease-in-out infinite;
+        .hero-kicker::before {
+            content: '';
+            display: inline-block;
+            width: 28px;
+            height: 1px;
+            background: var(--critique);
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(48px, 7vw, 96px);
+            line-height: 0.96;
+            letter-spacing: -0.02em;
+            max-width: 820px;
+            margin-bottom: 32px;
         }
 
-        .top-left{
-            display:flex;
-            align-items:center;
-            gap:14px;
-            min-width:0;
+        .hero h1 em {
+            font-style: italic;
+            color: rgba(244,240,232,0.45);
         }
 
-        .top-actions{
-            display:flex;
-            gap:10px;
-            align-items:center;
-            flex-wrap:wrap;
-            justify-content:flex-end;
-            white-space:nowrap;
+        .hero-byline {
+            font-size: 14px;
+            color: rgba(244,240,232,0.5);
+            font-weight: 300;
+            max-width: 540px;
+            line-height: 1.7;
         }
 
-        .btn{
-            background:rgba(20,20,20,.85);
-            border:1px solid rgba(255,255,255,.10);
-            color:var(--text);
-            font-size:12px;
-            padding:8px 10px;
-            border-radius:10px;
-            cursor:pointer;
-            transition:.2s;
-            user-select:none;
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
+        .hero-byline strong {
+            color: rgba(244,240,232,0.8);
+            font-weight: 500;
+        }
+
+        /* ── LAYOUT ───────────────────────────────────────────── */
+        .layout {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            min-height: calc(100vh - 56px);
+            border-top: 1px solid var(--stroke);
+        }
+
+        @media (max-width: 1100px) {
+            .layout { grid-template-columns: 1fr; }
+            .essay-col { max-height: none; position: static; border-right: none; border-bottom: 1px solid var(--stroke); }
+        }
+
+        /* ── ESSAY COLUMN ─────────────────────────────────────── */
+        .essay-col {
+            background: var(--paper);
+            border-right: 1px solid var(--stroke);
+            position: sticky;
+            top: 56px;
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--stroke-strong) transparent;
+            padding: 40px 40px 60px;
+        }
+
+        .essay-col::-webkit-scrollbar { width: 4px; }
+        .essay-col::-webkit-scrollbar-track { background: transparent; }
+        .essay-col::-webkit-scrollbar-thumb { background: var(--stroke-strong); border-radius: 2px; }
+
+        .essay-intro {
+            padding-bottom: 32px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--stroke);
+        }
+
+        .essay-intro p {
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--muted);
+        }
+
+        .essay-intro p + p { margin-top: 10px; }
+
+        .essay-intro strong { color: var(--ink); font-weight: 500; }
+
+        .hint-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+            padding: 10px 14px;
+            background: var(--critique-dim);
+            border: 1px solid rgba(232,197,71,0.3);
+            border-radius: 6px;
+            font-size: 11px;
+            font-family: var(--mono);
+            color: #8a7020;
+            letter-spacing: 0.04em;
+        }
+
+        .hint-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--critique);
+            flex-shrink: 0;
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        /* ── ESSAY SECTIONS ───────────────────────────────────── */
+        .essay-section {
+            padding-bottom: 28px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--stroke);
+            transition: background 0.3s, padding 0.3s, margin 0.3s;
+            border-radius: 6px;
+        }
+
+        .essay-section.lit {
+            background: var(--critique-dim);
+            border: 1px solid rgba(232,197,71,0.35);
+            border-bottom: 1px solid rgba(232,197,71,0.35);
+            padding: 20px;
+            margin-left: -20px;
+            margin-right: -20px;
+        }
+
+        .section-num {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .essay-section h2 {
+            font-family: var(--serif);
+            font-size: 26px;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            color: var(--ink);
+        }
+
+        .essay-section p {
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .essay-section p:last-of-type { margin-bottom: 0; }
+
+        .callout {
+            background: var(--red-dim);
+            border-left: 3px solid var(--red);
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin-top: 12px;
+            font-size: 12px;
+            line-height: 1.65;
+            color: #8a2018;
+        }
+
+        .callout strong { font-weight: 600; color: var(--red); }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .tag {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--stroke-strong);
+            color: var(--muted);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .tag:hover { border-color: var(--critique); color: #6a5818; background: var(--critique-dim); }
+
+        .tag.on {
+            background: var(--critique);
+            color: #3a2e00;
+            border-color: var(--critique);
+            font-weight: 500;
+        }
+
+        /* ── APP COLUMN ───────────────────────────────────────── */
+        .app-col {
+            background: var(--screen);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── APP CHROME ───────────────────────────────────────── */
+        .app-chrome {
+            background: rgba(20,16,12,0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 56px;
+            z-index: 200;
+            backdrop-filter: blur(12px);
+        }
+
+        .app-wordmark {
+            font-family: var(--mono);
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+            box-shadow: 0 0 8px rgba(200,57,43,0.8);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.6} }
+
+        .chrome-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-btn {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: transparent;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn:hover { border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
+        .ctrl-btn.on { background: var(--critique); color: #3a2e00; border-color: var(--critique); }
+        .ctrl-btn.nav-active { border-color: rgba(255,255,255,0.45); color: rgba(255,255,255,0.9); }
+
+        /* ── APP SCROLL AREA ──────────────────────────────────── */
+        .app-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
             position: relative;
         }
-        .btn:hover{
-            border-color:rgba(255,255,255,.20);
-            transform: translateY(-2px);
-        }
-        .btn.primary{
-            background:rgba(229, 9, 20, .14);
-            border-color:rgba(229, 9, 20, .55);
+
+        .app-scroll::-webkit-scrollbar { display: none; }
+
+        /* ── PAGES ────────────────────────────────────────────── */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* ── HERO CARD ────────────────────────────────────────── */
+        .stream-hero {
+            position: relative;
+            height: 440px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 32px 32px 28px;
+            background: linear-gradient(135deg, #1a0a08, #0a0a14);
         }
 
-        .btn-badge {
+        .stream-hero-bg {
             position: absolute;
-            top: -6px;
-            right: -6px;
-            background: var(--accent);
-            color: white;
-            width: 18px;
-            height: 18px;
+            inset: 0;
+            background-size: cover;
+            background-position: center top;
+            transition: opacity 0.8s;
+        }
+
+        .stream-hero-fog {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(8,8,8,0.2) 0%, rgba(8,8,8,0.1) 40%, rgba(8,8,8,0.85) 80%, rgba(8,8,8,1) 100%);
+        }
+
+        .stream-hero-info {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .hero-badge-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .hbadge {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .hbadge.featured { background: var(--red); color: #fff; }
+        .hbadge.trending { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); }
+
+        .stream-hero h2 {
+            font-family: var(--serif);
+            font-size: clamp(28px, 3.5vw, 46px);
+            color: #fff;
+            line-height: 1.05;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+        }
+
+        .hero-meta-row {
+            display: flex;
+            gap: 14px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-desc-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.7);
+            max-width: 500px;
+            margin-bottom: 18px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hbtn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.03em;
+        }
+
+        .hbtn.play { background: #fff; color: #000; }
+        .hbtn.play:hover { background: rgba(255,255,255,0.88); transform: scale(1.04); }
+        .hbtn.info { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .hbtn.info:hover { background: rgba(255,255,255,0.2); }
+        .hbtn.add { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); }
+        .hbtn.add:hover { background: rgba(255,255,255,0.16); }
+
+        /* ── AUTOPLAY BAR ─────────────────────────────────────── */
+        .autoplay-bar {
+            background: rgba(12,12,12,0.92);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+
+        .autoplay-bar.visible { display: flex; }
+
+        .autoplay-track {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .autoplay-fill {
+            height: 100%;
+            background: var(--red);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .autoplay-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.45);
+            flex-shrink: 0;
+        }
+
+        .autoplay-cancel {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.6);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .autoplay-cancel:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+
+        /* ── CONTENT ROWS ─────────────────────────────────────── */
+        .content-rows { padding: 8px 0 40px; }
+
+        .content-row { margin-bottom: 32px; }
+
+        .row-head {
+            padding: 0 24px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .row-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.85);
+            letter-spacing: 0.01em;
+        }
+
+        .row-badge {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .row-badge.algo { background: rgba(200,57,43,0.2); color: #e87060; border: 1px solid rgba(200,57,43,0.3); }
+        .row-badge.social { background: rgba(212,130,26,0.2); color: #e8a040; border: 1px solid rgba(212,130,26,0.3); }
+
+        .card-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px 24px 4px;
+            scrollbar-width: none;
+        }
+
+        .card-scroll::-webkit-scrollbar { display: none; }
+
+        /* ── POSTER CARDS ─────────────────────────────────────── */
+        .pcard {
+            width: 148px;
+            height: 222px;
+            border-radius: 6px;
+            background: #1a1a1a;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.3s;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+            outline: none;
+        }
+
+        .pcard:focus-visible { outline: 2px solid var(--critique); outline-offset: 2px; }
+
+        .pcard::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+        }
+
+        .pcard:not(.critique-mode .pcard):hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        .pcard-info {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 10px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .pcard-title {
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.3;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+        }
+
+        .pcard-sub {
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 3px;
+        }
+
+        .pcard-add {
+            position: absolute;
+            top: 8px; right: 8px;
+            width: 28px; height: 28px;
             border-radius: 50%;
+            background: rgba(244,240,232,0.9);
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
             font-weight: 700;
-            animation: bounce 0.5s;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+        .pcard:hover .pcard-add { opacity: 1; }
+        .pcard-add:hover { transform: scale(1.15); background: #fff; }
+
+        /* ── CRITIQUE MODE ────────────────────────────────────── */
+        body.critique-mode .app-col {
+            --crit-overlay: rgba(8,8,8,0.45);
         }
 
-        /* LAYOUT */
-        .layout{
-            display:flex;
-            height:100vh;
-            width:100%;
-            padding-top:56px;
+        body.critique-mode .app-scroll {
+            filter: saturate(0.6) brightness(0.75);
         }
 
-        /* ESSAY DRAWER (LEFT) */
-        .essay-drawer{
-            width:420px;
-            max-width:85vw;
-            background:rgba(12,12,12,.98);
-            border-right:1px solid rgba(255,255,255,.08);
-            position:fixed;
-            top:56px;
-            left:0;
-            height:calc(100vh - 56px);
-            transform:translateX(-100%);
-            transition:transform .32s cubic-bezier(.2,.9,.2,1);
-            z-index:2400;
-            display:flex;
-            flex-direction:column;
-            box-shadow: 20px 0 55px rgba(0,0,0,.55);
-            overflow-y: auto;
-        }
-        .essay-drawer.open{ transform:translateX(0%); }
-
-        .essay-handle{
-            position:absolute;
-            top:18px;
-            right:-56px;
-            width:56px;
-            height:150px;
-            background:rgba(14,14,14,.95);
-            border:1px solid rgba(255,255,255,.10);
-            border-left:none;
-            border-top-right-radius:14px;
-            border-bottom-right-radius:14px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            cursor:pointer;
-            user-select:none;
-            box-shadow:0 10px 30px rgba(0,0,0,.45);
-            z-index: 2450;
-            transition: all 0.3s;
-        }
-        .essay-handle:hover {
-            background: rgba(14, 14, 14, 1);
-            border-color: rgba(255, 255, 255, 0.2);
+        body.critique-mode .critique-pin {
+            display: block;
         }
 
-        .essay-handle span{
-            writing-mode:vertical-rl;
-            transform:rotate(180deg);
-            letter-spacing:.18em;
-            font-size:11px;
-            color:var(--muted);
-        }
-        .essay-drawer.open .essay-handle span{ color:var(--text); }
-
-        .essay-scroll{
-            padding:26px 26px 40px 26px;
-            overflow-y:auto;
-            line-height:1.7;
-            flex: 1;
-        }
-        .essay-scroll h1{
-            color:var(--accent);
-            font-size:22px;
-            margin:10px 0 10px 0;
-            line-height:1.2;
-        }
-        .essay-scroll h3{
-            opacity:.75;
-            font-weight:400;
-            margin:0 0 6px 0;
-            font-size:13px;
-        }
-        .essay-scroll p{
-            color:#ddd;
-            margin:0 0 14px 0;
-            font-size:13px;
-        }
-        .essay-scroll h2{
-            margin:18px 0 10px 0;
-            font-size:14px;
-            opacity:.9;
-        }
-        .essay-scroll .refs p{
-            margin:0 0 6px 0;
-            color:#cfcfcf;
-            font-size:12px;
-            opacity:.9;
+        /* ── CRITIQUE PINS ────────────────────────────────────── */
+        .critique-pin {
+            display: none;
+            position: absolute;
+            z-index: 500;
+            pointer-events: none;
         }
 
-        /* BUZZ DRAWER (RIGHT) */
-        .buzz-drawer{
-            width:360px;
-            max-width:90vw;
-            background:rgba(12,12,12,.98);
-            border-left:1px solid rgba(255,255,255,.08);
-            position:fixed;
-            top:56px;
-            right:0;
-            height:calc(100vh - 56px);
-            transform:translateX(100%);
-            transition:transform .32s cubic-bezier(.2,.9,.2,1);
-            z-index:2400;
-            display:flex;
-            flex-direction:column;
-            box-shadow: -20px 0 55px rgba(0,0,0,.55);
-            overflow-y: auto;
-        }
-        .buzz-drawer.open{ transform:translateX(0%); }
-
-        .buzz-handle{
-            position:absolute;
-            top:18px;
-            left:-56px;
-            width:56px;
-            height:150px;
-            background:rgba(14,14,14,.95);
-            border:1px solid rgba(255,255,255,.10);
-            border-right:none;
-            border-top-left-radius:14px;
-            border-bottom-left-radius:14px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            cursor:pointer;
-            user-select:none;
-            box-shadow:0 10px 30px rgba(0,0,0,.45);
-            z-index: 2450;
-            transition: all 0.3s;
-        }
-        .buzz-handle:hover {
-            background: rgba(14, 14, 14, 1);
-            border-color: rgba(255, 255, 255, 0.2);
+        .critique-ring {
+            position: absolute;
+            border: 2px solid var(--critique);
+            border-radius: 8px;
+            animation: ringPulse 2s ease-in-out infinite;
         }
 
-        .buzz-handle span{
-            writing-mode:vertical-rl;
-            transform:rotate(180deg);
-            letter-spacing:.18em;
-            font-size:11px;
-            color:var(--muted);
+        @keyframes ringPulse {
+            0%,100%{ box-shadow: 0 0 0 0 rgba(232,197,71,0.3); }
+            50%{ box-shadow: 0 0 0 6px rgba(232,197,71,0.0); }
         }
-        .buzz-drawer.open .buzz-handle span{ color:var(--text); }
 
-        .buzz-topbar{
-            padding:14px 14px 10px 14px;
-            border-bottom:1px solid rgba(255,255,255,.06);
-            display:flex;
-            align-items:flex-start;
-            justify-content:space-between;
-            gap:10px;
+        .critique-chip {
+            background: var(--critique);
+            color: #3a2e00;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            position: absolute;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            pointer-events: none;
+        }
+
+        /* ── CRITIQUE SIDEBAR ─────────────────────────────────── */
+        .critique-sidebar {
+            position: fixed;
+            right: -420px;
+            top: 56px;
+            bottom: 0;
+            width: 400px;
+            background: #12100e;
+            border-left: 1px solid rgba(232,197,71,0.2);
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+            overflow: hidden;
+        }
+
+        .critique-sidebar.open { right: 0; }
+
+        .critique-sidebar-head {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid rgba(232,197,71,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .critique-sidebar-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--critique);
+        }
+
+        .sidebar-close {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.4);
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .sidebar-close:hover { color: rgba(255,255,255,0.8); }
+
+        .critique-sidebar-body { overflow-y: auto; flex: 1; padding: 20px 24px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
+
+        .critique-entry {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .critique-entry:last-child { border-bottom: none; }
+
+        .ce-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--critique);
+            margin-bottom: 6px;
+        }
+
+        .ce-title {
+            font-family: var(--serif);
+            font-size: 18px;
+            color: rgba(244,240,232,0.9);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .ce-body {
+            font-size: 12px;
+            line-height: 1.75;
+            color: rgba(244,240,232,0.5);
+        }
+
+        .ce-body strong { color: rgba(244,240,232,0.75); font-weight: 500; }
+
+        .ce-formula {
+            font-family: var(--mono);
+            font-size: 11px;
+            background: rgba(232,197,71,0.08);
+            border: 1px solid rgba(232,197,71,0.2);
+            border-radius: 4px;
+            padding: 10px 12px;
+            margin-top: 10px;
+            color: var(--critique);
+            line-height: 1.7;
+        }
+
+        /* ── BUZZ PANEL ───────────────────────────────────────── */
+        .buzz-panel {
+            position: fixed;
+            top: 56px; right: 0;
+            width: 360px;
+            max-height: calc(100vh - 56px);
+            background: #0e0c0a;
+            border-left: 1px solid rgba(255,255,255,0.07);
+            display: flex;
+            flex-direction: column;
+            z-index: 600;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+
+        .buzz-panel.open { transform: translateX(0); }
+
+        .buzz-head {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .buzz-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .buzz-close {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.35);
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+        .buzz-close:hover { color: rgba(255,255,255,0.7); }
+
+        .buzz-scroll { overflow-y: auto; flex: 1; padding: 16px 20px; scrollbar-width: none; }
+        .buzz-scroll::-webkit-scrollbar { display: none; }
+
+        .buzz-post {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: border-color 0.2s;
+        }
+
+        .buzz-post:hover { border-color: rgba(255,255,255,0.12); }
+
+        .bpost-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .bpost-ava {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(200,57,43,0.5), rgba(212,130,26,0.3));
             flex-shrink: 0;
         }
-        .buzz-title{
-            font-family:Space Grotesk, Inter, system-ui, sans-serif;
-            text-transform:uppercase;
-            letter-spacing:.16em;
-            font-size:11px;
-            opacity:.9;
-            margin:0;
-        }
-        .buzz-sub{
-            font-size:11px;
-            opacity:.65;
-            line-height:1.4;
-            margin-top:8px;
+
+        .bpost-handle {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 0.05em;
         }
 
-        .buzz-scroll{
-            padding:12px 14px 18px 14px;
-            overflow-y:auto;
-            position:relative;
-            flex:1;
-        }
-        .buzz-scroll::-webkit-scrollbar{ width:8px; }
-        .buzz-scroll::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.08); border-radius:999px; }
-
-        .buzz-auto{
-            position:relative;
+        .bpost-body {
+            font-size: 12px;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 10px;
         }
 
-        .buzz-post{
-            background:rgba(20,20,20,.72);
-            border:1px solid rgba(255,255,255,.06);
-            border-radius:14px;
-            padding:10px;
-            margin-bottom:10px;
-            position:relative;
-            overflow:hidden;
+        .bpost-body b { color: rgba(255,255,255,0.9); font-weight: 500; }
+
+        .boost-btn {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 3px;
+            border: 1px solid rgba(200,57,43,0.3);
+            background: rgba(200,57,43,0.08);
+            color: rgba(200,57,43,0.8);
             cursor: pointer;
             transition: all 0.2s;
         }
-        .buzz-post:hover {
-            background: rgba(20, 20, 20, 0.9);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateX(4px);
+
+        .boost-btn:hover { background: rgba(200,57,43,0.18); border-color: rgba(200,57,43,0.6); color: #e87060; }
+        .boost-btn.boosted { background: rgba(200,57,43,0.25); color: #e87060; }
+
+        /* ── MODAL ────────────────────────────────────────────── */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
         }
 
-        .buzz-post.boost-flash{
-            animation: boostFlash .85s ease;
-        }
-        @keyframes boostFlash{
-            0%   { box-shadow:0 0 0 rgba(229,9,20,0); border-color:rgba(255,255,255,.06); }
-            20%  { box-shadow:0 0 0 6px rgba(229,9,20,.18); border-color:rgba(229,9,20,.55); }
-            55%  { box-shadow:0 0 0 14px rgba(229,9,20,.08); border-color:rgba(229,9,20,.35); }
-            100% { box-shadow:0 0 0 0 rgba(229,9,20,0); border-color:rgba(255,255,255,.06); }
-        }
+        .modal-bg.open { opacity: 1; pointer-events: auto; }
 
-        .buzz-top{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:10px;
-            margin-bottom:6px;
-            font-size:11px;
-            opacity:.9;
-        }
-        .buzz-handleline{
-            display:flex;
-            align-items:center;
-            gap:8px;
-            font-weight:600;
-        }
-        .ava{
-            width:18px;
-            height:18px;
-            border-radius:50%;
-            background:linear-gradient(135deg, rgba(229,9,20,.65), rgba(255,120,0,.35));
-            border:1px solid rgba(255,255,255,.10);
-        }
-        .buzz-time{ font-size:10px; opacity:.65; white-space:nowrap; }
-        .buzz-body{ font-size:12px; line-height:1.45; opacity:.88; }
-
-        .buzz-actions{
-            margin-top:8px;
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-            align-items:center;
-        }
-
-        .boostbtn{
-            font-family:Space Grotesk, Inter, system-ui, sans-serif;
-            font-size:11px;
-            text-transform:uppercase;
-            letter-spacing:.14em;
-            padding:8px 10px;
-            border-radius:999px;
-            cursor:pointer;
-            user-select:none;
-            border:1px solid rgba(229,9,20,.55);
-            background:rgba(229,9,20,.16);
-            color:#fff;
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            position:relative;
-            overflow:hidden;
-            transition: all 0.2s;
-        }
-        .boostbtn:hover {
-            background: rgba(229,9,20,.25);
-            border-color: rgba(229,9,20,.8);
-            transform: scale(1.05);
-        }
-        .boostbtn::after{
-            content:"";
-            position:absolute;
-            inset:0;
-            background:linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
-            transform:translateX(-120%);
-            transition:transform .35s ease;
-            pointer-events:none;
-        }
-        .boostbtn:hover::after{ transform:translateX(120%); }
-
-        .pillbtn{
-            font-size:11px;
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(0,0,0,.25);
-            padding:6px 10px;
-            border-radius:999px;
-            cursor:pointer;
-            user-select:none;
-            transition:.2s;
-        }
-        .pillbtn:hover{
-            border-color:rgba(229,9,20,.45);
-            background:rgba(229,9,20,.10);
-        }
-
-        /* ENGINE */
-        .engine-wrap{
-            position:relative;
-            flex:1;
-            overflow:hidden;
-            display:flex;
-            flex-direction:column;
-            width:100%;
-        }
-
-        .engine-panel{
-            flex:1;
-            overflow-y:auto;
-            position:relative;
-            padding-bottom:24px;
-        }
-
-        /* Featured banner */
-        .featured{
-            padding:16px;
-            border-bottom:1px solid rgba(255,255,255,.06);
-            background:
-                    radial-gradient(circle at 20% 30%, rgba(229,9,20,.16), transparent 45%),
-                    radial-gradient(circle at 70% 70%, rgba(255,140,0,.10), transparent 45%),
-                    linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,.10));
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .featured:hover {
-            background:
-                    radial-gradient(circle at 20% 30%, rgba(229,9,20,.25), transparent 45%),
-                    radial-gradient(circle at 70% 70%, rgba(255,140,0,.15), transparent 45%),
-                    linear-gradient(to bottom, rgba(0,0,0,.6), rgba(0,0,0,.15));
-        }
-        .featured-grid{
-            display:grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap:14px;
-            align-items:center;
-        }
-        .featured h2{
-            margin:0 0 8px 0;
-            font-size:20px;
-            letter-spacing:.2px;
-        }
-        .featured p{
-            margin:0 0 12px 0;
-            opacity:.78;
-            font-size:12px;
-            line-height:1.6;
-            max-width:68ch;
-        }
-        .featured-actions{
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-        }
-        .featured .bigbtn{
-            padding:10px 14px;
-            border-radius:12px;
-            font-size:12px;
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(20,20,20,.85);
-            cursor:pointer;
-            user-select:none;
-            transition:.2s;
-            color:#fff;
-            display:inline-flex;
-            align-items:center;
-            gap:10px;
-        }
-        .featured .bigbtn:hover{
-            border-color:rgba(255,255,255,.22);
-            transform: translateY(-2px);
-        }
-        .featured .bigbtn.primary{
-            background:rgba(229,9,20,.18);
-            border-color:rgba(229,9,20,.55);
-        }
-
-        /* FILTERS */
-        .filters{
-            display:flex;
-            gap:10px;
-            padding:14px 16px;
-            position:sticky;
-            top:0;
-            background:rgba(0,0,0,.72);
-            backdrop-filter:blur(10px);
-            z-index:50;
-            border-bottom:1px solid rgba(255,255,255,.04);
-            align-items:center;
-            flex-wrap:wrap;
-        }
-
-        .chip{
-            padding:7px 12px;
-            border-radius:999px;
-            background:rgba(20,20,20,.9);
-            border:1px solid rgba(255,255,255,.10);
-            cursor:pointer;
-            font-size:12px;
-            transition:.2s;
-            user-select:none;
-            color:#eaeaea;
-        }
-        .chip:hover{
-            background:rgba(229,9,20,.16);
-            border-color:rgba(229,9,20,.35);
-            transform: translateY(-2px);
-        }
-        .chip.active{
-            background:rgba(229,9,20,.22);
-            border-color:rgba(229,9,20,.65);
-            color:#fff;
-            animation: pulse-select 0.3s;
-        }
-
-        @keyframes pulse-select {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .search{
-            margin-left:auto;
-            display:flex;
-            align-items:center;
-            gap:10px;
-            flex:1;
-            justify-content:flex-end;
-            min-width:220px;
-        }
-        .search input{
-            width:min(340px, 100%);
-            background:rgba(20,20,20,.8);
-            border:1px solid rgba(255,255,255,.10);
-            color:#fff;
-            padding:9px 12px;
-            border-radius:999px;
-            font-size:12px;
-            outline:none;
-            transition:.2s;
-        }
-        .search input:focus{
-            border-color:rgba(229,9,20,.55);
-            box-shadow:0 0 0 3px rgba(229,9,20,.15);
-        }
-
-        /* ROWS */
-        .row-title{
-            padding:10px 16px 2px 16px;
-            font-weight:600;
-            letter-spacing:.2px;
-            opacity:.95;
-            font-size:14px;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:10px;
-        }
-        .row-title .sub{
-            font-size:11px;
-            opacity:.65;
-            font-weight:400;
-        }
-
-        .row{
-            display:flex;
-            gap:12px;
-            overflow-x:auto;
-            padding:10px 16px 18px 16px;
-            position:relative;
-            z-index:10;
-            scroll-behavior:smooth;
-            align-items:flex-start;
-        }
-        .row::-webkit-scrollbar{ display:none; }
-
-        .row-wrap{ position:relative; }
-        .row-arrow{
-            position:absolute;
-            top:50%;
-            transform:translateY(-50%);
-            width:36px;
-            height:80px;
-            border-radius:12px;
-            background:rgba(0,0,0,.55);
-            border:1px solid rgba(255,255,255,.10);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            cursor:pointer;
-            user-select:none;
-            opacity:.0;
-            transition:.2s;
-            z-index:30;
-            backdrop-filter:blur(8px);
-        }
-        .row-wrap:hover .row-arrow{ opacity:1; }
-        .row-arrow.left{ left:10px; }
-        .row-arrow.right{ right:10px; }
-
-        /* CARDS */
-        .card{
-            min-width:220px;
-            width:220px;
-            height:320px;
-            border-radius:10px;
-            background-size:cover;
-            background-position:center;
-            position:relative;
-            cursor:pointer;
-            flex-shrink:0;
-            transition:
-                    transform .38s cubic-bezier(.2,.9,.2,1),
-                    box-shadow .35s cubic-bezier(.2,.9,.2,1),
-                    filter .35s ease,
-                    outline-color .25s ease;
-            background-color:#111;
-            border:1px solid rgba(255,255,255,.06);
-            overflow:hidden;
-            will-change:transform;
-        }
-        .card::after{
-            content:"";
-            position:absolute;
-            inset:0;
-            background:linear-gradient(to top,rgba(0,0,0,.96),rgba(0,0,0,.55),rgba(0,0,0,.22));
-        }
-        .card:hover{
-            transform:translateY(-8px) scale(1.10);
-            box-shadow:0 20px 80px rgba(0,0,0,.72);
-            filter:saturate(1.15) contrast(1.05) brightness(.92);
-            z-index:20;
-        }
-
-        .card.pref{
-            outline:3px solid rgba(229,9,20,.50);
-            box-shadow:0 0 0 1px rgba(0,0,0,.85) inset;
-        }
-        .card.pref-large{
-            width:340px;
-            min-width:340px;
-            height:500px;
-            border-radius:14px;
-        }
-
-        .info{
-            position:absolute;
-            inset:0;
-            z-index:2;
-            display:flex;
-            align-items:flex-end;
-            justify-content:flex-start;
-            padding:12px;
-            transition:.28s ease;
-            pointer-events:none;
-        }
-        .info-inner{ width:100%; }
-
-        .info .title{
-            font-weight:700;
-            letter-spacing:.25px;
-            font-size:14px;
-            line-height:1.2;
-            text-shadow:0 10px 35px rgba(0,0,0,.85);
-            transition:.28s cubic-bezier(.2,.9,.2,1);
-        }
-        .info .meta{
-            opacity:.78;
-            margin-top:4px;
-            font-size:11px;
-            transition:.28s cubic-bezier(.2,.9,.2,1);
-        }
-
-        .card:hover .info{
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            padding:18px;
-        }
-        .card:hover .info .title{
-            font-size:22px;
-            transform:translateY(-2px);
-        }
-        .card:hover .info .meta{
-            font-size:12px;
-            opacity:.85;
-            transform:translateY(2px);
-        }
-
-        .quick{
-            position:absolute;
-            top:10px;
-            left:10px;
-            right:10px;
-            display:flex;
-            gap:8px;
-            justify-content:flex-end;
-            z-index:3;
-            opacity:0;
-            transform:translateY(-6px);
-            transition:.22s ease;
-            pointer-events:none;
-        }
-        .card:hover .quick{
-            opacity:1;
-            transform:translateY(0);
-            pointer-events:auto;
-        }
-        .qbtn{
-            width:30px; height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:rgba(0,0,0,.62);
-            border:1px solid rgba(255,255,255,.18);
-            cursor:pointer;
-            user-select:none;
-            font-size:12px;
-            transition:.18s ease;
-            position: relative;
-        }
-        .qbtn:hover{
-            border-color:rgba(229,9,20,.55);
-            transform: scale(1.2);
-        }
-        .qbtn.on{
-            background:rgba(229,9,20,.18);
-            border-color:rgba(229,9,20,.65);
-        }
-
-        /* MODAL */
-        .modal{
-            position:fixed;
-            inset:0;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:rgba(0,0,0,.88);
-            z-index:3000;
-            padding:18px;
-            opacity:0;
-            pointer-events:none;
-            transition: opacity .28s ease;
-        }
-        .modal.open{ opacity:1; pointer-events:auto; }
-
-        .modal-content{
-            width:min(980px, 100%);
-            background:#0f0f0f;
-            border:1px solid rgba(255,255,255,.10);
-            padding:16px;
-            border-radius:14px;
-
-            transform: translateY(18px) scale(.985);
-            opacity:0;
-            transition: transform .38s cubic-bezier(.2,.9,.2,1), opacity .25s ease;
+        .modal-box {
+            width: min(900px, 100%);
+            background: #0f0d0b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
             max-height: 90vh;
             overflow-y: auto;
-        }
-        .modal.open .modal-content{
-            transform: translateY(0px) scale(1);
-            opacity:1;
-        }
-
-        .modal-grid{
-            display:grid;
-            grid-template-columns: 240px 1fr;
-            gap:14px;
+            scrollbar-width: none;
+            transform: translateY(16px) scale(0.97);
+            transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
         }
 
-        .modal-poster{
-            width:100%;
-            aspect-ratio: 2 / 3;
-            border-radius:12px;
-            background:#111;
-            border:1px solid rgba(255,255,255,.08);
-            overflow:hidden;
-            position:relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .modal-poster:hover {
-            transform: scale(1.02);
-        }
-        .modal-poster img{
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            display:block;
+        .modal-box::-webkit-scrollbar { display: none; }
+        .modal-bg.open .modal-box { transform: translateY(0) scale(1); }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 0;
         }
 
-        .pill{
-            display:inline-block;
-            font-size:11px;
-            border:1px solid rgba(229,9,20,.50);
-            color:#fff;
-            background:rgba(229,9,20,.16);
-            padding:6px 10px;
-            border-radius:999px;
-            margin-right:8px;
-            margin-top:8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .pill:hover {
-            background: rgba(229,9,20,.25);
-            border-color: rgba(229,9,20,.8);
+        @media (max-width: 700px) { .modal-grid { grid-template-columns: 1fr; } }
+
+        .modal-poster-wrap {
+            height: 390px;
+            background: #1a1a1a;
+            border-radius: 10px 0 0 10px;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
         }
 
-        .review{
-            margin-top:10px;
-            padding:10px;
-            border-radius:12px;
-            background:rgba(20,20,20,.78);
-            border:1px solid rgba(255,255,255,.06);
-            color:#ddd;
-            font-size:12px;
-            line-height:1.55;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .review:hover {
-            background: rgba(20,20,20,.95);
-            border-color: rgba(255,255,255,.12);
+        .modal-poster-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-        .preplay{
-            margin-top:12px;
-            padding:12px;
-            border-radius:14px;
-            background:rgba(20,20,20,.62);
-            border:1px solid rgba(255,255,255,.08);
-            overflow:hidden;
-        }
-        .preplay-top{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:10px;
-            margin-bottom:10px;
-        }
-        .preplay-title{
-            font-size:12px;
-            font-weight:600;
-            letter-spacing:.2px;
-            opacity:.95;
-        }
-        .preplay-sub{
-            font-size:11px;
-            opacity:.7;
-        }
-        .preplay-grid{
-            display:grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap:10px;
-        }
-        .mini{
-            width:100%;
-            aspect-ratio: 2 / 3;
-            border-radius:12px;
-            background-size:cover;
-            background-position:center;
-            border:1px solid rgba(255,255,255,.10);
-            position:relative;
-            overflow:hidden;
-            cursor:pointer;
-            transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease, filter .25s ease;
-            filter:brightness(.92);
-        }
-        .mini:hover{
-            transform:translateY(-4px) scale(1.03);
-            border-color:rgba(229,9,20,.65);
-            box-shadow:0 18px 60px rgba(0,0,0,.55);
-            filter:brightness(.85);
-        }
-        .mini::after{
-            content:"";
-            position:absolute;
-            inset:0;
-            background:linear-gradient(to top, rgba(0,0,0,.92), rgba(0,0,0,.35));
-        }
-        .mini span{
-            position:absolute;
-            left:10px;
-            right:10px;
-            bottom:10px;
-            font-size:12px;
-            z-index:1;
-            line-height:1.25;
+        .modal-body { padding: 32px 28px; }
+
+        .modal-title {
+            font-family: var(--serif);
+            font-size: 32px;
+            color: rgba(244,240,232,0.95);
+            margin-bottom: 10px;
+            line-height: 1.1;
         }
 
-        /* PLAYER */
-        .player{
-            position:fixed;
-            inset:0;
-            background:rgba(0,0,0,.72);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            opacity:0;
-            pointer-events:none;
-            transition:opacity .25s ease;
-            z-index:3200;
-        }
-        .player.show{ opacity:1; pointer-events:auto; }
-        .player-card{
-            width:min(760px, 92%);
-            background:rgba(16,16,16,.92);
-            border:1px solid rgba(255,255,255,.10);
-            border-radius:16px;
-            padding:14px;
-            backdrop-filter: blur(10px);
-            box-shadow:0 30px 90px rgba(0,0,0,.6);
-            animation: player-pop 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
+        .modal-rating-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 18px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
         }
 
-        @keyframes player-pop {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .rating-badge {
+            background: rgba(200,57,43,0.15);
+            border: 1px solid rgba(200,57,43,0.3);
+            color: #e87060;
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 500;
         }
 
-        .player-top{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:12px;
-            margin-bottom:10px;
-        }
-        .player-title{ font-weight:600; font-size:13px; opacity:.95; }
-        .player-close{
-            cursor:pointer;
-            border:1px solid rgba(255,255,255,.10);
-            background:#111;
-            color:#fff;
-            border-radius:10px;
-            font-size:12px;
-            padding:8px 10px;
-            transition: all 0.2s;
-        }
-        .player-close:hover {
-            background: rgba(229, 9, 20, 0.2);
-            border-color: rgba(229, 9, 20, 0.5);
-        }
-
-        .player-screen{
-            border-radius:14px;
-            height:340px;
-            background:
-                    radial-gradient(circle at 30% 20%, rgba(229,9,20,.22), transparent 46%),
-                    radial-gradient(circle at 70% 80%, rgba(255,140,0,.10), transparent 46%),
-                    linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-            border:1px solid rgba(255,255,255,.08);
-            position:relative;
-            overflow:hidden;
-        }
-        .player-screen::after{
-            content:"";
-            position:absolute;
-            inset:0;
-            background: repeating-linear-gradient(
-                    to bottom,
-                    rgba(255,255,255,.02),
-                    rgba(255,255,255,.02) 2px,
-                    rgba(0,0,0,0) 5px,
-                    rgba(0,0,0,0) 9px
-            );
-            opacity:.45;
-            mix-blend-mode:overlay;
-            pointer-events:none;
-        }
-        .player-controls{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            margin-top:10px;
-        }
-        .playbtn{
-            background:rgba(229,9,20,.18);
-            border:1px solid rgba(229,9,20,.50);
-            color:#fff;
-            padding:9px 12px;
-            border-radius:12px;
-            cursor:pointer;
-            font-size:12px;
-            user-select:none;
-            transition: all 0.2s;
-        }
-        .playbtn:hover {
-            background: rgba(229,9,20,.28);
-            transform: scale(1.05);
-        }
-
-        .timeline{
-            flex:1;
-            height:10px;
-            border-radius:999px;
-            background:rgba(255,255,255,.08);
-            overflow:hidden;
-            border:1px solid rgba(255,255,255,.06);
-            cursor: pointer;
-        }
-        .timeline > div{
-            height:100%;
-            width:0%;
-            background:linear-gradient(90deg, rgba(229,9,20,.95), rgba(255,120,0,.65));
-            transition:width .35s ease;
-        }
-        .time{ font-size:11px; opacity:.75; min-width:70px; text-align:right; }
-
-        /* TOAST */
-        .toast{
-            position:fixed;
-            left:50%;
-            bottom:18px;
-            transform:translateX(-50%);
-            background:rgba(12,12,12,.82);
-            border:1px solid rgba(255,255,255,.10);
-            color:#fff;
-            padding:10px 12px;
-            border-radius:999px;
-            font-size:12px;
-            z-index:4000;
-            opacity:0;
-            pointer-events:none;
-            transition:.25s ease;
-            backdrop-filter:blur(10px);
-            animation: toast-slide 0.3s ease-out;
-        }
-        .toast.show{ opacity:1; }
-
-        @keyframes toast-slide {
-            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-
-        /* HEAT OVERLAY */
-        .heat-overlay{
-            position:fixed;
-            inset:0;
-            pointer-events:none;
-            z-index:999999;
-            mix-blend-mode:screen;
-            opacity:.95;
-        }
-        canvas#heatCanvas{ width:100%; height:100%; display:block; }
-
-        /* SURVEY */
-        .survey{
-            position:fixed;
-            inset:0;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:rgba(0,0,0,.92);
-            z-index:3500;
-            padding:18px;
-            opacity:0;
-            pointer-events:none;
-            transition:opacity .25s ease;
-        }
-        .survey.open{ opacity:1; pointer-events:auto; }
-        .survey-card{
-            width:min(780px, 100%);
-            background:rgba(15,15,15,.98);
-            border:1px solid rgba(255,255,255,.10);
-            border-radius:16px;
-            padding:16px;
-            box-shadow:0 30px 90px rgba(0,0,0,.65);
-            transform: translateY(14px) scale(.99);
-            transition: transform .35s cubic-bezier(.2,.9,.2,1);
-            animation: survey-enter 0.3s cubic-bezier(0.2, 0.9, 0.2, 1);
-        }
-
-        @keyframes survey-enter {
-            from { transform: translateY(20px) scale(0.95); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        .survey.open .survey-card{ transform: translateY(0) scale(1); }
-        .survey-top{
-            display:flex;
-            align-items:flex-start;
-            justify-content:space-between;
-            gap:12px;
-            margin-bottom:10px;
-        }
-        .survey-title{ margin:0; font-size:16px; letter-spacing:.2px; }
-        .survey-sub{
-            margin:6px 0 0 0;
-            font-size:12px;
-            opacity:.78;
-            line-height:1.55;
-            max-width:72ch;
-        }
-        .survey-grid{
-            display:grid;
+        .modal-stats {
+            display: grid;
             grid-template-columns: 1fr 1fr;
-            gap:12px;
-            margin-top:12px;
-        }
-        .field{
-            background:rgba(20,20,20,.75);
-            border:1px solid rgba(255,255,255,.08);
-            border-radius:14px;
-            padding:12px;
-        }
-        .field label{
-            display:block;
-            font-size:11px;
-            letter-spacing:.14em;
-            text-transform:uppercase;
-            opacity:.75;
-            margin-bottom:10px;
-        }
-        .opt-row{ display:flex; flex-wrap:wrap; gap:8px; }
-        .opt{
-            padding:8px 10px;
-            border-radius:999px;
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(0,0,0,.20);
-            cursor:pointer;
-            user-select:none;
-            font-size:12px;
-            transition:.2s;
-        }
-        .opt:hover{
-            border-color:rgba(229,9,20,.35);
-            background:rgba(229,9,20,.10);
-            transform: translateY(-2px);
-        }
-        .opt.on{
-            border-color:rgba(229,9,20,.70);
-            background:rgba(229,9,20,.18);
-            animation: opt-select 0.2s;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        @keyframes opt-select {
-            0% { transform: scale(0.95); }
-            100% { transform: scale(1); }
+        .mstat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 5px;
+            padding: 10px 12px;
         }
 
-        .survey-actions{
-            margin-top:12px;
-            display:flex;
-            justify-content:flex-end;
-            gap:10px;
-            flex-wrap:wrap;
+        .mstat-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 4px;
         }
 
-        @media (max-width: 980px){
-            .featured-grid{ grid-template-columns: 1fr; }
-            .modal-grid{ grid-template-columns: 1fr; }
-            .preplay-grid{ grid-template-columns: repeat(3, 1fr); }
-            .modal-poster{ max-width:240px; }
+        .mstat-val {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(244,240,232,0.85);
         }
 
-        @media (max-width: 860px){
-            .essay-drawer{ width: 360px; }
-            .buzz-drawer{ width: 320px; }
-            .player-screen{ height:260px; }
-            .card{ width:200px; min-width:200px; height:300px; }
-            .card.pref-large{ width:300px; min-width:300px; height:440px; }
-            .row-arrow{ display:none; }
-            .preplay-grid{ grid-template-columns: repeat(2, 1fr); }
+        .modal-desc {
+            font-size: 13px;
+            line-height: 1.75;
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 22px;
         }
 
-        @media (prefers-reduced-motion: reduce){
-            *{ transition:none !important; animation:none !important; }
+        .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+
+        .modal-recs h3 {
+            font-size: 12px;
+            font-family: var(--mono);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 12px;
         }
+
+        .modal-rec-row { display: flex; gap: 10px; overflow-x: auto; }
+        .modal-rec-row::-webkit-scrollbar { display: none; }
+
+        .rec-card {
+            width: 100px; height: 150px;
+            border-radius: 5px;
+            background: #1a1a1a;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.25s;
+            border: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rec-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);
+        }
+
+        .rec-card:hover { transform: translateY(-6px); }
+
+        /* ── MY LIST PAGE ─────────────────────────────────────── */
+        .mylist-page {
+            padding: 36px 32px 60px;
+        }
+
+        .mylist-page h2 {
+            font-family: var(--serif);
+            font-size: 36px;
+            color: rgba(244,240,232,0.9);
+            margin-bottom: 6px;
+        }
+
+        .mylist-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 28px;
+        }
+
+        .mylist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 14px;
+        }
+
+        .mylist-empty {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.25);
+            font-family: var(--mono);
+        }
+
+        /* ── SCORE LIVE PANEL ─────────────────────────────────── */
+        .score-panel {
+            position: sticky;
+            bottom: 0;
+            background: rgba(8,8,8,0.96);
+            border-top: 1px solid rgba(232,197,71,0.2);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            display: none;
+        }
+
+        body.critique-mode .score-panel { display: flex; }
+
+        .score-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            flex-shrink: 0;
+        }
+
+        .score-items {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: rgba(255,255,255,0.45);
+        }
+
+        .score-val {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--critique);
+            min-width: 28px;
+        }
+
+        /* ── TOAST ────────────────────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            padding: 10px 18px;
+            border-radius: 5px;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            border: 1px solid rgba(244,240,232,0.1);
+            white-space: nowrap;
+        }
+
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── UTILS ────────────────────────────────────────────── */
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
     </style>
 </head>
-
 <body>
-<div class="header">
-    <div class="top-left">
-        <div class="logo" onclick="goHome(); createConfetti(50);">
-            <span class="dot"></span> OBSESSO+
-        </div>
-    </div>
 
-    <div class="top-actions">
-        <div class="btn primary" id="toggleEssayBtn">Essay</div>
-        <div class="btn" id="openListBtn">
-            My List <span id="listCount" style="opacity:.8">(0)</span>
-            <span class="btn-badge" id="listBadge" style="display: none;">!</span>
-        </div>
-        <div class="btn" id="clearStatsBtn">Reset</div>
-        <div class="btn" id="toggleBuzzBtn">Buzz</div>
-    </div>
-</div>
+<!-- MASTHEAD -->
+<header class="masthead" role="banner">
+    <div class="masthead-title">Beyond Engagement</div>
+    <div class="masthead-issue">Interactive Essay — Dark UX Patterns</div>
+</header>
 
+<!-- HERO -->
+<section class="hero" aria-label="Article header">
+    <div class="hero-kicker">Critical Analysis</div>
+    <h1>The Platforms<br>That <em>Watch</em> You<br>Watch</h1>
+    <p class="hero-byline">
+        How streaming services weaponize interface design to eliminate choice.
+        <strong>Interact with the live demo on the right — then turn on Critique Mode to see the manipulation exposed.</strong>
+    </p>
+</section>
+
+<!-- MAIN LAYOUT -->
 <div class="layout">
-    <!-- ESSAY DRAWER -->
-    <aside class="essay-drawer" id="essayDrawer" aria-label="Essay drawer">
-        <div class="essay-handle" id="essayHandle" title="Open / Close Essay" onmouseenter="showTooltip(event, 'Drag to read')">
-            <span>ESSAY</span>
-        </div>
 
-        <div class="essay-scroll">
-            <h3>Devon Ba Dour</h3>
-            <h3>GDES 5341</h3>
-            <h3>April 6th, 2026</h3>
+    <!-- ESSAY COLUMN -->
+    <aside class="essay-col" aria-label="Essay">
 
-            <h1>How UI/UX Design in Streaming Platforms Shapes Viewer Engagement and Behavior</h1>
-
-            <p>Within the past decade alone, streaming services have dominated...</p>
-            <p>Autoplay is an incredibly common feature...</p>
-            <p>The layout and visual design of a streaming platform...</p>
-            <p>UX/UI design is an up and coming factor...</p>
-
-            <h2>References</h2>
-            <div class="refs">
-                <p>Gomez-Uribe &amp; Hunt (2016)</p>
-                <p>Billieux et al. (2015)</p>
-                <p>Krug (2014)</p>
-                <p>Eyal (2014)</p>
+        <div class="essay-intro">
+            <p>Streaming interfaces are not neutral tools. Every visual decision — the size of a hero image, the speed of a countdown, the weight given to your past clicks — is an argument. An argument that you should keep watching.</p>
+            <p>The demo to the right is <strong>OBSESSO+</strong>, a fictional platform that faithfully replicates these patterns. Use it naturally first. Then click <strong>Critique Mode</strong> to see the machinery behind the curtain.</p>
+            <div class="hint-row">
+                <span class="hint-dot"></span>
+                Click tags below to spotlight each pattern live
             </div>
         </div>
-    </aside>
 
-    <!-- BUZZ DRAWER -->
-    <aside class="buzz-drawer" id="buzzDrawer" aria-label="Buzz drawer">
-        <div class="buzz-handle" id="buzzHandle" title="Open / Close Buzz">
-            <span>BUZZ</span>
-        </div>
-
-        <div class="buzz-topbar">
-            <div>
-                <div class="buzz-title">Social Buzz</div>
-                <div class="buzz-sub">
-                    Watch how <b style="color:#e50914">BOOST</b> moves titles up the feed.
-                </div>
+        <!-- SECTION 1 -->
+        <div class="essay-section" id="s-autoplay" role="region" aria-label="Autoplay section">
+            <div class="section-num">Pattern 01</div>
+            <h2>Autoplay &amp; the Vanishing Pause</h2>
+            <p>The 5-second countdown at the bottom of the screen is not a courtesy. It's a reversal of the default. The burden of action falls on <em>stopping</em>, not starting — and most of us won't bother.</p>
+            <p>Netflix's own research found that autoplay increases overall viewing time while simultaneously reducing reported satisfaction. The platform optimizes for the former and buries the latter.</p>
+            <div class="callout">
+                <strong>Dark pattern:</strong> Roach Motel. You can check in (start watching) easily, but checking out (stopping) requires deliberate action that the UI discourages at every turn.
             </div>
-            <div class="btn" id="refreshBuzzBtn">Refresh</div>
+            <div class="tag-row">
+                <button class="tag" onclick="spotlight('autoplay')" aria-pressed="false">Autoplay</button>
+                <button class="tag" onclick="spotlight('countdown')" aria-pressed="false">Countdown</button>
+            </div>
         </div>
 
-        <div class="buzz-scroll" id="buzzScroll">
-            <div class="buzz-auto" id="buzzAuto"></div>
+        <!-- SECTION 2 -->
+        <div class="essay-section" id="s-hero" role="region" aria-label="Hero section">
+            <div class="section-num">Pattern 02</div>
+            <h2>The Hero Section Is Not an Endorsement</h2>
+            <p>The massive featured film at the top of the screen looks like a recommendation. It is not. It's placement paid for by the engagement algorithm — whichever title a model predicts will generate the most watch-time for <em>this specific user</em> at <em>this specific moment</em>.</p>
+            <p>Size communicates authority. The hero slot exploits that heuristic to manufacture consent before conscious evaluation begins.</p>
+            <div class="callout">
+                <strong>Dark pattern:</strong> Disguised Ad. The visual language of editorial curation is borrowed to launder an algorithmic (often commercially influenced) decision.
+            </div>
+            <div class="tag-row">
+                <button class="tag" onclick="spotlight('hero')" aria-pressed="false">Hero</button>
+                <button class="tag" onclick="spotlight('hierarchy')" aria-pressed="false">Size Signals</button>
+            </div>
         </div>
+
+        <!-- SECTION 3 -->
+        <div class="essay-section" id="s-recs" role="region" aria-label="Recommendations section">
+            <div class="section-num">Pattern 03</div>
+            <h2>Personalization as a Filter Bubble</h2>
+            <p>The "Just For You" row applies a 5.0× genre affinity multiplier. This means if you watched one thriller, thrillers now crowd out everything else. Over time, the platform stops showing you things you might discover and only shows you things you'll predictably click.</p>
+            <p>This is not preference-matching. It's preference-amplification — a feedback loop that narrows your world while making it feel curated.</p>
+            <div class="callout">
+                <strong>Formula:</strong> score = genre_affinity × 5.0 + hover_ms × 0.0008 + views × 0.7 + social × 2.0
+            </div>
+            <div class="tag-row">
+                <button class="tag" onclick="spotlight('recs')" aria-pressed="false">Just For You</button>
+                <button class="tag" onclick="spotlight('formula')" aria-pressed="false">5.0× Boost</button>
+            </div>
+        </div>
+
+        <!-- SECTION 4 -->
+        <div class="essay-section" id="s-social" role="region" aria-label="Social proof section">
+            <div class="section-num">Pattern 04</div>
+            <h2>Manufactured Social Proof</h2>
+            <p>The "Trending Now" row and the Buzz panel simulate organic conversation. The posts are generated, the boost counts are seeded, and the virality is artificial. But the FOMO it triggers is entirely real.</p>
+            <p>Social proof is one of the most reliable levers in behavioral economics. Streaming platforms simulate it even when it doesn't exist organically — because it works.</p>
+            <div class="callout">
+                <strong>Dark pattern:</strong> False Social Proof. Manufactured signals of popularity create genuine psychological pressure to conform.
+            </div>
+            <div class="tag-row">
+                <button class="tag" onclick="spotlight('social'); openBuzz();" aria-pressed="false">Social Proof</button>
+                <button class="tag" onclick="spotlight('trending')" aria-pressed="false">Trending</button>
+            </div>
+        </div>
+
+        <!-- SECTION 5 -->
+        <div class="essay-section" id="s-mylist" role="region" aria-label="My List section">
+            <div class="section-num">Pattern 05</div>
+            <h2>My List &amp; Sunk Cost</h2>
+            <p>The "My List" feature appears to be a gift — a way to save things for later. But its primary function is data harvesting: every item you add signals a preference that immediately reshapes your recommendations.</p>
+            <p>Adding something to a list also creates a micro-commitment. The sunk cost of curation makes you more likely to stay subscribed just to "get through" your saved content.</p>
+            <div class="callout">
+                <strong>Dark pattern:</strong> Commitment &amp; Consistency. Small acts of investment (building a list) create psychological pressure to remain engaged with the platform.
+            </div>
+            <div class="tag-row">
+                <button class="tag" onclick="goMyList()" aria-pressed="false">View My List</button>
+            </div>
+        </div>
+
     </aside>
 
-    <!-- ENGINE -->
-    <section class="engine-wrap">
-        <div class="engine-panel" id="enginePanel">
-            <div class="featured" id="featured" onclick="createSparkles(event);">
-                <div class="featured-grid">
-                    <div>
-                        <h2 id="featuredTitle">Featured</h2>
-                        <p id="featuredDesc">
-                            Click a title to open a pre-play window. Add to My List. Watch how boosted titles appear more frequently in the feed and trending sections.
-                        </p>
-                        <div class="featured-actions">
-                            <div class="bigbtn primary" id="featuredInfo">More Info</div>
-                            <div class="bigbtn" id="featuredShuffle">Shuffle</div>
+    <!-- APP COLUMN -->
+    <main class="app-col" aria-label="Streaming app demo">
+
+        <!-- APP CHROME -->
+        <nav class="app-chrome" aria-label="App navigation">
+            <div class="app-wordmark" aria-label="OBSESSO+ streaming service">
+                <span class="live-dot" aria-hidden="true"></span>
+                OBSESSO+
+            </div>
+            <div class="chrome-controls">
+                <button class="ctrl-btn nav-active" id="btnHome" onclick="goHome()" aria-label="Go to home page">Home</button>
+                <button class="ctrl-btn" id="btnList" onclick="goMyList()" aria-label="Go to my list">My List</button>
+                <button class="ctrl-btn" id="btnCritique" onclick="toggleCritique()" aria-pressed="false">Critique Mode</button>
+                <button class="ctrl-btn" id="btnBuzz" onclick="toggleBuzz()" aria-pressed="false">Social Buzz</button>
+            </div>
+        </nav>
+
+        <!-- APP SCROLL -->
+        <div class="app-scroll" id="appScroll" role="region" aria-label="App content">
+
+            <!-- HOME PAGE -->
+            <div class="page active" id="homePage">
+
+                <!-- STREAM HERO -->
+                <div class="stream-hero" id="streamHero" role="banner">
+                    <div class="stream-hero-bg" id="heroBg" aria-hidden="true"></div>
+                    <div class="stream-hero-fog" aria-hidden="true"></div>
+
+                    <!-- CRITIQUE: HERO PIN -->
+                    <div class="critique-pin" id="pinHero" aria-hidden="true">
+                        <div class="critique-ring" style="inset:-8px; border-radius:12px;"></div>
+                        <div class="critique-chip" style="top:-38px; left:0;">Algo-selected. Not editorial.</div>
+                    </div>
+
+                    <div class="stream-hero-info">
+                        <div class="hero-badge-row">
+                            <span class="hbadge featured">Featured</span>
+                            <span class="hbadge trending" id="heroBadgeTrend">Trending #1</span>
+                        </div>
+                        <h2 id="heroTitle">Neon Widow</h2>
+                        <div class="hero-meta-row">
+                            <span id="heroGenre">Thriller</span>
+                            <span id="heroYear">2023</span>
+                            <span id="heroRating">★ 8.2</span>
+                            <span id="heroRuntime">124 min</span>
+                        </div>
+                        <p class="hero-desc-text" id="heroDesc">In the shadowy underworld of Tokyo, a mysterious woman emerges to unravel a conspiracy spanning decades. A gripping psychological thriller of identity, betrayal, and neon-lit redemption.</p>
+                        <div class="hero-btns">
+                            <button class="hbtn play" onclick="toast('▶ Playing ' + currentHero.title)">▶ Play</button>
+                            <button class="hbtn info" onclick="openModal(currentHero)">More Info</button>
+                            <button class="hbtn add" id="heroAddBtn" onclick="toggleList(currentHero.id); updateHeroAddBtn()">+ My List</button>
                         </div>
                     </div>
-                    <div style="opacity:.8;font-size:12px;line-height:1.6">
-                        Boost from the Buzz panel → Featured content gets larger → Appears higher in recommendations.
+                </div>
+
+                <!-- AUTOPLAY BAR -->
+                <div class="autoplay-bar" id="autoplayBar" role="status" aria-live="polite">
+                    <span class="autoplay-label" id="autoplayLabel">Next: loading…</span>
+                    <div class="autoplay-track">
+                        <div class="autoplay-fill" id="autoplayFill"></div>
+                    </div>
+                    <button class="autoplay-cancel" onclick="cancelAutoplay()">Cancel</button>
+                </div>
+
+                <!-- CONTENT ROWS -->
+                <div class="content-rows">
+
+                    <div class="content-row" id="rowJFY">
+                        <!-- CRITIQUE: REC PIN -->
+                        <div class="critique-pin" id="pinRecs" aria-hidden="true" style="top:0;left:24px;right:24px;bottom:0;">
+                            <div class="critique-ring" style="inset:0; border-radius:8px;"></div>
+                            <div class="critique-chip" style="top:-34px; left:0;">Genre affinity × 5.0 amplifier active</div>
+                        </div>
+                        <div class="row-head">
+                            <span class="row-label">Just For You</span>
+                            <span class="row-badge algo">5.0× algo</span>
+                        </div>
+                        <div class="card-scroll" id="rowJFYCards"></div>
+                    </div>
+
+                    <div class="content-row" id="rowTrend">
+                        <!-- CRITIQUE: SOCIAL PIN -->
+                        <div class="critique-pin" id="pinTrend" aria-hidden="true" style="top:0;left:24px;right:24px;bottom:0;">
+                            <div class="critique-ring" style="inset:0; border-radius:8px;"></div>
+                            <div class="critique-chip" style="top:-34px; left:0;">Social score × 2.0 — manufactured urgency</div>
+                        </div>
+                        <div class="row-head">
+                            <span class="row-label">Trending Now</span>
+                            <span class="row-badge social">Social +2.0×</span>
+                        </div>
+                        <div class="card-scroll" id="rowTrendCards"></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="row-head"><span class="row-label">Recommended For You</span></div>
+                        <div class="card-scroll" id="rowRecCards"></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="row-head"><span class="row-label">New Releases</span></div>
+                        <div class="card-scroll" id="rowNewCards"></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="row-head"><span class="row-label">Because You Watched</span></div>
+                        <div class="card-scroll" id="rowBecauseCards"></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="row-head"><span class="row-label">Popular This Week</span></div>
+                        <div class="card-scroll" id="rowPopCards"></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="row-head"><span class="row-label">Continue Watching</span></div>
+                        <div class="card-scroll" id="rowContCards"></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="row-head"><span class="row-label">Top 10 Today</span></div>
+                        <div class="card-scroll" id="rowTopCards"></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="row-head"><span class="row-label">Staff Picks</span></div>
+                        <div class="card-scroll" id="rowStaffCards"></div>
+                    </div>
+
+                </div>
+
+                <!-- SCORE PANEL (critique mode) -->
+                <div class="score-panel" role="status" aria-live="polite">
+                    <span class="score-label">Algo scores</span>
+                    <div class="score-items" id="scoreItems"></div>
+                </div>
+
+            </div><!-- /homePage -->
+
+            <!-- MY LIST PAGE -->
+            <div class="page" id="listPage">
+                <div class="mylist-page">
+                    <h2>My List</h2>
+                    <p class="mylist-sub" id="listSub">SAVED TITLES</p>
+                    <div class="mylist-grid" id="myListGrid">
+                        <div class="mylist-empty" role="status">No titles saved yet — click + on any card.</div>
                     </div>
                 </div>
             </div>
 
-            <div class="filters" id="filters">
-                <div class="search">
-                    <input id="searchInput" placeholder="Search titles…" />
-                </div>
-            </div>
+        </div><!-- /appScroll -->
 
-            <div id="feed"></div>
-        </div>
-    </section>
-</div>
+    </main>
 
-<!-- PLAYER -->
-<div class="player" id="player">
-    <div class="player-card" role="dialog" aria-modal="true" aria-label="Player">
-        <div class="player-top">
-            <div class="player-title" id="playerTitle">Now Playing</div>
-            <button class="player-close" id="playerClose">Close</button>
-        </div>
-        <div class="player-screen" id="playerScreen"></div>
-        <div class="player-controls">
-            <div class="playbtn" id="playerPlayPause">Play</div>
-            <div class="timeline" aria-label="Timeline"><div id="playerBar"></div></div>
-            <div class="time" id="playerTime">0:00</div>
-        </div>
+</div><!-- /layout -->
+
+<!-- CRITIQUE SIDEBAR -->
+<aside class="critique-sidebar" id="critiqueSidebar" role="complementary" aria-label="Critique panel" aria-hidden="true">
+    <div class="critique-sidebar-head">
+        <span class="critique-sidebar-title">Pattern Analysis</span>
+        <button class="sidebar-close" onclick="closeCritique()" aria-label="Close critique panel">✕</button>
     </div>
-</div>
+    <div class="critique-sidebar-body">
+
+        <div class="critique-entry" id="ce-autoplay">
+            <div class="ce-label">Pattern 01</div>
+            <div class="ce-title">Autoplay Countdown</div>
+            <div class="ce-body">
+                The 5-second bar inverts the default. Instead of requiring action to <strong>start</strong> the next episode, it requires action to <strong>stop</strong> it. This reversal is intentional — inertia does the work of engagement.<br><br>
+                In 2022, the EU's Digital Services Act flagged autoplay as a manipulative design pattern. Netflix responded by adding a setting — buried four levels deep in account settings.
+            </div>
+        </div>
+
+        <div class="critique-entry" id="ce-hero">
+            <div class="ce-label">Pattern 02</div>
+            <div class="ce-title">Hero Section Manipulation</div>
+            <div class="ce-body">
+                The hero slot is algorithmically assigned, not editorially curated. The title shown is the one <strong>predicted to generate the most watch-time for this user</strong>, not the best or most popular title overall. Size implies endorsement. Platforms exploit this.
+            </div>
+        </div>
+
+        <div class="critique-entry" id="ce-recs">
+            <div class="ce-label">Pattern 03</div>
+            <div class="ce-title">Recommendation Engine</div>
+            <div class="ce-body">
+                Each interaction you take — hovering, clicking, finishing an episode — feeds the algorithm. Genre affinity compounds rapidly. One thriller watched becomes ten recommended. The feedback loop narrows your world while feeling personalized.
+            </div>
+            <div class="ce-formula">
+                score(movie) =<br>
+                &nbsp;&nbsp;genre_affinity[g] × <strong>5.0</strong><br>
+                &nbsp;&nbsp;+ hover_ms × 0.0008<br>
+                &nbsp;&nbsp;+ view_count × 0.7<br>
+                &nbsp;&nbsp;+ boost_count × 2.0<br>
+                &nbsp;&nbsp;+ in_list ? 2.0 : 0
+            </div>
+        </div>
+
+        <div class="critique-entry" id="ce-social">
+            <div class="ce-label">Pattern 04</div>
+            <div class="ce-title">Manufactured Social Proof</div>
+            <div class="ce-body">
+                The "Trending Now" row and Social Buzz posts simulate organic enthusiasm. The boost counts are seeded. The handles are fake. The FOMO, however, is entirely real — social proof is one of the most reliable behavioral levers in UX.
+            </div>
+        </div>
+
+        <div class="critique-entry" id="ce-mylist">
+            <div class="ce-label">Pattern 05</div>
+            <div class="ce-title">My List &amp; Sunk Cost</div>
+            <div class="ce-body">
+                Every title you add to My List is a <strong>preference signal</strong> that reshapes your recommendations immediately. The list also creates psychological lock-in — you're less likely to cancel a subscription when you have "things to watch."
+            </div>
+        </div>
+
+    </div>
+</aside>
+
+<!-- BUZZ PANEL -->
+<aside class="buzz-panel" id="buzzPanel" role="complementary" aria-label="Social buzz" aria-hidden="true">
+    <div class="buzz-head">
+        <span class="buzz-title">Social Buzz — Live</span>
+        <button class="buzz-close" onclick="closeBuzz()" aria-label="Close buzz panel">✕</button>
+    </div>
+    <div class="buzz-scroll" id="buzzScroll"></div>
+</aside>
 
 <!-- MODAL -->
-<div class="modal" id="modal">
-    <div class="modal-content" id="modalContent"></div>
+<div class="modal-bg" id="modalBg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box" id="modalBox"></div>
 </div>
 
-<div class="toast" id="toast">Boosted</div>
-
-<div class="heat-overlay" aria-hidden="true">
-    <canvas id="heatCanvas"></canvas>
-</div>
-
-<!-- SURVEY -->
-<div class="survey" id="survey" aria-label="Preference survey">
-    <div class="survey-card">
-        <div class="survey-top">
-            <div>
-                <h3 class="survey-title">Quick taste check</h3>
-                <p class="survey-sub">
-                    Pick your <b>favorite genre</b> and a <b>vibe</b>. Preferred titles become MUCH bigger and highlighted. Then use BOOST to push them higher in the ranking.
-                </p>
-            </div>
-            <div class="btn" id="surveySkipBtn">Skip</div>
-        </div>
-
-        <div class="survey-grid">
-            <div class="field">
-                <label>Preferred genre</label>
-                <div class="opt-row" id="surveyGenres"></div>
-            </div>
-
-            <div class="field">
-                <label>Category / vibe</label>
-                <div class="opt-row" id="surveyVibes"></div>
-            </div>
-        </div>
-
-        <div class="survey-actions">
-            <div class="btn" id="surveyResetBtn">Clear</div>
-            <div class="btn primary" id="surveyContinueBtn">Continue</div>
-        </div>
-    </div>
-</div>
+<!-- TOAST -->
+<div class="toast" id="toastEl" role="status" aria-live="polite"></div>
 
 <script>
-    // ===== INTERACTIVE EFFECTS =====
-    function createConfetti(count) {
-        for (let i = 0; i < count; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.textContent = ['🎬', '⭐', '🎥', '✨', '🎭', '📺'][Math.floor(Math.random() * 6)];
-            confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.top = '-10px';
-            confetti.style.fontSize = (10 + Math.random() * 20) + 'px';
-            confetti.style.animation = `confetti-fall ${1 + Math.random() * 2}s linear`;
-            document.body.appendChild(confetti);
-            setTimeout(() => confetti.remove(), 3000);
-        }
-    }
+    'use strict';
 
-    function createSparkles(e) {
-        for (let i = 0; i < 15; i++) {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            sparkle.textContent = '✨';
-            sparkle.style.left = e.clientX + 'px';
-            sparkle.style.top = e.clientY + 'px';
-            sparkle.style.animation = `sparkle ${0.4 + Math.random() * 0.4}s ease-out forwards`;
-            sparkle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100}px)`;
-            document.body.appendChild(sparkle);
-            setTimeout(() => sparkle.remove(), 800);
-        }
-    }
+    // ── CONSTANTS ────────────────────────────────────────────
+    const W_GENRE   = 5.0;
+    const W_HOVER   = 0.0008;
+    const W_VIEWS   = 0.7;
+    const W_SOCIAL  = 2.0;
+    const W_LIST    = 2.0;
+    const AUTOPLAY_SECS = 7;
 
-    function createReaction(x, y, emoji) {
-        const reaction = document.createElement('div');
-        reaction.className = 'reaction';
-        reaction.textContent = emoji;
-        reaction.style.left = x + 'px';
-        reaction.style.top = y + 'px';
-        document.body.appendChild(reaction);
-        setTimeout(() => reaction.remove(), 1000);
-    }
+    // ── STATE ─────────────────────────────────────────────────
+    const state = {
+        critiqueOn: false,
+        buzzOpen: false,
+        currentPage: 'home',
+        myList: new Set(),
+        genreAffinity: { romance:0, horror:0, action:0, sciFi:0, thriller:0 },
+        hoverMs: {},
+        viewCounts: {},
+        buzzCounts: {},
+        spotlitPattern: null,
+    };
 
-    function createFloatText(x, y, text, color = '#e50914') {
-        const floatText = document.createElement('div');
-        floatText.className = 'float-text';
-        floatText.textContent = text;
-        floatText.style.left = x + 'px';
-        floatText.style.top = y + 'px';
-        floatText.style.color = color;
-        document.body.appendChild(floatText);
-        setTimeout(() => floatText.remove(), 1500);
-    }
+    let currentHero = null;
+    let autoplayTimer = null;
+    let autoplayRemaining = AUTOPLAY_SECS;
+    let autoplayInterval = null;
+    let previousFocus = null;
 
-    function createPulseRing(x, y) {
-        const ring = document.createElement('div');
-        ring.className = 'pulse-ring';
-        ring.style.left = (x - 20) + 'px';
-        ring.style.top = (y - 20) + 'px';
-        ring.style.width = '40px';
-        ring.style.height = '40px';
-        document.body.appendChild(ring);
-        setTimeout(() => ring.remove(), 800);
-    }
-
-    function showTooltip(e, text) {
-        const popup = document.createElement('div');
-        popup.style.position = 'fixed';
-        popup.style.top = e.clientY - 30 + 'px';
-        popup.style.left = e.clientX + 'px';
-        popup.style.background = 'rgba(229, 9, 20, 0.9)';
-        popup.style.color = 'white';
-        popup.style.padding = '6px 10px';
-        popup.style.borderRadius = '4px';
-        popup.style.fontSize = '11px';
-        popup.style.pointerEvents = 'none';
-        popup.style.zIndex = '9990';
-        popup.style.whiteSpace = 'nowrap';
-        popup.textContent = text;
-        document.body.appendChild(popup);
-        setTimeout(() => popup.remove(), 2000);
-    }
-
-    const genres = ["all","romance","horror","action","sciFi","thriller"];
-
-    let clicks = 0;
-    let views = 0;
-
-    let genreAffinity = { romance:0, horror:0, action:0, sciFi:0, thriller:0 };
-    let hoverTimeMs = {};
-    let viewCounts = {};
-    let heatPoints = 0;
-
-    let activeFilter = "all";
-    let searchQuery = "";
-
-    let featuredMovie = null;
-
-    const vibeOptions = ["Cozy", "Dark", "Fast", "Mind-bend", "Twisty"];
-    let preference = { genre: null, vibe: null };
-
-    let buzzScore = {};
-    let socialSusceptibility = 1.0;
-    let socialInteractions = 0;
-
-    let myList = new Set();
-
-    const fakeTitles = [
-        "Neon Widow", "The Velvet Exit", "Gutter Halo", "Kiss of the Algorithm", "Midnight Carousel",
-        "Static Orchard", "Redline Reverie", "Satin Thunder", "Ghosts in the Buffer", "Axiom & Ash",
-        "Paper Moon Riot", "Last Train to Nowhere", "Sugarglass City", "The Quiet Siren", "Nightwatch Protocol",
-        "Carnival of Teeth", "Blue Furnace", "Orbit Motel", "The Saint of Small Fires", "Crimson Subroutine",
-        "Hollow Promises", "Sunset Detour", "Blackwater Kisses", "Sleepwalk Embassy", "The Minor Apocalypse",
-        "Razorblush", "Signal to the Heart", "The Grinning Cut", "Afterimage Avenue"
+    // ── DATA ──────────────────────────────────────────────────
+    const GENRES = ['romance','horror','action','sciFi','thriller'];
+    const TITLES = [
+        "Neon Widow","The Velvet Exit","Gutter Halo","Kiss of the Algorithm","Midnight Carousel",
+        "Static Orchard","Redline Reverie","Satin Thunder","Ghosts in the Buffer","Axiom & Ash",
+        "Paper Moon Riot","Last Train to Nowhere","Sugarglass City","The Quiet Siren","Nightwatch Protocol",
+        "Carnival of Teeth","Blue Furnace","Orbit Motel","Saint of Small Fires","Crimson Subroutine",
+        "Hollow Promises","Sunset Detour","Blackwater Kisses","Sleepwalk Embassy","Minor Apocalypse",
+        "Razorblush","Signal to the Heart","The Grinning Cut","Afterimage Avenue"
+    ];
+    const HANDLES = ['@cinepulse','@nightfeed','@streamtalk','@posterjunkie','@bingeclub','@flickrhaze','@rewatchable'];
+    const BUZZ_TEMPLATES = [
+        t => `Everyone's talking about <b>${t}</b> right now.`,
+        t => `If you haven't seen <b>${t}</b> you are missing out.`,
+        t => `<b>${t}</b> is genuinely the best thing on here.`,
+        t => `Can't stop thinking about <b>${t}</b>.`,
+        t => `Whole office is watching <b>${t}</b>. No spoilers.`,
     ];
 
-    function pickGenre(i){ return genres[(i % (genres.length - 1)) + 1]; }
-    function seededRand(seed){ let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
-    function randInt(a,b){ return a + Math.floor(Math.random() * (b - a + 1)); }
+    const POSTERS = TITLES.map((title, i) => ({
+        id: i + 1,
+        title,
+        genre: GENRES[i % GENRES.length],
+        year: 2020 + Math.floor(Math.random() * 5),
+        runtime: 88 + Math.floor(Math.random() * 64),
+        rating: parseFloat((6.5 + Math.random() * 3).toFixed(1)),
+        votes: (5000 + Math.floor(Math.random() * 150000)).toLocaleString(),
+        img: `./images/poster${i+1}.png`,
+        desc: i === 0
+            ? "In the shadowy underworld of Tokyo, a mysterious woman emerges to unravel a conspiracy spanning decades. With only fragmented memories and dangerous enemies closing in, she must confront the truth before it consumes her."
+            : "A gripping story of intrigue, identity, and consequence in a world where nothing is what it seems.",
+    }));
 
-    function makeMovieStats(id, genre, title){
-        const r1 = seededRand(id * 17.31);
-        const r2 = seededRand(id * 91.07);
-        const r3 = seededRand(id * 3.77);
-        const r4 = seededRand(id * 44.19);
-
-        const year = 2004 + Math.floor(r1 * 22);
-        const runtime = 82 + Math.floor(r2 * 58);
-        const rating = (2.7 + r3 * 2.2);
-        const votes = 1200 + Math.floor(r4 * 98000);
-
-        const vibeByGenre = {
-            romance: ["Cozy","Twisty"],
-            horror: ["Dark","Twisty"],
-            action: ["Fast"],
-            sciFi: ["Mind-bend","Dark"],
-            thriller: ["Twisty","Dark"]
-        };
-        const possibleVibes = vibeByGenre[genre] || vibeOptions;
-        const vibe = possibleVibes[Math.floor(seededRand(id*5.55) * possibleVibes.length)];
-
-        const tagsByGenre = {
-            romance: ["slow-burn","second chances","messy feelings","rain-soaked montage"],
-            horror: ["found footage","body horror","uncanny silence","one location nightmare"],
-            action: ["practical stunts","neon chase","one-take fight","impossible escape"],
-            sciFi: ["retro-future","AI paranoia","time slip","cold orbit"],
-            thriller: ["unreliable narrator","cat-and-mouse","late twist","sealed room"]
-        };
-        const tagPool = tagsByGenre[genre] || ["strange","stylized","intense","moody"];
-        const tagA = tagPool[Math.floor(seededRand(id*7.1) * tagPool.length)];
-        const tagB = tagPool[Math.floor(seededRand(id*11.2) * tagPool.length)];
-
-        const reviewPool = [
-            "A slick interface for your emotions—designed to keep you watching even when you swear you're done.",
-            "So polished it feels personalized; somehow it still surprises you with a cruel little twist.",
-            "Beautifully manipulative pacing: every scene ends like an autoplay countdown.",
-            "A high-gloss binge trap with a heartbeat—equal parts comfort and control.",
-            "The algorithm would love this. Unfortunately, so did I."
-        ];
-        const review1 = reviewPool[Math.floor(seededRand(id*13.3) * reviewPool.length)];
-        const review2 = reviewPool[Math.floor(seededRand(id*19.9) * reviewPool.length)];
-
-        return {
-            title, genre, year, runtime,
-            rating: rating.toFixed(1),
-            votes: votes.toLocaleString(),
-            tags:[tagA, tagB],
-            vibe,
-            reviews:[review1, review2],
-            contentWarnings: genre === "horror" ? ["disturbing imagery","sudden audio spikes"] : (genre === "thriller" ? ["paranoia themes"] : [])
-        };
+    // ── SCORING ───────────────────────────────────────────────
+    function score(p) {
+        return (state.genreAffinity[p.genre] || 0) * W_GENRE
+            + (state.hoverMs[p.id] || 0) * W_HOVER
+            + (state.viewCounts[p.id] || 0) * W_VIEWS
+            + (state.buzzCounts[p.id] || 0) * W_SOCIAL
+            + (state.myList.has(p.id) ? W_LIST : 0);
     }
 
-    const posters = [];
-    for(let i=1;i<=29;i++){
-        const title = fakeTitles[i-1] || `Untitled ${i}`;
-        const genre = pickGenre(i);
-        posters.push({ id:i, title, genre, img:`./images/poster${i}.png`, stats: makeMovieStats(i, genre, title) });
-    }
-    posters.forEach(p => buzzScore[p.id] = 0);
-
-    function goHome(){
-        location.hash = "#/";
-        renderRoute();
-    }
-    function goList(){
-        location.hash = "#/list";
-        renderRoute();
+    function sorted(list) {
+        return [...list].sort((a, b) => score(b) - score(a));
     }
 
-    function saveList(){
-        localStorage.setItem("obs_mylist", JSON.stringify([...myList]));
-    }
-    function loadList(){
-        try{
-            const raw = localStorage.getItem("obs_mylist");
-            if(!raw) return;
-            const arr = JSON.parse(raw);
-            if(Array.isArray(arr)){
-                myList = new Set(arr.map(Number));
-            }
-        }catch{}
-    }
-    loadList();
+    // ── CARDS ─────────────────────────────────────────────────
+    function makeCard(p, large) {
+        const card = document.createElement('div');
+        card.className = 'pcard' + (large ? ' pcard-lg' : '');
+        if (large) { card.style.width = '180px'; card.style.height = '270px'; }
+        card.style.backgroundImage = `url('${p.img}')`;
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `${p.title}, ${p.genre}, ${p.year}`);
 
-    function updateListCount(){
-        document.getElementById("listCount").textContent = `(${myList.size})`;
-        if (myList.size > 0) {
-            document.getElementById("listBadge").style.display = 'flex';
-        }
-    }
-    updateListCount();
+        card.innerHTML = `
+    <div class="pcard-info">
+      <div class="pcard-title">${p.title}</div>
+      <div class="pcard-sub">${p.genre} · ★${p.rating}</div>
+    </div>
+    <button class="pcard-add" aria-label="${state.myList.has(p.id) ? 'Remove from' : 'Add to'} My List" onclick="event.stopPropagation(); toggleList(${p.id}); updateCardAdd(this, ${p.id})">
+      ${state.myList.has(p.id) ? '✓' : '+'}
+    </button>
+  `;
 
-    function score(p){
-        const hoverBoost = (hoverTimeMs[p.id] || 0) * 0.0008;
-        const viewBoost  = (viewCounts[p.id] || 0) * 0.7;
-
-        const prefGenreBoost = (preference.genre && p.genre === preference.genre) ? 3.8 : 0;
-        const prefVibeBoost = (preference.vibe && p.stats.vibe === preference.vibe) ? 1.1 : 0;
-
-        const buzz = (buzzScore[p.id] || 0);
-        const socialBoost = buzz * 1.6 * socialSusceptibility;
-
-        const listBoost = myList.has(p.id) ? 1.8 : 0;
-
-        return (genreAffinity[p.genre] || 0) + hoverBoost + viewBoost + prefGenreBoost + prefVibeBoost + socialBoost + listBoost;
-    }
-    function recommend(list){ return [...list].sort((a,b)=>score(b)-score(a)); }
-
-    function isPreferred(p){ return !!preference.genre && p.genre === preference.genre; }
-
-    function isPreferredHuge(p, indexInRow){
-        if(!isPreferred(p)) return false;
-        return ((p.id + indexInRow) % 5) !== 0;
-    }
-
-    function buildFilters(){
-        const f=document.getElementById("filters");
-        [...f.querySelectorAll(".chip")].forEach(n=>n.remove());
-        const search = f.querySelector(".search");
-        genres.forEach(g=>{
-            const chip=document.createElement("div");
-            chip.className="chip" + (g===activeFilter ? " active" : "");
-            chip.innerText=g;
-            chip.onclick=()=>{
-                activeFilter=g;
-                buildFilters();
-                pickFeatured();
-                renderRoute();
-                createSparkles({clientX: event.clientX, clientY: event.clientY});
-            };
-            f.insertBefore(chip, search);
+        let hoverStart = 0;
+        card.addEventListener('mouseenter', () => {
+            hoverStart = Date.now();
+            state.viewCounts[p.id] = (state.viewCounts[p.id] || 0) + 1;
         });
-    }
-
-    let toastTimer = null;
-    function showToast(msg){
-        const t = document.getElementById("toast");
-        t.textContent = msg;
-        t.classList.add("show");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(()=>t.classList.remove("show"), 1100);
-    }
-
-    function pickFeatured(){
-        const list = posters
-            .filter(p => (activeFilter==="all" || p.genre===activeFilter))
-            .filter(p => (searchQuery ? p.title.toLowerCase().includes(searchQuery.toLowerCase()) : true));
-
-        const sorted = recommend(list);
-        featuredMovie = sorted[0] || posters[0];
-        document.getElementById("featuredTitle").textContent = featuredMovie?.title || "Featured";
-        const b = buzzScore[featuredMovie.id] || 0;
-        document.getElementById("featuredDesc").textContent =
-            `Click a title to open a pre-play window. Add to My List. Watch how boosted titles appear more frequently in the feed and trending sections. Current boost level: ${b}`;
-    }
-
-    function similarityScore(target, candidate){
-        if(target.id === candidate.id) return -Infinity;
-        let s = 0;
-        if(candidate.genre === target.genre) s += 7;
-        if(candidate.stats.vibe === target.stats.vibe) s += 3;
-        s += Math.min(3.5, (buzzScore[candidate.id] || 0) * 0.25);
-        s += seededRand(candidate.id * 12.13 + target.id * 2.1);
-        return s;
-    }
-    function getMoreLikeThis(target, k = 8){
-        return posters
-            .filter(p => p.id !== target.id)
-            .map(p => ({ p, s: similarityScore(target, p) }))
-            .sort((a,b)=>b.s-a.s)
-            .slice(0, k)
-            .map(x => x.p);
-    }
-
-    const handles = ["@cinepulse", "@nightfeed", "@streamtalk", "@posterjunkie", "@bingeclub", "@vhsghost", "@midnightqueue"];
-    const postTemplates = [
-        (t)=>`Everyone's talking about <b>${t}</b> — it's trending everywhere.`,
-        (t)=>`I watched <b>${t}</b> because everyone was watching it.`,
-        (t)=>`If you don't watch <b>${t}</b>, you'll miss all the discussions.`,
-        (t)=>`<b>${t}</b> is blowing up right now.`,
-        (t)=>`My whole friend group is watching <b>${t}</b>.`
-    ];
-
-    function pickPosterForBuzz(){
-        const weights = posters.map(p=>{
-            const base = 1.0;
-            const pref = (preference.genre && p.genre === preference.genre) ? 1.25 : 1.0;
-            const already = 1 + Math.min(1.5, (buzzScore[p.id] || 0) * 0.10);
-            return base * pref * already;
+        card.addEventListener('mouseleave', () => {
+            if (hoverStart) state.hoverMs[p.id] = (state.hoverMs[p.id] || 0) + (Date.now() - hoverStart);
+            hoverStart = 0;
+            if (state.critiqueOn) updateScorePanel();
         });
-        const total = weights.reduce((a,b)=>a+b,0);
-        let r = Math.random() * total;
-        for(let i=0;i<posters.length;i++){
-            r -= weights[i];
-            if(r <= 0) return posters[i];
-        }
-        return posters[0];
+        card.addEventListener('click', () => {
+            if (state.critiqueOn) return;
+            state.genreAffinity[p.genre] = (state.genreAffinity[p.genre] || 0) + 1;
+            openModal(p);
+        });
+        card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+        });
+
+        return card;
     }
 
-    function addBuzz(id, amount, source){
-        buzzScore[id] = (buzzScore[id] || 0) + amount;
-
-        if(source === "tap" || source === "share"){
-            socialInteractions++;
-            socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
-        }
-
-        const movie = posters.find(p => p.id === id);
-        showToast(`✓ BOOSTED +${amount}! "${movie.title}" now ranks higher.`);
-        createReaction(window.innerWidth/2, window.innerHeight/2, '🚀');
-        createFloatText(window.innerWidth/2, window.innerHeight/2 - 50, `+${amount} BOOST`, '#00d084');
-
-        pickFeatured();
-        renderRoute();
+    function fillRow(id, movies, large) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = '';
+        movies.forEach(p => el.appendChild(makeCard(p, large)));
     }
 
-    function renderBuzzPosts(){
-        const auto = document.getElementById("buzzAuto");
-        auto.innerHTML = "";
+    // ── RENDER HOME ───────────────────────────────────────────
+    function renderHome() {
+        const s = sorted(POSTERS);
+        currentHero = s[0];
 
-        for(let i=0;i<18;i++){
-            const p = pickPosterForBuzz();
-            const h = handles[Math.floor(Math.random()*handles.length)];
-            const body = postTemplates[Math.floor(Math.random()*postTemplates.length)](p.title);
-            const mins = randInt(2, 55);
+        document.getElementById('heroTitle').textContent = currentHero.title;
+        document.getElementById('heroGenre').textContent = currentHero.genre;
+        document.getElementById('heroYear').textContent = currentHero.year;
+        document.getElementById('heroRating').textContent = '★ ' + currentHero.rating;
+        document.getElementById('heroRuntime').textContent = currentHero.runtime + ' min';
+        document.getElementById('heroDesc').textContent = currentHero.desc;
+        document.getElementById('heroBg').style.backgroundImage = `url('${currentHero.img}')`;
+        updateHeroAddBtn();
 
-            const post = document.createElement("div");
-            post.className = "buzz-post";
-            post.innerHTML = `
-          <div class="buzz-top">
-            <div class="buzz-handleline"><span class="ava"></span> ${h}</div>
-            <div class="buzz-time">${mins}m</div>
-          </div>
-          <div class="buzz-body">${body}</div>
-          <div class="buzz-actions">
-            <div class="boostbtn" data-act="boost" data-id="${p.id}">BOOST <span style="opacity:.75">${buzzScore[p.id] || 0}</span></div>
-            <div class="pillbtn" data-act="open" data-id="${p.id}">Open</div>
-            <div class="pillbtn" data-act="share" data-id="${p.id}">Share</div>
-          </div>
-        `;
+        fillRow('rowJFYCards', s.slice(0, 8), true);
+        fillRow('rowTrendCards', s.slice(3, 12));
+        fillRow('rowRecCards', s.slice(6, 14));
+        fillRow('rowNewCards', POSTERS.slice(0, 8));
+        fillRow('rowBecauseCards', s.slice(2, 10));
+        fillRow('rowPopCards', s.slice(5, 13));
+        fillRow('rowContCards', s.slice(8, 16));
+        fillRow('rowTopCards', sorted([...POSTERS].reverse()).slice(0, 8));
+        fillRow('rowStaffCards', POSTERS.slice(4, 12));
 
-            post.querySelectorAll("[data-act]").forEach(btn=>{
-                btn.addEventListener("click", (e)=>{
-                    const act = btn.getAttribute("data-act");
-                    const id = Number(btn.getAttribute("data-id"));
-                    const movie = posters.find(x=>x.id===id);
-                    if(!movie) return;
+        if (state.critiqueOn) updateScorePanel();
+        startAutoplay();
+    }
 
-                    post.classList.remove("boost-flash");
-                    void post.offsetWidth;
-                    post.classList.add("boost-flash");
-
-                    if(act === "boost"){
-                        addBuzz(id, 3, "tap");
-                        createPulseRing(e.clientX, e.clientY);
-                    }
-                    if(act === "share"){
-                        addBuzz(id, 4, "share");
-                        createReaction(e.clientX, e.clientY, '📢');
-                    }
-                    if(act === "open"){
-                        socialInteractions++;
-                        socialSusceptibility = Math.min(1.8, 1 + socialInteractions * 0.04);
-                        openPrePlayModal(movie);
-                        createReaction(e.clientX, e.clientY, '🎬');
-                    }
-
-                    pauseBuzzAutoScroll(3200);
-                });
-            });
-
-            auto.appendChild(post);
+    function updateHeroAddBtn() {
+        const btn = document.getElementById('heroAddBtn');
+        if (btn && currentHero) {
+            btn.textContent = state.myList.has(currentHero.id) ? '✓ In List' : '+ My List';
         }
     }
 
-    const buzzScroll = document.getElementById("buzzScroll");
-    let buzzAutoTimer = null;
-    let autoEnabled = true;
-    let autoPauseUntil = 0;
-
-    function pauseBuzzAutoScroll(ms){
-        autoPauseUntil = Date.now() + ms;
+    function updateCardAdd(btn, id) {
+        btn.textContent = state.myList.has(id) ? '✓' : '+';
+        btn.setAttribute('aria-label', (state.myList.has(id) ? 'Remove from' : 'Add to') + ' My List');
     }
 
-    function startBuzzAutoScroll(){
-        if(buzzAutoTimer) clearInterval(buzzAutoTimer);
+    // ── AUTOPLAY ──────────────────────────────────────────────
+    function startAutoplay() {
+        cancelAutoplay();
+        const s = sorted(POSTERS);
+        const next = s[1] || s[0];
+        autoplayRemaining = AUTOPLAY_SECS;
+        const bar = document.getElementById('autoplayBar');
+        const fill = document.getElementById('autoplayFill');
+        const label = document.getElementById('autoplayLabel');
 
-        buzzAutoTimer = setInterval(()=>{
-            if(!autoEnabled) return;
-            if(Date.now() < autoPauseUntil) return;
+        bar.classList.add('visible');
+        label.textContent = `Up next: ${next.title}`;
 
-            const drawer = document.getElementById("buzzDrawer");
-            if(!drawer.classList.contains("open")) return;
+        autoplayInterval = setInterval(() => {
+            autoplayRemaining -= 0.1;
+            const pct = ((AUTOPLAY_SECS - autoplayRemaining) / AUTOPLAY_SECS) * 100;
+            fill.style.width = Math.min(100, pct) + '%';
+            label.textContent = `Up next: ${next.title} (${Math.ceil(autoplayRemaining)}s)`;
 
-            buzzScroll.scrollTop += 0.35;
-            const nearBottom = (buzzScroll.scrollTop + buzzScroll.clientHeight) >= (buzzScroll.scrollHeight - 20);
-            if(nearBottom){
-                renderBuzzPosts();
-                buzzScroll.scrollTop = 0;
+            if (autoplayRemaining <= 0) {
+                clearInterval(autoplayInterval);
+                bar.classList.remove('visible');
+                toast('▶ Autoplaying: ' + next.title);
             }
-        }, 16);
+        }, 100);
     }
 
-    let userScrollDebounce = null;
-    buzzScroll.addEventListener("scroll", ()=>{
-        pauseBuzzAutoScroll(2500);
-        if(userScrollDebounce) clearTimeout(userScrollDebounce);
-        userScrollDebounce = setTimeout(()=>{}, 250);
-    }, { passive:true });
+    function cancelAutoplay() {
+        if (autoplayInterval) clearInterval(autoplayInterval);
+        autoplayInterval = null;
+        const bar = document.getElementById('autoplayBar');
+        if (bar) bar.classList.remove('visible');
+        const fill = document.getElementById('autoplayFill');
+        if (fill) fill.style.width = '0%';
+    }
 
-    function renderHome(){
-        const feed=document.getElementById("feed");
-        feed.innerHTML="";
+    // ── NAVIGATION ────────────────────────────────────────────
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
 
-        const filteredBase = posters
-            .filter(p => activeFilter==="all" || p.genre===activeFilter)
-            .filter(p => searchQuery ? p.title.toLowerCase().includes(searchQuery.toLowerCase()) : true);
+    function goHome() {
+        state.currentPage = 'home';
+        showPage('homePage');
+        document.getElementById('btnHome').classList.add('nav-active');
+        document.getElementById('btnList').classList.remove('nav-active');
+        renderHome();
+    }
 
-        const sorted=recommend(filteredBase);
+    function goMyList() {
+        cancelAutoplay();
+        state.currentPage = 'list';
+        showPage('listPage');
+        document.getElementById('btnHome').classList.remove('nav-active');
+        document.getElementById('btnList').classList.add('nav-active');
 
-        if(sorted.length===0){
-            feed.innerHTML='<div style="padding:16px;opacity:.7">No titles available.</div>';
+        const grid = document.getElementById('myListGrid');
+        const sub = document.getElementById('listSub');
+
+        if (state.myList.size === 0) {
+            grid.innerHTML = '<div class="mylist-empty" role="status">No titles saved yet — click + on any card.</div>';
+            sub.textContent = 'SAVED TITLES — EMPTY';
             return;
         }
 
-        const rows=3;
-        const perRow=Math.ceil(sorted.length/rows);
-
-        for(let r=0;r<rows;r++){
-            const title=document.createElement("div");
-            title.className="row-title";
-            title.innerHTML = `
-          <div>${["Recommended For You","Because You Clicked","Trending Now"][r] || "For You"}</div>
-          <div class="sub">${
-                preference.genre
-                    ? `Preference: ${preference.genre.toUpperCase()} • Boost Weight: ${socialSusceptibility.toFixed(2)}x`
-                    : `Boost Weight: ${socialSusceptibility.toFixed(2)}x`
-            }</div>
-        `;
-            feed.appendChild(title);
-
-            const wrap = document.createElement("div");
-            wrap.className = "row-wrap";
-
-            const row=document.createElement("div");
-            row.className="row";
-
-            const left = document.createElement("div");
-            left.className = "row-arrow left";
-            left.textContent = "‹";
-            left.onclick = (e)=>{ e.stopPropagation(); row.scrollBy({ left: -Math.floor(row.clientWidth*0.9), behavior:"smooth" }); };
-
-            const right = document.createElement("div");
-            right.className = "row-arrow right";
-            right.textContent = "›";
-            right.onclick = (e)=>{ e.stopPropagation(); row.scrollBy({ left: Math.floor(row.clientWidth*0.9), behavior:"smooth" }); };
-
-            wrap.appendChild(left);
-            wrap.appendChild(right);
-            wrap.appendChild(row);
-
-            for(let i=0;i<perRow;i++){
-                const p=sorted[(r*perRow+i)%sorted.length];
-
-                const card=document.createElement("div");
-                card.className="card";
-                card.style.backgroundImage=`url(${p.img})`;
-
-                if(isPreferred(p)) card.classList.add("pref");
-                if(isPreferredHuge(p, i)) card.classList.add("pref-large");
-
-                const quick=document.createElement("div");
-                quick.className="quick";
-
-                const bInfo=document.createElement("div");
-                bInfo.className="qbtn";
-                bInfo.title="More Info";
-                bInfo.textContent="i";
-                bInfo.onclick=(e)=>{
-                    e.stopPropagation();
-                    openPrePlayModal(p);
-                    createReaction(e.clientX, e.clientY, 'ℹ️');
-                };
-
-                const bList=document.createElement("div");
-                bList.className="qbtn" + (myList.has(p.id) ? " on" : "");
-                bList.title="Add to My List";
-                bList.textContent="+";
-                bList.onclick=(e)=>{
-                    e.stopPropagation();
-                    if(myList.has(p.id)){
-                        myList.delete(p.id);
-                        showToast("Removed from My List");
-                        createReaction(e.clientX, e.clientY, '✕');
-                    }else{
-                        myList.add(p.id);
-                        showToast("Added to My List");
-                        createReaction(e.clientX, e.clientY, '✓');
-                    }
-                    saveList();
-                    updateListCount();
-                    renderRoute();
-                };
-
-                quick.appendChild(bList);
-                quick.appendChild(bInfo);
-
-                const info=document.createElement("div");
-                info.className="info";
-                info.innerHTML=`
-            <div class="info-inner">
-              <div class="title">${p.title}</div>
-              <div class="meta">${p.genre} • ${p.stats.year} • ★ ${p.stats.rating} • ${p.stats.vibe}</div>
-            </div>
-          `;
-
-                card.appendChild(quick);
-                card.appendChild(info);
-
-                let start=0;
-                card.onmouseenter=()=>{
-                    start=Date.now();
-                    views++;
-                    viewCounts[p.id]=(viewCounts[p.id]||0)+1;
-                };
-                card.onmouseleave=()=>{
-                    if(start){
-                        hoverTimeMs[p.id]=(hoverTimeMs[p.id]||0)+(Date.now()-start);
-                    }
-                };
-
-                card.onclick=()=>{
-                    clicks++;
-                    genreAffinity[p.genre]=(genreAffinity[p.genre]||0)+1;
-                    openPrePlayModal(p);
-                    renderRoute();
-                    createSparkles({clientX: event.clientX, clientY: event.clientY});
-                };
-
-                row.appendChild(card);
-            }
-
-            feed.appendChild(wrap);
-        }
+        sub.textContent = `SAVED TITLES — ${state.myList.size} ITEM${state.myList.size !== 1 ? 'S' : ''}`;
+        grid.innerHTML = '';
+        POSTERS.filter(p => state.myList.has(p.id)).forEach(p => grid.appendChild(makeCard(p)));
     }
 
-    function renderListPage(){
-        const feed=document.getElementById("feed");
-        const items = posters.filter(p => myList.has(p.id));
-
-        feed.innerHTML = `
-        <div style="padding:12px 16px 0 16px;">
-          <div style="font-family:Space Grotesk, Inter, system-ui, sans-serif; text-transform:uppercase; letter-spacing:.16em; font-size:12px; opacity:.9;">
-            My List
-          </div>
-          <div style="margin-top:8px; font-size:12px; opacity:.75; line-height:1.55;">
-            A separate "page" (hash route) showing saved titles. Click a title to open pre-play, or remove it.
-          </div>
-        </div>
-
-        <div style="padding:16px; display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:12px;">
-          ${
-            items.length
-                ? items.map(p => `
-                  <div style="border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden; background:rgba(20,20,20,.6); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(229, 9, 20, 0.5)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255,255,255,.08)';">
-                    <div style="height:220px; background-image:url(${p.img}); background-size:cover; background-position:center; position:relative;">
-                      <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,.18));"></div>
-                      <div style="position:absolute; left:10px; right:10px; bottom:10px;">
-                        <div style="font-weight:700;">${p.title}</div>
-                        <div style="opacity:.75; font-size:12px;">${p.genre} • ★ ${p.stats.rating} • ${p.stats.vibe}</div>
-                      </div>
-                    </div>
-                    <div style="padding:10px; display:flex; gap:10px; flex-wrap:wrap;">
-                      <div class="btn primary" data-open-id="${p.id}">Open</div>
-                      <div class="btn" data-remove-id="${p.id}">Remove</div>
-                    </div>
-                  </div>
-                `).join("")
-                : `<div style="opacity:.7;">Your list is empty. Add movies using the <b>+</b> button on posters.</div>`
-        }
-        </div>
-      `;
-
-        feed.querySelectorAll("[data-open-id]").forEach(el=>{
-            el.addEventListener("click", (e)=>{
-                const id = Number(el.getAttribute("data-open-id"));
-                const movie = posters.find(x=>x.id===id);
-                if(movie) {
-                    openPrePlayModal(movie);
-                    createReaction(e.clientX, e.clientY, '🎬');
-                }
-            });
-        });
-
-        feed.querySelectorAll("[data-remove-id]").forEach(el=>{
-            el.addEventListener("click", (e)=>{
-                const id = Number(el.getAttribute("data-remove-id"));
-                myList.delete(id);
-                saveList();
-                updateListCount();
-                renderRoute();
-                showToast("Removed from My List");
-                createReaction(e.clientX, e.clientY, '✕');
-            });
-        });
-    }
-
-    function renderRoute(){
-        const route = location.hash || "#/";
-        if(route.startsWith("#/list")){
-            renderListPage();
-        }else{
+    // ── MY LIST ───────────────────────────────────────────────
+    function toggleList(id) {
+        if (state.myList.has(id)) {
+            state.myList.delete(id);
+            toast('Removed from My List');
+        } else {
+            state.myList.add(id);
+            toast('Added to My List');
+            // adding to list boosts algorithm immediately
             renderHome();
         }
+        updateHeroAddBtn();
+        if (state.currentPage === 'list') goMyList();
+        if (state.critiqueOn) updateScorePanel();
     }
 
-    function openPrePlayModal(p){
-        const m=document.getElementById("modal");
-        const c=document.getElementById("modalContent");
-        const s=p.stats;
+    // ── CRITIQUE MODE ─────────────────────────────────────────
+    function toggleCritique() {
+        state.critiqueOn = !state.critiqueOn;
+        const btn = document.getElementById('btnCritique');
+        const sidebar = document.getElementById('critiqueSidebar');
 
-        const warnings = (s.contentWarnings && s.contentWarnings.length)
-            ? `<div style="margin-top:10px;font-size:12px;opacity:.85">
-             <b style="color:#fff">Content notes:</b> ${s.contentWarnings.join(", ")}
-           </div>`
-            : "";
+        btn.classList.toggle('on', state.critiqueOn);
+        btn.setAttribute('aria-pressed', state.critiqueOn);
 
-        const more = getMoreLikeThis(p, 8);
-        const b = buzzScore[p.id] || 0;
-        const inList = myList.has(p.id);
+        if (state.critiqueOn) {
+            document.body.classList.add('critique-mode');
+            sidebar.classList.add('open');
+            sidebar.setAttribute('aria-hidden', 'false');
+            sidebar.querySelector('.sidebar-close').focus();
+            document.querySelectorAll('.critique-pin').forEach(pin => pin.style.display = 'block');
+            updateScorePanel();
+            toast('Critique mode on — patterns highlighted');
+        } else {
+            closeCritique();
+        }
+    }
 
-        c.innerHTML=`
-        <div class="modal-grid">
-          <div>
-            <div class="modal-poster" onclick="createSparkles(event)">
-              <img src="${p.img}" alt="${p.title}">
-            </div>
-            <div style="margin-top:10px">
-              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '🏷️')">${s.genre.toUpperCase()}</span>
-              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '📅')">${s.year}</span>
-              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '⏱️')">${s.runtime} min</span>
-              <span class="pill" onclick="createReaction(event.clientX, event.clientY, '🎭')">${s.vibe}</span>
-              ${b >= 10 ? `<span class="pill" onclick="createReaction(event.clientX, event.clientY, '🔥')">TRENDING</span>` : (b >= 5 ? `<span class="pill" onclick="createReaction(event.clientX, event.clientY, '⭐')">BOOSTED</span>` : "")}
-            </div>
-            ${warnings}
+    function closeCritique() {
+        state.critiqueOn = false;
+        document.body.classList.remove('critique-mode');
+        document.getElementById('btnCritique').classList.remove('on');
+        document.getElementById('btnCritique').setAttribute('aria-pressed', 'false');
+        document.getElementById('critiqueSidebar').classList.remove('open');
+        document.getElementById('critiqueSidebar').setAttribute('aria-hidden', 'true');
+        document.querySelectorAll('.critique-pin').forEach(pin => pin.style.display = 'none');
+        document.getElementById('btnCritique').focus();
+    }
 
-            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
-              <div class="playbtn" id="modalPlayBtn" style="padding:10px 12px;" onclick="createReaction(event.clientX, event.clientY, '▶️')">▶ Play</div>
-              <div class="btn ${inList ? "primary" : ""}" id="modalListBtn" style="padding:10px 12px;">
-                ${inList ? "In My List" : "Add to My List"}
-              </div>
-              <div class="btn" id="modalCloseBtn" style="padding:10px 12px;">Close</div>
-            </div>
-          </div>
+    function updateScorePanel() {
+        const items = document.getElementById('scoreItems');
+        if (!items) return;
+        const top = sorted(POSTERS).slice(0, 5);
+        items.innerHTML = top.map(p => `
+    <div class="score-item">
+      <span style="color:rgba(255,255,255,0.35);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title}</span>
+      <span class="score-val">${score(p).toFixed(1)}</span>
+    </div>
+  `).join('');
+    }
 
-          <div>
-            <h2 style="margin:0 0 6px 0">${p.title}</h2>
-            <div style="opacity:.8;font-size:12px;margin-bottom:10px">
-              ★ ${s.rating} (${s.votes} ratings) • Boost: <b>${b}</b>
-            </div>
+    // ── SPOTLIGHT ─────────────────────────────────────────────
+    function spotlight(pattern) {
+        if (!state.critiqueOn) toggleCritique();
 
-            <div class="review" onclick="createReaction(event.clientX, event.clientY, '💭')">
-              <b>About this title:</b> Watch how this title's position in recommendations changes based on how many times it gets boosted in the Buzz panel.
-            </div>
+        document.querySelectorAll('.tag').forEach(t => {
+            t.classList.remove('on');
+            t.setAttribute('aria-pressed', 'false');
+        });
 
-            <div class="preplay">
-              <div class="preplay-top">
-                <div>
-                  <div class="preplay-title">More Like This</div>
-                  <div class="preplay-sub">These are ranked by genre, vibe, and boost score</div>
-                </div>
-              </div>
+        const map = {
+            autoplay:  { section: 's-autoplay', ce: 'ce-autoplay' },
+            countdown: { section: 's-autoplay', ce: 'ce-autoplay' },
+            hero:      { section: 's-hero',     ce: 'ce-hero' },
+            hierarchy: { section: 's-hero',     ce: 'ce-hero' },
+            recs:      { section: 's-recs',     ce: 'ce-recs' },
+            formula:   { section: 's-recs',     ce: 'ce-recs' },
+            social:    { section: 's-social',   ce: 'ce-social' },
+            trending:  { section: 's-social',   ce: 'ce-social' },
+            mylist:    { section: 's-mylist',   ce: 'ce-mylist' },
+        };
 
-              <div class="preplay-grid" id="moreGrid">
-                ${more.map(x => `
-                  <div class="mini" data-open-id="${x.id}" style="background-image:url(${x.img})">
-                    <span><b>${x.title}</b><br><span style="opacity:.75">${x.genre}</span></span>
-                  </div>
-                `).join("")}
-              </div>
-            </div>
+        const target = map[pattern];
+        if (target) {
+            document.querySelectorAll('.essay-section').forEach(s => s.classList.remove('lit'));
+            const section = document.getElementById(target.section);
+            if (section) {
+                section.classList.add('lit');
+                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
 
-            <div class="review" onclick="createReaction(event.clientX, event.clientY, '⭐')"><b>Review:</b> ${s.reviews[0]}</div>
-            <div class="review" onclick="createReaction(event.clientX, event.clientY, '⭐')"><b>Review:</b> ${s.reviews[1]}</div>
+            const ceEl = document.getElementById(target.ce);
+            if (ceEl) ceEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        document.querySelectorAll(`[onclick*="spotlight('${pattern}')"]`).forEach(t => {
+            t.classList.add('on');
+            t.setAttribute('aria-pressed', 'true');
+        });
+
+        state.spotlitPattern = pattern;
+    }
+
+    // ── BUZZ ──────────────────────────────────────────────────
+    function openBuzz() {
+        state.buzzOpen = true;
+        document.getElementById('buzzPanel').classList.add('open');
+        document.getElementById('buzzPanel').setAttribute('aria-hidden', 'false');
+        document.getElementById('btnBuzz').classList.add('on');
+        document.getElementById('btnBuzz').setAttribute('aria-pressed', 'true');
+        renderBuzz();
+    }
+
+    function toggleBuzz() {
+        if (state.buzzOpen) closeBuzz();
+        else openBuzz();
+    }
+
+    function closeBuzz() {
+        state.buzzOpen = false;
+        document.getElementById('buzzPanel').classList.remove('open');
+        document.getElementById('buzzPanel').setAttribute('aria-hidden', 'true');
+        document.getElementById('btnBuzz').classList.remove('on');
+        document.getElementById('btnBuzz').setAttribute('aria-pressed', 'false');
+        document.getElementById('btnBuzz').focus();
+    }
+
+    function renderBuzz() {
+        const scroll = document.getElementById('buzzScroll');
+        scroll.innerHTML = '';
+        for (let i = 0; i < 14; i++) {
+            const p = POSTERS[Math.floor(Math.random() * POSTERS.length)];
+            const h = HANDLES[Math.floor(Math.random() * HANDLES.length)];
+            const body = BUZZ_TEMPLATES[Math.floor(Math.random() * BUZZ_TEMPLATES.length)](p.title);
+            const count = state.buzzCounts[p.id] || 0;
+
+            const post = document.createElement('div');
+            post.className = 'buzz-post';
+            post.innerHTML = `
+      <div class="bpost-top">
+        <div class="bpost-ava" aria-hidden="true"></div>
+        <span class="bpost-handle">${h}</span>
+      </div>
+      <div class="bpost-body">${body}</div>
+      <button class="boost-btn${count > 0 ? ' boosted' : ''}" aria-label="Boost ${p.title}">
+        BOOST ${count > 0 ? count : ''}
+      </button>
+    `;
+
+            post.querySelector('.boost-btn').addEventListener('click', () => {
+                state.buzzCounts[p.id] = (state.buzzCounts[p.id] || 0) + 1;
+                post.querySelector('.boost-btn').textContent = 'BOOST ' + state.buzzCounts[p.id];
+                post.querySelector('.boost-btn').classList.add('boosted');
+                toast(`Boosted "${p.title}"`);
+                if (state.currentPage === 'home') renderHome();
+            });
+
+            scroll.appendChild(post);
+        }
+    }
+
+    // ── MODAL ─────────────────────────────────────────────────
+    function openModal(p) {
+        previousFocus = document.activeElement;
+        const bg = document.getElementById('modalBg');
+        const box = document.getElementById('modalBox');
+        const inList = state.myList.has(p.id);
+        const recs = sorted(POSTERS.filter(x => x.id !== p.id)).slice(0, 6);
+
+        box.innerHTML = `
+    <div class="modal-grid">
+      <div class="modal-poster-wrap">
+        <img src="${p.img}" alt="Poster for ${p.title}" onerror="this.style.background='linear-gradient(135deg,#1a0808,#080818)'">
+      </div>
+      <div class="modal-body">
+        <h2 class="modal-title" id="modalTitle">${p.title}</h2>
+        <div class="modal-rating-row">
+          <span class="rating-badge">★ ${p.rating}/10</span>
+          <span style="font-size:12px;color:rgba(255,255,255,0.4);">${p.votes} ratings</span>
+        </div>
+        <div class="modal-stats">
+          <div class="mstat"><div class="mstat-label">Genre</div><div class="mstat-val">${p.genre}</div></div>
+          <div class="mstat"><div class="mstat-label">Year</div><div class="mstat-val">${p.year}</div></div>
+          <div class="mstat"><div class="mstat-label">Runtime</div><div class="mstat-val">${p.runtime} min</div></div>
+          <div class="mstat"><div class="mstat-label">Match</div><div class="mstat-val">${Math.min(99, 72 + Math.floor(score(p) * 3))}%</div></div>
+        </div>
+        <p class="modal-desc">${p.desc}</p>
+        <div class="modal-actions">
+          <button class="hbtn play" onclick="toast('▶ Playing ${p.title.replace(/'/g,"\\'")}')">▶ Play</button>
+          <button class="hbtn add" id="modalListBtn" onclick="toggleList(${p.id}); updateModalListBtn(${p.id})">${inList ? '✓ In List' : '+ My List'}</button>
+          <button class="hbtn info" onclick="closeModal()">Close</button>
+        </div>
+        <div class="modal-recs">
+          <h3>Because you opened this</h3>
+          <div class="modal-rec-row">
+            ${recs.map(r => `<div class="rec-card" style="background-image:url('${r.img}')" title="${r.title}" role="button" tabindex="0" aria-label="${r.title}" onclick="closeModal();openModal(POSTERS[${r.id-1}])"></div>`).join('')}
           </div>
         </div>
-      `;
+      </div>
+    </div>
+  `;
 
-        m.classList.add("open");
+        bg.classList.add('open');
+        cancelAutoplay();
 
-        document.getElementById("modalPlayBtn")?.addEventListener("click", (e)=>{
-            e.stopPropagation();
-            openPlayer(p);
-        });
+        // focus first button
+        setTimeout(() => {
+            const first = box.querySelector('button');
+            if (first) first.focus();
+        }, 100);
 
-        document.getElementById("modalListBtn")?.addEventListener("click", (e)=>{
-            e.stopPropagation();
-            if(myList.has(p.id)){
-                myList.delete(p.id);
-                showToast("Removed from My List");
-                createReaction(e.clientX, e.clientY, '✕');
-            }else{
-                myList.add(p.id);
-                showToast("Added to My List");
-                createReaction(e.clientX, e.clientY, '✓');
-            }
-            saveList();
-            updateListCount();
-            openPrePlayModal(p);
-            renderRoute();
-        });
-
-        document.getElementById("modalCloseBtn")?.addEventListener("click", (e)=>{
-            e.stopPropagation();
-            closeModal();
-        });
-
-        c.querySelectorAll("[data-open-id]").forEach(el=>{
-            el.addEventListener("click", ()=>{
-                const id = Number(el.getAttribute("data-open-id"));
-                const movie = posters.find(x => x.id === id);
-                if(movie){
-                    clicks++;
-                    genreAffinity[movie.genre]=(genreAffinity[movie.genre]||0)+1;
-                    openPrePlayModal(movie);
-                    renderRoute();
-                    createSparkles({clientX: event.clientX, clientY: event.clientY});
-                }
-            });
-        });
+        // focus trap
+        bg.addEventListener('keydown', trapFocus);
     }
 
-    function closeModal(){ document.getElementById("modal").classList.remove("open"); }
-    document.getElementById("modal").addEventListener("click", (e)=>{ if(e.target.id === "modal") closeModal(); });
+    function updateModalListBtn(id) {
+        const btn = document.getElementById('modalListBtn');
+        if (btn) btn.textContent = state.myList.has(id) ? '✓ In List' : '+ My List';
+    }
 
-    window.addEventListener("keydown", (e)=>{
-        if(e.key === "Escape"){
-            closeModal();
-            closePlayer();
-            closeSurvey();
+    function closeModal() {
+        document.getElementById('modalBg').classList.remove('open');
+        document.removeEventListener('keydown', trapFocus);
+        if (previousFocus) previousFocus.focus();
+        if (state.currentPage === 'home') startAutoplay();
+    }
+
+    function trapFocus(e) {
+        if (e.key !== 'Tab') return;
+        const box = document.getElementById('modalBox');
+        const focusable = [...box.querySelectorAll('button, [tabindex="0"], a, input')].filter(el => !el.disabled);
+        if (!focusable.length) return;
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+
+    // close modal on Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            if (document.getElementById('modalBg').classList.contains('open')) closeModal();
+            else if (state.buzzOpen) closeBuzz();
+            else if (state.critiqueOn) closeCritique();
         }
     });
 
-    const player = document.getElementById("player");
-    const playerTitle = document.getElementById("playerTitle");
-    const playerClose = document.getElementById("playerClose");
-    const playerPlayPause = document.getElementById("playerPlayPause");
-    const playerBar = document.getElementById("playerBar");
-    const playerTime = document.getElementById("playerTime");
-
-    let playing = false;
-    let t = 0;
-    let duration = 120;
-    let playerTimer = null;
-
-    function fmtTime(sec){
-        const m = Math.floor(sec/60);
-        const s = Math.floor(sec%60);
-        return `${m}:${String(s).padStart(2,"0")}`;
+    // ── TOAST ─────────────────────────────────────────────────
+    let toastTimer;
+    function toast(msg) {
+        const el = document.getElementById('toastEl');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
     }
 
-    function openPlayer(p){
-        playerTitle.textContent = `Now Playing • ${p.title}`;
-        duration = 90 + Math.floor((seededRand(p.id*101.1) * 160));
-        t = 0;
-        setPlayerProgress(0);
-        playerTime.textContent = fmtTime(0);
-
-        player.classList.add("show");
-        playing = false;
-        playerPlayPause.textContent = "Play";
-    }
-
-    function closePlayer(){
-        player.classList.remove("show");
-        stopTimer();
-        playing = false;
-        playerPlayPause.textContent = "Play";
-    }
-
-    function setPlayerProgress(frac){
-        const pct = Math.max(0, Math.min(1, frac)) * 100;
-        playerBar.style.width = pct + "%";
-    }
-
-    function stopTimer(){
-        if(playerTimer){ clearInterval(playerTimer); playerTimer = null; }
-    }
-
-    function startTimer(){
-        stopTimer();
-        playerTimer = setInterval(()=>{
-            t = Math.min(duration, t + 1);
-            setPlayerProgress(t / duration);
-            playerTime.textContent = fmtTime(t);
-            if(t >= duration){
-                playing = false;
-                playerPlayPause.textContent = "Replay";
-                stopTimer();
-            }
-        }, 550);
-    }
-
-    playerClose.addEventListener("click", (e)=>{ e.stopPropagation(); closePlayer(); });
-    player.addEventListener("click", (e)=>{ if(e.target === player) closePlayer(); });
-
-    playerPlayPause.addEventListener("click", (e)=>{
-        e.stopPropagation();
-        if(!player.classList.contains("show")) return;
-        if(!playing){
-            if(t >= duration) t = 0;
-            playing = true;
-            playerPlayPause.textContent = "Pause";
-            startTimer();
-        }else{
-            playing = false;
-            playerPlayPause.textContent = "Play";
-            stopTimer();
-        }
-    });
-
-    const essayDrawer = document.getElementById("essayDrawer");
-    const essayHandle = document.getElementById("essayHandle");
-    const toggleEssayBtn = document.getElementById("toggleEssayBtn");
-    function toggleEssay(){
-        essayDrawer.classList.toggle("open");
-        createSparkles({clientX: event.clientX, clientY: event.clientY});
-    }
-    essayHandle.addEventListener("click", toggleEssay);
-    toggleEssayBtn.addEventListener("click", toggleEssay);
-
-    const buzzDrawer = document.getElementById("buzzDrawer");
-    const buzzHandle = document.getElementById("buzzHandle");
-    const toggleBuzzBtn = document.getElementById("toggleBuzzBtn");
-    function toggleBuzz(){
-        buzzDrawer.classList.toggle("open");
-        if(buzzDrawer.classList.contains("open")){
-            pauseBuzzAutoScroll(400);
-            createSparkles({clientX: event.clientX, clientY: event.clientY});
-        }
-    }
-    buzzHandle.addEventListener("click", toggleBuzz);
-    toggleBuzzBtn.addEventListener("click", toggleBuzz);
-
-    document.getElementById("refreshBuzzBtn").addEventListener("click", (e)=>{
-        renderBuzzPosts();
-        buzzScroll.scrollTop = 0;
-        pauseBuzzAutoScroll(2000);
-        showToast("Buzz refreshed");
-        createReaction(e.clientX, e.clientY, '🔄');
-    });
-
-    document.getElementById("openListBtn").addEventListener("click", ()=>{
-        goList();
-        createReaction(event.clientX, event.clientY, '📋');
-    });
-
-    document.getElementById("featuredInfo").addEventListener("click", (e)=>{
-        if(featuredMovie) {
-            openPrePlayModal(featuredMovie);
-            createReaction(e.clientX, e.clientY, 'ℹ️');
-        }
-    });
-    document.getElementById("featuredShuffle").addEventListener("click", (e)=>{
-        featuredMovie = posters[Math.floor(Math.random()*posters.length)];
-        pickFeatured();
-        showToast("Featured shuffled");
-        createConfetti(20);
-    });
-
-    const searchInput = document.getElementById("searchInput");
-    searchInput.addEventListener("input", ()=>{
-        searchQuery = searchInput.value.trim();
-        pickFeatured();
-        renderRoute();
-    });
-
-    document.getElementById("clearStatsBtn").addEventListener("click", (e)=>{
-        clicks = 0; views = 0;
-        genreAffinity = { romance:0, horror:0, action:0, sciFi:0, thriller:0 };
-        hoverTimeMs = {};
-        viewCounts = {};
-        heatPoints = 0;
-
-        preference = { genre: null, vibe: null };
-        localStorage.removeItem("obspref");
-
-        buzzScore = {};
-        posters.forEach(p => buzzScore[p.id] = 0);
-        socialSusceptibility = 1.0;
-        socialInteractions = 0;
-
-        myList = new Set();
-        saveList();
-        updateListCount();
-
-        renderBuzzPosts();
-        pickFeatured();
-        renderRoute();
-        clearHeat();
-        closePlayer();
-        closeModal();
-        showToast("Reset complete");
-        openSurvey();
-        createConfetti(40);
-    });
-
-    const enginePanel = document.getElementById("enginePanel");
-    enginePanel.addEventListener("scroll", ()=>{
-        // can add scroll tracking here if needed
-    });
-
-    const heatCanvas = document.getElementById("heatCanvas");
-    const heatCtx = heatCanvas.getContext("2d", { alpha: true });
-
-    function resizeHeat(){
-        const dpr = window.devicePixelRatio || 1;
-        heatCanvas.width = Math.floor(window.innerWidth * dpr);
-        heatCanvas.height = Math.floor(window.innerHeight * dpr);
-        heatCtx.setTransform(dpr,0,0,dpr,0,0);
-    }
-    function clearHeat(){
-        heatCtx.clearRect(0,0,window.innerWidth,window.innerHeight);
-    }
-    window.addEventListener("resize", resizeHeat);
-    resizeHeat();
-
-    let lastDraw = 0;
-    window.addEventListener("mousemove", (e)=>{
-        const now = performance.now();
-        if(now - lastDraw < 12) return;
-        lastDraw = now;
-
-        const x = e.clientX;
-        const y = e.clientY;
-
-        const radius = 40;
-        const g = heatCtx.createRadialGradient(x, y, 0, x, y, radius);
-        g.addColorStop(0, "rgba(229, 9, 20, .30)");
-        g.addColorStop(0.35, "rgba(255, 90, 0, .14)");
-        g.addColorStop(1, "rgba(0,0,0,0)");
-
-        heatCtx.fillStyle = g;
-        heatCtx.beginPath();
-        heatCtx.arc(x, y, radius, 0, Math.PI*2);
-        heatCtx.fill();
-
-        heatPoints++;
-    }, { passive:true });
-
-    setInterval(()=>{
-        heatCtx.fillStyle = "rgba(0,0,0,0.055)";
-        heatCtx.globalCompositeOperation = "destination-out";
-        heatCtx.fillRect(0,0,window.innerWidth,window.innerHeight);
-        heatCtx.globalCompositeOperation = "source-over";
-    }, 60);
-
-    const surveyEl = document.getElementById("survey");
-    const surveyGenresEl = document.getElementById("surveyGenres");
-    const surveyVibesEl = document.getElementById("surveyVibes");
-
-    function savePreference(){ localStorage.setItem("obspref", JSON.stringify(preference)); }
-    function loadPreference(){
-        try{
-            const raw = localStorage.getItem("obspref");
-            if(!raw) return false;
-            const obj = JSON.parse(raw);
-            if(obj && typeof obj === "object"){
-                preference.genre = obj.genre || null;
-                preference.vibe = obj.vibe || null;
-                return !!(preference.genre || preference.vibe);
-            }
-        }catch{}
-        return false;
-    }
-    function openSurvey(){
-        if(loadPreference()) return;
-        surveyEl.classList.add("open");
-    }
-    function closeSurvey(){ surveyEl.classList.remove("open"); }
-
-    function toggleOpt(containerEl, value, type){
-        const opts = [...containerEl.querySelectorAll(".opt")];
-        opts.forEach(o => o.classList.toggle("on", o.dataset.value === value));
-        if(type === "genre") preference.genre = value;
-        if(type === "vibe") preference.vibe = value;
-    }
-
-    function buildSurveyUI(){
-        surveyGenresEl.innerHTML = "";
-        genres.filter(g => g !== "all").forEach(g=>{
-            const o = document.createElement("div");
-            o.className = "opt" + (preference.genre === g ? " on" : "");
-            o.textContent = g.toUpperCase();
-            o.dataset.value = g;
-            o.onclick = ()=> {
-                toggleOpt(surveyGenresEl, g, "genre");
-                createReaction(event.clientX, event.clientY, '✓');
-            };
-            surveyGenresEl.appendChild(o);
-        });
-
-        surveyVibesEl.innerHTML = "";
-        vibeOptions.forEach(v=>{
-            const o = document.createElement("div");
-            o.className = "opt" + (preference.vibe === v ? " on" : "");
-            o.textContent = v;
-            o.dataset.value = v;
-            o.onclick = ()=> {
-                toggleOpt(surveyVibesEl, v, "vibe");
-                createReaction(event.clientX, event.clientY, '✓');
-            };
-            surveyVibesEl.appendChild(o);
-        });
-    }
-
-    document.getElementById("surveySkipBtn").addEventListener("click", (e)=>{
-        closeSurvey();
-        showToast("Survey skipped");
-        createReaction(e.clientX, e.clientY, '⊘');
-        renderBuzzPosts();
-        pickFeatured();
-        renderRoute();
-    });
-
-    document.getElementById("surveyResetBtn").addEventListener("click", (e)=>{
-        preference.genre = null;
-        preference.vibe = null;
-        buildSurveyUI();
-        showToast("Cleared");
-        createReaction(e.clientX, e.clientY, '✕');
-    });
-
-    document.getElementById("surveyContinueBtn").addEventListener("click", (e)=>{
-        if(!preference.genre){
-            showToast("Pick a genre to continue");
-            return;
-        }
-        savePreference();
-        genreAffinity[preference.genre] = (genreAffinity[preference.genre] || 0) + 6;
-        closeSurvey();
-        showToast("Personalization applied");
-        createConfetti(30);
-        renderBuzzPosts();
-        pickFeatured();
-        renderRoute();
-    });
-
-    window.addEventListener("hashchange", renderRoute);
-
-    function init(){
-        buildFilters();
-        buildSurveyUI();
-        openSurvey();
-
-        renderBuzzPosts();
-        startBuzzAutoScroll();
-
-        pickFeatured();
-        renderRoute();
-    }
-    init();
+    // ── INIT ──────────────────────────────────────────────────
+    goHome();
+    renderBuzz();
 </script>
 </body>
 </html>
